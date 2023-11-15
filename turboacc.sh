@@ -1,3 +1,6 @@
+#!/bin/bash
+
+
 mkdir -p turboacc_tmp ./package/turboacc
 
 cd turboacc_tmp 
