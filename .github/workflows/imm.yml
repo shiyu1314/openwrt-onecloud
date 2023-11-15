@@ -14,7 +14,6 @@ env:
   DIY_P2_SH: op2.sh
   DIY_P3_SH: op3.sh
   DIY_P4_SH: oc.sh
-  DIY_P5_SH: turboacc.sh
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
@@ -58,10 +57,6 @@ jobs:
         chmod +x $DIY_P3_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P3_SH
-    
-    - name: 下载turboacc
-      run: |
-        $GITHUB_WORKSPACE/$DIY_P5_SH
         
     - name: 二次更新订阅源
       run: cd openwrt && ./scripts/feeds update -a
