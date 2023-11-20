@@ -15,4 +15,7 @@
 
 # Add a feed source
 echo 'src-git dns https://github.com/sbwml/luci-app-mosdns' >>feeds.conf.default
+
 svn co https://github.com/shiyu1314/openwrt-onecloud/trunk/target/linux/meson target/linux/meson
+
+svn co https://github.com/vernesong/OpenClash/trunk/luci-app-openclash package/luci-app-openclash
