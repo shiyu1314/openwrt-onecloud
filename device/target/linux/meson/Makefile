@@ -5,7 +5,7 @@
 include $(TOPDIR)/rules.mk
 
 ARCH:=arm
-BOARD:=amlogic
+BOARD:=meson
 BOARDNAME:=Amlogic Meson family
 FEATURES:=boot-part ext4 fpu legacy-sdcard squashfs usbgadget
 SUBTARGETS:=meson8b
