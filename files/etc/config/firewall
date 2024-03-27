@@ -1,0 +1,18 @@
+
+config defaults
+	option input 'ACCEPT'
+	option output 'ACCEPT'
+	option forward 'ACCEPT'
+
+config zone
+	option name 'lan'
+	option input 'ACCEPT'
+	option output 'ACCEPT'
+	option forward 'ACCEPT'
+	list network 'lan'
+	list network 'utun'
+
+config include 'openclash'
+	option type 'script'
+	option path '/var/etc/openclash.include'
+
