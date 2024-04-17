@@ -15,14 +15,18 @@ mv -f luci-app-adguardhome package
 
 echo 'src-git dns https://github.com/sbwml/luci-app-mosdns' >>feeds.conf.default
 
+sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
 
 ./scripts/feeds update -a
 rm -rf feeds/packages/net/mosdns
+rm -rf feeds/smpackage/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd*,miniupnpd-iptables,wireless-regdb}
+
+curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
-sed -i "s/192.168.1.1/192.168.2.2/" package/base-files/files/bin/config_generate
+sed -i "s/192.168.1.1/192.168.3.10/" package/base-files/files/bin/config_generate
 sed -i 's|/bin/login|/bin/login -f root|g' feeds/packages/utils/ttyd/files/ttyd.config
 
 git_sparse_clone tini https://github.com/hauke/packages utils/tini/patches
