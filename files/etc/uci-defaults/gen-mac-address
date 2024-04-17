@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Generate random MAC address on first boot
+
+MAC=$(printf "%02x" $(( $(hexdump -n1 -e'/1 "0x%02x"' /dev/urandom) & ~1 | 2)) && hexdump -n5 -e'/1 ":%02x"' /dev/urandom)
+
+uci -q batch <<-EOF >/dev/null
+	set network.@device[-1].macaddr=${MAC}
+	commit network
+EOF
+
+rm -f /tmp/luci-indexcache
+exit 0
