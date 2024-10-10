@@ -1,0 +1,19 @@
+# 设置环境变量
+setenv condev "console=ttyAML0,115200n8 no_console_suspend consoleblank=0"
+setenv kernel_loadaddr "0x00208000"
+setenv dtb_loadaddr "0x21800000"
+setenv initrd_loadaddr "0x22000000"
+setenv dtb_name "dtb"
+setenv boot_start "bootm ${kernel_loadaddr} - ${dtb_loadaddr}"
+
+# 设置 bootargs_emmc 环境变量
+setenv bootargs_emmc "root=/dev/mmcblk1p2 rootwait ro ${condev} fsck.repair=yes net.ifnames=0"
+
+# 尝试加载并启动系统
+if fatload mmc 1 ${initrd_loadaddr} uInitrd &&
+   setenv bootargs ${bootargs_emmc} &&
+   fatload mmc 1 ${kernel_loadaddr} uImage &&
+   fatload mmc 1 ${dtb_loadaddr} ${dtb_name}; then
+    run boot_start
+fi
+
