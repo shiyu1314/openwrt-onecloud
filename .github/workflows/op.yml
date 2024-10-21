@@ -119,7 +119,7 @@ jobs:
         CONFIG_TARGET_amlogic=y
         CONFIG_TARGET_amlogic_meson8b=y
         CONFIG_TARGET_amlogic_meson8b_DEVICE_thunder-onecloud=y
-        CONFIG_TARGET_KERNEL_PARTSIZE=32
+        CONFIG_TARGET_KERNEL_PARTSIZE=66
         CONFIG_TARGET_ROOTFS_PARTSIZE=${{ github.event.inputs.OP_rootfs }}
         CONFIG_KERNEL_EXT4_FS_SECURITY=y
         # CONFIG_TARGET_ROOTFS_SQUASHFS is not set
