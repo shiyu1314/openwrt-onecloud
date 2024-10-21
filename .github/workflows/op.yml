@@ -136,8 +136,7 @@ jobs:
         CONFIG_PACKAGE_automount=y
         CONFIG_PACKAGE_autocore=y
         CONFIG_PACKAGE_autosamba=y
-        CONFIG_PACKAGE_ip-full=y
-        CONFIG_PACKAGE_kmod-tun=y
+        CONFIG_ALL_KMODS=y
         CONFIG_PACKAGE_zram-swap=y
         CONFIG_PACKAGE_ariang-nginx=y
         CONFIG_PACKAGE_libopenssl-conf=y
