@@ -1,0 +1,1046 @@
+Package: aria2
+Version: 1.37.0-1
+Depends: libc, zlib, libstdcpp6, libopenssl3
+Source: feeds/packages/net/aria2
+SourceName: aria2
+License: GPLv2
+LicenseFiles: COPYING
+Section: net
+Require-User: aria2=6800:aria2=6800
+SourceDateEpoch: 1702915356
+CPE-ID: cpe:/a:tatsuhiro_tsujikawa:aria2
+Maintainer: Imre Kaloz <kaloz@openwrt.org>, Hsing-Wang Liao <kuoruan@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 563776
+Filename: aria2_1.37.0-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 563767
+SHA256sum: ab5d09494296eb1ca8c2de43184657b6589029da23ac8b276c7fd9c8c457e5bb
+Description:  aria2 is a lightweight multi-protocol & multi-source command-line download
+ utility
+
+Package: attr
+Version: 2.5.1-1
+Depends: libc, libattr
+Source: feeds/packages/utils/attr
+SourceName: attr
+License: GPL-2.0-or-later
+LicenseFiles: doc/COPYING
+Section: utils
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:attr_project:attr
+Maintainer: Maxim Storchak <m.storchak@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 11633
+Filename: attr_2.5.1-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 12470
+SHA256sum: 52f1c6d967fec6bffa0cc75ac6d93afa8f71fe0cd1f53ebc6e7ef109a5aa88a0
+Description:  Extended attributes support
+ This package provides xattr manipulation utilities
+ - attr
+ - getfattr
+ - setfattr
+
+Package: avahi-dbus-daemon
+Version: 0.8-8
+Depends: libc, libavahi-dbus-support, libexpat, librt, libdaemon
+Provides: avahi-daemon
+Source: feeds/packages/libs/avahi
+SourceName: avahi-dbus-daemon
+License: LGPL-2.1-or-later
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:avahi:avahi
+Maintainer: Ted Hess <thess@kitschensync.net>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 40508
+Filename: avahi-dbus-daemon_0.8-8_arm_cortex-a5_neon-vfpv4.ipk
+Size: 41300
+SHA256sum: 1c9b52e25e35b7f1b2d4d6335fb9aee88ee14f788c676fbda798e8a3c84eb760
+Description:  Avahi is an mDNS/DNS-SD (aka RendezVous/Bonjour/ZeroConf)
+ implementation (library). It facilitates
+ service discovery on a local network -- this means that
+ you can plug your laptop or computer into a network and
+ instantly be able to view other people who you can chat with,
+ find printers to print to or find files being shared.
+ This kind of technology is already found in MacOS X
+ (branded 'Rendezvous', 'Bonjour' and sometimes 'ZeroConf')
+ and is very convenient.
+ .
+ This package contains an mDNS/DNS-SD daemon.
+
+Package: bash
+Version: 5.2.15-1
+Depends: libc, libncurses6, libreadline8
+Source: feeds/packages/utils/bash
+SourceName: bash
+License: GPL-3.0-or-later
+LicenseFiles: COPYING
+Section: utils
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:gnu:bash
+Maintainer: Marcel Denia <naoir@gmx.net>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 432978
+Filename: bash_5.2.15-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 433603
+SHA256sum: 1f6b7c8af84253de4de765d392424542cc2407fccd0d28287c3c817ba280c395
+Description:  Bash is an sh-compatible command language interpreter that executes
+ commands read from the standard input or from a file. Bash also
+ incorporates useful features from the Korn and C shells (ksh and csh).
+
+Package: btrfs-progs
+Version: 6.5.1-1
+Depends: libc, libattr, libuuid1, libmount1, zlib, libblkid1, liblzo2, libpthread, kmod-fs-btrfs
+Source: feeds/packages/utils/btrfs-progs
+SourceName: btrfs-progs
+License: GPL-2.0-only
+LicenseFiles: COPYING
+Section: utils
+SourceDateEpoch: 1731423015
+Maintainer: Karel Kočí <karel.koci@nic.cz>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1137943
+Filename: btrfs-progs_6.5.1-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 1137768
+SHA256sum: bc0fc698d9df9ed4d3ebee9ae6e3b79895be6c1a58f07a6fd18a1661ab3ac2e7
+Description:  Btrfs is a new copy on write filesystem for Linux aimed at implementing
+ advanced features while focusing on fault tolerance, repair and easy
+ administration. Initially developed by Oracle, Btrfs is licensed under the
+ GPL and open for contribution from anyone.
+
+Package: cgi-io
+Version: 2022-08-10-901b0f04-21
+Depends: libc, libubox20230523, libubus20230605
+Source: feeds/packages/net/cgi-io
+SourceName: cgi-io
+License: GPL-2.0-or-later
+Section: net
+SourceDateEpoch: 1731423015
+Maintainer: John Crispin <blogic@openwrt.org>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 8554
+Filename: cgi-io_2022-08-10-901b0f04-21_arm_cortex-a5_neon-vfpv4.ipk
+Size: 9291
+SHA256sum: 6dc8364118032f38cccb98b4cbd305df40f0dbc4d4617a9e90bb33a1bb2bc64a
+Description:  This package contains an cgi utility that is useful for up/downloading files
+
+Package: containerd
+Version: 1.7.22-1
+Depends: libc, btrfs-progs, runc
+Source: feeds/packages/utils/containerd
+SourceName: containerd
+License: Apache-2.0
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:linuxfoundation:containerd
+Maintainer: Gerard Ryan <G.M0N3Y.2503@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 36779399
+Filename: containerd_1.7.22-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 36476253
+SHA256sum: 89b6d5eefda5d2b9ee3cd5b73587b045361b95b2774fe2d3914b7c638ee7eb22
+Description:  An industry-standard container runtime with an emphasis on simplicity, robustness and portability
+
+Package: coreutils-stty
+Version: 9.3-1
+Depends: libc, coreutils
+Alternatives: 300:/bin/stty:/usr/libexec/stty-coreutils
+Source: feeds/packages/utils/coreutils
+SourceName: coreutils-stty
+License: GPL-3.0-or-later
+LicenseFiles: COPYING
+Section: utils
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:gnu:coreutils
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 29019
+Filename: coreutils-stty_9.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 29759
+SHA256sum: 9f3f780dec206c852c4367972ac21f2180b97f3220c2ae222693acfd8311b9bf
+Description:  Full version of standard GNU stty utility.
+
+Package: coreutils
+Version: 9.3-1
+Depends: libc
+Source: feeds/packages/utils/coreutils
+SourceName: coreutils
+License: GPL-3.0-or-later
+LicenseFiles: COPYING
+Section: utils
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:gnu:coreutils
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 95
+Filename: coreutils_9.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 977
+SHA256sum: 249bc4df28ca029069697459afa8b183fc0dedcc230d83a917d4edbb0bace2f6
+Description:  Full versions of standard GNU utilities. If an equivalent Busybox applet is
+ available, you should consider compiling that instead as Busybox applets are
+ usually smaller, at the expense of reduced functionality.
+
+Package: curl
+Version: 8.7.1-r1
+Depends: libc, libcurl4
+Source: feeds/packages/net/curl
+SourceName: curl
+License: MIT
+LicenseFiles: COPYING
+Section: net
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:haxx:libcurl
+Maintainer: Stan Grishin <stangri@melmac.ca>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 63273
+Filename: curl_8.7.1-r1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 64014
+SHA256sum: 3bba20d4d52ec39471893c71da6474509cc1fb358a5c08997683d00e4f094dfd
+Description:  A client-side URL transfer utility
+
+Package: dbus
+Version: 1.13.18-12
+Depends: libc, libexpat, libdbus
+Source: feeds/packages/utils/dbus
+SourceName: dbus
+License: AFL-2.1
+Section: utils
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:freedesktop:dbus
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 105228
+Filename: dbus_1.13.18-12_arm_cortex-a5_neon-vfpv4.ipk
+Size: 105520
+SHA256sum: 29707c6862bdc46b53adf177b575ac846639cf8cdceef8e6130efa4034285d22
+Description:  Simple interprocess messaging system (daemon)
+
+Package: docker
+Version: 27.3.1-1
+Depends: libc
+Source: feeds/packages/utils/docker
+SourceName: docker
+License: Apache-2.0
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1731423015
+Maintainer: Gerard Ryan <G.M0N3Y.2503@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 9103747
+Filename: docker_27.3.1-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 9086359
+SHA256sum: a84f716a2a37269fab4a9fc91a845d83f17c4805b7b8771fbf7f5f2b439bea91
+Description:  The CLI used in the Docker CE and Docker EE products.
+
+Package: dockerd
+Version: 27.3.1-1
+Depends: libc, ca-certificates, containerd, iptables, iptables-mod-extra, ip6tables, kmod-ipt-nat6, libseccomp, kmod-ipt-nat, kmod-ipt-physdev, kmod-nf-ipvs, kmod-veth, tini, uci-firewall
+Source: feeds/packages/utils/dockerd
+SourceName: dockerd
+License: Apache-2.0
+LicenseFiles: LICENSE
+Section: utils
+Require-User: docker:docker
+SourceDateEpoch: 1731423015
+Maintainer: Gerard Ryan <G.M0N3Y.2503@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 20821216
+Filename: dockerd_27.3.1-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 20779500
+SHA256sum: 86c7a7bb7412b197200cf93f79874628531bdded75d48b74d7e85e5ab600f07a
+Description:  The Docker CE Engine.
+
+Package: fuse-utils
+Version: 2.9.9-2
+Depends: libc, libfuse1
+Source: feeds/packages/utils/fuse
+SourceName: fuse-utils
+License: GPL-2.0-only
+LicenseFiles: COPYING
+Section: utils
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:fuse_project:fuse
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 14139
+Filename: fuse-utils_2.9.9-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 14906
+SHA256sum: d39be1208a266189c7b77fba4bfe68b6b93d232da2702b4be0be72214bcd6475
+Description:  FUSE (Filesystem in UserSpacE)
+ This package contains the FUSE utilities.
+ - fusermount
+ - ulockmgr_server
+
+Package: hd-idle
+Version: 1.05-2
+Depends: libc
+Source: feeds/packages/utils/hd-idle
+SourceName: hd-idle
+License: GPL-2.0
+Section: utils
+SourceDateEpoch: 1731423015
+Maintainer: Lim Guo Wei <limguowei@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 4617
+Filename: hd-idle_1.05-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 5404
+SHA256sum: 65530a0983b5e3434fa5048d4209831c7fa7d4c198c99046d8860578b745eff8
+Description:  hd-idle is a utility program for spinning-down external disks after a period of idle time.
+
+Package: libattr
+Version: 2.5.1-1
+Depends: libc
+Source: feeds/packages/utils/attr
+SourceName: libattr
+License: LGPL-2.1-or-later
+LicenseFiles: doc/COPYING.LGPL
+Section: libs
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:attr_project:attr
+Maintainer: Maxim Storchak <m.storchak@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 6071
+Filename: libattr_2.5.1-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 6863
+SHA256sum: 8fc027f619c8dacf89c850fcbe25c492d2954aa23ce46c67171c94181dad1f5a
+Description:  Extended attributes support
+ This package provides libattr
+
+Package: libavahi-client
+Version: 0.8-8
+Depends: libc, avahi-dbus-daemon
+Source: feeds/packages/libs/avahi
+SourceName: libavahi-client
+License: LGPL-2.1-or-later
+LicenseFiles: LICENSE
+Section: libs
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:avahi:avahi
+Maintainer: Ted Hess <thess@kitschensync.net>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 17373
+Filename: libavahi-client_0.8-8_arm_cortex-a5_neon-vfpv4.ipk
+Size: 18455
+SHA256sum: 2651d4cffe0a1aa479edbabddae7bd88d9e0499c6e8cd614821f0a752c010db9
+Description:  Avahi is an mDNS/DNS-SD (aka RendezVous/Bonjour/ZeroConf)
+ implementation (library). It facilitates
+ service discovery on a local network -- this means that
+ you can plug your laptop or computer into a network and
+ instantly be able to view other people who you can chat with,
+ find printers to print to or find files being shared.
+ This kind of technology is already found in MacOS X
+ (branded 'Rendezvous', 'Bonjour' and sometimes 'ZeroConf')
+ and is very convenient.
+ .
+ This packages adds the libavahi-client library.
+ It also automatically adds the required
+ libavahi-dbus-support and the avahi-dbus-daemon packages.
+ For more information please see the avahi documentation.
+
+Package: libavahi-dbus-support
+Version: 0.8-8
+Depends: libc, dbus
+Provides: libavahi
+Source: feeds/packages/libs/avahi
+SourceName: libavahi-dbus-support
+License: LGPL-2.1-or-later
+LicenseFiles: LICENSE
+Section: libs
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:avahi:avahi
+Maintainer: Ted Hess <thess@kitschensync.net>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 68104
+Filename: libavahi-dbus-support_0.8-8_arm_cortex-a5_neon-vfpv4.ipk
+Size: 69022
+SHA256sum: 5048195a7c65526d2720a7f256566c3fea86473980f99d79517b446ddf60d2b3
+Description:  Avahi is an mDNS/DNS-SD (aka RendezVous/Bonjour/ZeroConf)
+ implementation (library). It facilitates
+ service discovery on a local network -- this means that
+ you can plug your laptop or computer into a network and
+ instantly be able to view other people who you can chat with,
+ find printers to print to or find files being shared.
+ This kind of technology is already found in MacOS X
+ (branded 'Rendezvous', 'Bonjour' and sometimes 'ZeroConf')
+ and is very convenient.
+ .
+ The libavahi package contains the mDNS/DNS-SD shared libraries,
+ used by other programs. Specifically, it provides
+ libavahi-core and libavahi-common libraries.
+ .
+ The libavahi-dbus-support package enables
+ D-Bus support in avahi, needed to support
+ the libavahi-client library and avahi-utils.
+ .
+ Selecting this package modifies the build configuration
+ so that avahi packages are built with support for D-BUS enabled;
+ it does not generate a separate binary of its own.
+ It also automatically adds the D-Bus package to the build.
+ libavahi-dbus-support is selected automatically if you select
+ libavahi-client or avahi-utils.
+
+Package: libcurl4
+Version: 8.7.1-r1
+Depends: libc, libopenssl3, libnghttp2-14, libnghttp3, libngtcp2, ca-bundle
+Provides: libcurl
+Source: feeds/packages/net/curl
+SourceName: libcurl
+License: MIT
+LicenseFiles: COPYING
+Section: libs
+SourceDateEpoch: 1731423015
+ABIVersion: 4
+CPE-ID: cpe:/a:haxx:libcurl
+Maintainer: Stan Grishin <stangri@melmac.ca>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 208458
+Filename: libcurl4_8.7.1-r1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 208115
+SHA256sum: d56fc72432f290d114218255df3c226da27d5d0dc67dbfb2802b10460dae5ab4
+Description:  A client-side URL transfer library
+
+Package: libdaemon
+Version: 0.14-5
+Depends: libc
+Source: feeds/packages/libs/libdaemon
+SourceName: libdaemon
+Section: libs
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:libdaemon_project:libdaemon
+Maintainer: Ted Hess <thess@kitschensync.net>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 7878
+Filename: libdaemon_0.14-5_arm_cortex-a5_neon-vfpv4.ipk
+Size: 8968
+SHA256sum: af5bb8da1235288b060206c1306f96aab45f6e620995b336c2904aa59574432f
+Description:  libdaemon is a lightweight C library that eases the writing of UNIX daemons.
+ It consists of the following parts:
+ - A wrapper around fork() which does the correct daemonization procedure of a process
+ - A wrapper around syslog() for simpler and compatible log output to Syslog or STDERR
+ - An API for writing PID files
+ - An API for serializing UNIX signals into a pipe for usage with select() or poll()
+ - An API for running subprocesses with STDOUT and STDERR redirected to syslog
+ 
+ APIs like these are used in most daemon software available. It is not that
+ simple to get it done right and code duplication is not a goal.
+
+Package: libdbus
+Version: 1.13.18-12
+Depends: libc, libpthread
+Source: feeds/packages/utils/dbus
+SourceName: libdbus
+License: AFL-2.1
+Section: utils
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:freedesktop:dbus
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 108870
+Filename: libdbus_1.13.18-12_arm_cortex-a5_neon-vfpv4.ipk
+Size: 109162
+SHA256sum: 8ff2c1916af70c03615bc1b0f8b326d898d4d4e1d4e5e4a36e310aa1b7f9f3d2
+Description:  Simple interprocess messaging system (library)
+
+Package: libexpat
+Version: 2.5.0-1
+Depends: libc
+Source: feeds/packages/libs/expat
+SourceName: libexpat
+License: MIT
+LicenseFiles: COPYING
+Section: libs
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:libexpat_project:libexpat
+Maintainer: Ted Hess <thess@kitschensync.net>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 39971
+Filename: libexpat_2.5.0-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 40819
+SHA256sum: 206b8626dc029f7ab21bac3d225ae8892b71acdbbccc0f4371e621718365650b
+Description:  A fast, non-validating, stream-oriented XML parsing library.
+
+Package: libfuse1
+Version: 2.9.9-2
+Depends: libc, kmod-fuse, libpthread
+Provides: libfuse
+Source: feeds/packages/utils/fuse
+SourceName: libfuse
+License: LGPL-2.1-only
+LicenseFiles: COPYING.LIB
+Section: libs
+SourceDateEpoch: 1731423015
+ABIVersion: 1
+CPE-ID: cpe:/a:fuse_project:fuse
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 59236
+Filename: libfuse1_2.9.9-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 59564
+SHA256sum: 87ead3d46e092ac1aad76db43f1e77aeac5299cc6f71a01d4e05e4ca02ac49c1
+Description:  FUSE (Filesystem in UserSpacE)
+ This package contains the FUSE shared libraries, needed by other programs.
+ - libfuse
+ - libulockmgr
+
+Package: libgnutls
+Version: 3.8.3-1
+Depends: libc, libnettle8, libgmp10, libatomic1
+Source: feeds/packages/libs/gnutls
+SourceName: libgnutls
+License: LGPL-2.1-or-later
+LicenseFiles: LICENSE
+Section: libs
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:gnu:gnutls
+Maintainer: Nikos Mavrogiannopoulos <nmav@gnutls.org>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 933137
+Filename: libgnutls_3.8.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 930594
+SHA256sum: fc867ad5248574a2ff24ee2663aee33b6c587248b19a2f8e5a24b80e9d0aae71
+Description:  GnuTLS is a secure communications library implementing the SSL, TLS
+ and DTLS protocols and technologies around them. It provides a simple
+ C language application programming interface (API) to access the secure
+ communications protocols as well as APIs to parse and write X.509, PKCS12,
+ OpenPGP and other required structures. It is aimed to be portable and
+ efficient with focus on security and interoperability.
+ This package contains the GnuTLS shared library, needed by other programs.
+
+Package: liblzo2
+Version: 2.10-4
+Depends: libc
+Provides: liblzo
+Source: feeds/packages/libs/lzo
+SourceName: liblzo
+License: GPL-2.0-or-later
+LicenseFiles: COPYING
+Section: libs
+SourceDateEpoch: 1731423015
+ABIVersion: 2
+CPE-ID: cpe:/a:oberhumer:lzo
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 36094
+Filename: liblzo2_2.10-4_arm_cortex-a5_neon-vfpv4.ipk
+Size: 36948
+SHA256sum: e2c0f9ea3c19e8b0e64c5fd9bf47ae6b8b149e66ea785bde2cd3e4d9b7964151
+Description:  LZO is a data compression library which is suitable for data de-/compression
+ in real-time. This means it favours speed over compression ratio.
+
+Package: libnghttp2-14
+Version: 1.57.0-1
+Depends: libc
+Provides: libnghttp2
+Source: feeds/packages/libs/nghttp2
+SourceName: libnghttp2
+License: MIT
+LicenseFiles: COPYING
+Section: libs
+SourceDateEpoch: 1731423015
+ABIVersion: -14
+CPE-ID: cpe:/a:nghttp2:nghttp2
+Maintainer: Hans Dedecker <dedeckeh@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 61826
+Filename: libnghttp2-14_1.57.0-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 61265
+SHA256sum: 812e8929e8c48314c023b9b08576c9358ed1709a7c69906d42660c2bd69bab1f
+Description:  C library implementing the framing layer of the HTTP/2 protocol. It can be used to build a HTTP/2-capable HTTP client or server
+
+Package: libparted
+Version: 3.6-1
+Depends: libc, libblkid1, libuuid1
+Source: feeds/packages/utils/parted
+SourceName: libparted
+License: GPL-3.0-or-later
+LicenseFiles: COPYING
+Section: libs
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:parted_project:parted
+Maintainer: Oskari Rauta <oskari.rauta@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 184876
+Filename: libparted_3.6-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 185025
+SHA256sum: 0f9fa3c2e928131dc1422908634b1971119d2e753f757dca545ff979322c6d22
+Description:  GNU Parted shared library
+
+Package: libseccomp
+Version: 2.5.4-2
+Depends: libc
+Source: feeds/packages/libs/libseccomp
+SourceName: libseccomp
+License: LGPL-2.1-or-later
+LicenseFiles: LICENSE
+Section: libs
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:libseccomp_project:libseccomp
+Maintainer: Nikos Mavrogiannopoulos <nmav@gnutls.org>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 43346
+Filename: libseccomp_2.5.4-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 43599
+SHA256sum: e587d9eda62e7c34be005b93a5dce116e0ac22d0c0de08d480f824b705e1eed1
+Description:  This package contains the seccomp library.
+
+Package: libtasn1
+Version: 4.19.0-2
+Depends: libc
+Source: feeds/packages/libs/libtasn1
+SourceName: libtasn1
+License: LGPL-2.1-or-later
+LicenseFiles: COPYING.LIB
+Section: libs
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:gnu:libtasn1
+Maintainer: Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 30024
+Filename: libtasn1_4.19.0-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 30902
+SHA256sum: 8ea3cec4ad8638366e775342fa993f0c99a22215b091bfcb75e4ae98dc151f57
+Description:  This is a library for Abstract Syntax Notation One (ASN.1) and
+ Distinguish Encoding Rules (DER) manipulation.
+
+Package: libtirpc
+Version: 1.3.3-1
+Depends: libc, libpthread
+Source: feeds/packages/libs/libtirpc
+SourceName: libtirpc
+License: BSD-3-Clause
+LicenseFiles: COPYING
+Section: libs
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:libtirpc_project:libtirpc
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 58090
+Filename: libtirpc_1.3.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 58617
+SHA256sum: 83897417ce13b851b2a60ed3d23a3904b0f765003d1ba9f5f108c40611367fc2
+Description:  Library TI RPC for RPC bindings
+
+Package: libuv1
+Version: 1.48.0-1
+Depends: libc, libpthread, librt
+Provides: libuv
+Source: feeds/packages/libs/libuv
+SourceName: libuv
+License: MIT
+LicenseFiles: LICENSE
+Section: libs
+SourceDateEpoch: 1731423015
+ABIVersion: 1
+CPE-ID: cpe:/a:libuv_project:libuv
+Maintainer: Marko Ratkaj <markoratkaj@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 60867
+Filename: libuv1_1.48.0-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 61480
+SHA256sum: 5b115ca824d60b9affcf11c23e2d1a8478ed5de85e82007f19fa2bab6db7a8e4
+Description:  libuv is a multi-platform support library with a focus on asynchronous I/O. It
+ was primarily developed for use by Node.js, but it's also used by Luvit, Julia,
+ pyuv, and others.
+
+Package: libwebsockets-full
+Version: 4.3.2-2
+Depends: libc, zlib, libcap, libubox20230523, libopenssl3, libuv1
+Provides: libwebsockets, libwebsockets-openssl
+Source: feeds/packages/libs/libwebsockets
+SourceName: libwebsockets-full
+License: MIT
+LicenseFiles: LICENSE
+Section: libs
+SourceDateEpoch: 1731423015
+Maintainer: Karl Palsson <karlp@etactica.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 176605
+Filename: libwebsockets-full_4.3.2-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 176660
+SHA256sum: 027bac5382d6a24b9bb1bbf594361e8f822c05fd17b418607fb69f17a827b76c
+Description:  libwebsockets (Full - OpenSSL, libuv, plugins, CGI)
+
+Package: libzstd
+Version: 1.5.2-2
+Depends: libc
+Source: feeds/packages/utils/zstd
+SourceName: libzstd
+License: GPL-2.0-or-later
+LicenseFiles: COPYING
+Section: libs
+SourceDateEpoch: 1731423015
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 310545
+Filename: libzstd_1.5.2-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 310839
+SHA256sum: bea4274b2d0a3f8cc06b34938d14eb7747e563bc7463d47d2e9f3b52f969a99e
+Description:  Zstandard - Fast real-time compression algorithm.
+ This package provides libzstd library.
+
+Package: nginx-all-module
+Version: 1.26.2-1
+Depends: nginx-ssl-util (>=1.5-1) (<2), libc, libopenssl3, libpthread, libpcre2, nginx-ssl-util, zlib, liblua5.1.5, libxml2, libubus20230605, libblobmsg-json20230523, libjson-c5, libzstd
+Conflicts: nginx-full
+Provides: nginx-ssl
+Source: feeds/packages/net/nginx
+SourceName: nginx-all-module
+License: 2-clause BSD-like license
+Section: net
+SourceDateEpoch: 1724545076
+CPE-ID: cpe:/a:nginx:nginx
+Maintainer: Thomas Heil <heil@terminal-consulting.de> Ansuel Smith <ansuelsmth@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 982894
+Filename: nginx-all-module_1.26.2-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 965808
+SHA256sum: 04222637ad492758fe71a18d3b32de1bc2b5a95b3982c4dc604f1b7b2dc1d47e
+Description:  nginx is an HTTP and reverse proxy server, as well as a mail proxy server, written by Igor Sysoev. This variant is compiled with ALL module selected.
+
+Package: nginx-mod-luci
+Version: 1.26.2-1
+Depends: libc, uwsgi, uwsgi-luci-support, nginx
+Source: feeds/packages/net/nginx
+SourceName: nginx-mod-luci
+License: 2-clause BSD-like license
+Section: net
+SourceDateEpoch: 1724545076
+CPE-ID: cpe:/a:nginx:nginx
+Maintainer: Thomas Heil <heil@terminal-consulting.de> Ansuel Smith <ansuelsmth@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 730
+Filename: nginx-mod-luci_1.26.2-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 1591
+SHA256sum: 9a0daab9936b20ed58b9c7b8a0e7f895ee71f5d176c86acce362b2d412ed7ba2
+Description:  Support file for LuCI in nginx. Include custom nginx configuration, autostart script for uwsgi.
+
+Package: nginx-ssl-util
+Version: 1.6-20
+Depends: nginx-util (>=1.4-2), libc, libstdcpp6, libuci20130104, libubus20230605, libubox20230523, libpthread, libopenssl3, nginx-util, libpcre2
+Conflicts: nginx-ssl-util-nopcre
+Source: feeds/packages/net/nginx-util
+SourceName: nginx-ssl-util
+Section: net
+SourceDateEpoch: 1731423015
+Maintainer: Peter Stadler <peter.stadler@student.uibk.ac.at>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 57032
+Filename: nginx-ssl-util_1.6-20_arm_cortex-a5_neon-vfpv4.ipk
+Size: 58045
+SHA256sum: 3faded7543f0d5e3e4603ffd9acd1551e6ec9ae36531d35d0611fe72a3bb0d9b
+Description:  Utility that builds dynamically LAN listen directives for Nginx.
+ Furthermore, it manages SSL directives for its server parts and can create
+ corresponding (self-signed) certificates. It uses the PCRE library for performance.
+
+Package: nginx-ssl
+Version: 1.26.2-1
+Depends: nginx-ssl-util (>=1.5-1) (<2), libc, libopenssl3, libpthread, libpcre2, nginx-ssl-util, zlib, libxml2, libubus20230605, libblobmsg-json20230523, libjson-c5
+Conflicts: nginx-all-module
+Source: feeds/packages/net/nginx
+SourceName: nginx-ssl
+License: 2-clause BSD-like license
+Section: net
+SourceDateEpoch: 1724545076
+CPE-ID: cpe:/a:nginx:nginx
+Maintainer: Thomas Heil <heil@terminal-consulting.de> Ansuel Smith <ansuelsmth@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 448521
+Filename: nginx-ssl_1.26.2-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 431322
+SHA256sum: a89ea15aec5f43c54a01e32099612b15b15c0eb92f6f21c87ad4495256b433bb
+Description:  nginx is an HTTP and reverse proxy server, as well as a mail proxy server, written by Igor Sysoev. This variant is compiled with SSL support enabled. To enable additional module select them in the nginx default configuration menu.
+
+Package: nginx-util
+Version: 1.6-20
+Depends: libc, libstdcpp6, libubus20230605, libubox20230523, libpthread
+Source: feeds/packages/net/nginx-util
+SourceName: nginx-util
+Section: opt
+SourceDateEpoch: 1731423015
+Maintainer: Peter Stadler <peter.stadler@student.uibk.ac.at>
+Architecture: all
+Installed-Size: 129
+Filename: nginx-util_1.6-20_all.ipk
+Size: 874
+SHA256sum: 1908219a549cd8eca3b0783139557f8b57ba10fff6f0ec2b0eeb1b313bf1753f
+Description:  Dummy package for removing nginx-util when upgrading.
+
+Package: nginx
+Version: 1.26.2-1
+Depends: libc, nginx-ssl
+Source: feeds/packages/net/nginx
+SourceName: nginx
+License: 2-clause BSD-like license
+Section: opt
+SourceDateEpoch: 1724545076
+CPE-ID: cpe:/a:nginx:nginx
+Maintainer: Thomas Heil <heil@terminal-consulting.de> Ansuel Smith <ansuelsmth@gmail.com>
+Architecture: all
+Installed-Size: 228
+Filename: nginx_1.26.2-1_all.ipk
+Size: 1051
+SHA256sum: 7e2f10a86d25930bbd37560b83eae2483a200ac715da7bd6b6fc187ef70c86f1
+Description:  nginx is an HTTP and reverse proxy server, as well as a mail proxy server, written by Igor Sysoev.
+
+Package: p910nd
+Version: 0.97-14
+Depends: libc
+Source: feeds/packages/net/p910nd
+SourceName: p910nd
+License: GPLv2
+LicenseFiles: COPYING
+Section: net
+Require-User: p910nd=393:lp=7
+SourceDateEpoch: 1731423015
+Maintainer: Philipp Kerling <pkerling@casix.org>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 11419
+Filename: p910nd_0.97-14_arm_cortex-a5_neon-vfpv4.ipk
+Size: 12433
+SHA256sum: 3623571b21be7d0cf7683c93b5d30c7c1be85cee101c85b1a8aa10ddb9033123
+Description:  p910nd is a small daemon that copies any data received on
+ the port it is listening on to the corresponding printer
+ port. It is primarily intended for diskless Linux hosts
+ running as printer drivers but there is no reason why it
+ could not be used on diskful hosts. Port 9100 is copied
+ to /dev/lp0, 9101 to /dev/lp1 and 9102 to /dev/lp2. The
+ default is port 9100 to /dev/lp0.
+
+Package: parted
+Version: 3.6-1
+Depends: libc, libparted, libreadline8, libncurses6
+Source: feeds/packages/utils/parted
+SourceName: parted
+License: GPL-3.0-or-later
+LicenseFiles: COPYING
+Section: utils
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:parted_project:parted
+Maintainer: Oskari Rauta <oskari.rauta@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 28030
+Filename: parted_3.6-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 28864
+SHA256sum: fc8179197730d34c1331e4f639d6d5d11b8abe5712b4790e74ab247ff0268bf5
+Description:  GNU Parted manipulates partition tables. This is useful for
+ creating space for new operating systems, reorganizing
+ disk usage, copying data on hard disks and disk imaging.
+
+Package: runc
+Version: 1.1.14-1
+Depends: libc, libseccomp
+Source: feeds/packages/utils/runc
+SourceName: runc
+License: Apache-2.0
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:linuxfoundation:runc
+Maintainer: Gerard Ryan <G.M0N3Y.2503@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 3583906
+Filename: runc_1.1.14-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 3556413
+SHA256sum: 4a2f66e9089804f00f799d6242a4860a4fe0da3dd2ccc0921943c410c8fc5ce3
+Description:  runc is a CLI tool for spawning and running containers according to the OCI specification.
+
+Package: samba4-libs
+Version: 4.18.8-1
+Depends: libc, libtirpc, libreadline8, libpopt0, libcap, zlib, libgnutls, libtasn1, libuuid1, libopenssl3, libpthread, attr, libavahi-client
+Source: feeds/packages/net/samba4
+SourceName: samba4-libs
+License: GPL-3.0-only
+LicenseFiles: COPYING
+Section: net
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:samba:samba
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 9118831
+Filename: samba4-libs_4.18.8-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 9020647
+SHA256sum: f1222afd6d13e16cd47bd67650baa6bbc5a43d041d6020a40851928fe92112e7
+Description:  Samba 4.18.8 libs
+
+Package: samba4-server
+Version: 4.18.8-1
+Depends: libc, samba4-libs
+Conflicts: samba36-server
+Source: feeds/packages/net/samba4
+SourceName: samba4-server
+License: GPL-3.0-only
+LicenseFiles: COPYING
+Section: net
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:samba:samba
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 247036
+Filename: samba4-server_4.18.8-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 246986
+SHA256sum: 01be4a7cf925386cc186a71b8e6503436e2b1f10e8edfd15e20eaf2c6b877453
+Description:  installs: smbd (nmbd) smbpasswd pdbedit testparm (nmblookup) (smbcacls sharesec)
+ (samba samba-tool ntlm_auth samba-gpupdate samba_dnsupdate samba_kcc samba_spnupdate samba_upgradedns samba_downgrade_db)
+ 
+ This provides the basic fileserver service and is the minimum needed to serve file shares.
+ HINT: https://fitzcarraldoblog.wordpress.com/2016/10/17/a-correct-method-of-configuring-samba-for-browsing-smb-shares-in-a-home-network/
+
+Package: smartmontools
+Version: 7.3-2
+Depends: libc, libstdcpp6
+Source: feeds/packages/utils/smartmontools
+SourceName: smartmontools
+License: GPL-2.0-or-later
+LicenseFiles: COPYING
+Section: utils
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:smartmontools:smartmontools
+Maintainer: Maxim Storchak <m.storchak@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 219127
+Filename: smartmontools_7.3-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 219778
+SHA256sum: 294b6b2b3b428b85048b9560df592796aca3ef30358ceb6b9feca8cd315b9ff1
+Description:  smartmontools contains utility programs (smartctl) to
+ control/monitor storage systems using the Self-Monitoring, Analysis
+ and Reporting Technology System (S.M.A.R.T.) built into most modern
+ ATA and SCSI disks. It is derived from smartsuite.
+
+Package: tini
+Version: 0.19.0-2
+Depends: libc
+Source: feeds/packages/utils/tini
+SourceName: tini
+License: MIT
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:tini_project:tini
+Maintainer: Gerard Ryan <G.M0N3Y.2503@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 32015
+Filename: tini_0.19.0-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 32745
+SHA256sum: cd2b23ad3cf0ecd9175735b43523f9abe698516318e3f4ee9c1a2380c64f05cf
+Description:  A tiny but valid init process for containers.
+
+Package: ttyd
+Version: 1.7.3-1
+Depends: libc, libcap, libopenssl3, libjson-c5, libuv1, zlib, libwebsockets-full
+Source: feeds/packages/utils/ttyd
+SourceName: ttyd
+License: MIT
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1731423015
+Maintainer: Shuanglei Tao <tsl0922@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 319866
+Filename: ttyd_1.7.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 320583
+SHA256sum: a93249383d3e9976dc200e358250e57031edaa223547da74d0a25bb6b16ca0da
+Description:  ttyd is a command-line tool for sharing terminal over the web.
+
+Package: uwsgi-cgi-plugin
+Version: 2.0.26-1
+Depends: libc, uwsgi
+Source: feeds/packages/net/uwsgi
+SourceName: uwsgi-cgi-plugin
+License: GPL-2.0-or-later
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:unbit:uwsgi
+Maintainer: Christian Marangi <ansuelsmth@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 9081
+Filename: uwsgi-cgi-plugin_2.0.26-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 9893
+SHA256sum: 553904680623473743b7244e3f8aef05312e4122d3127d31bf2cfc74718b1c09
+Description:  The CGI plugin for the uWSGI project.
+
+Package: uwsgi-luci-support
+Version: 2.0.26-1
+Depends: libc, uwsgi, uwsgi-syslog-plugin, uwsgi-cgi-plugin
+Source: feeds/packages/net/uwsgi
+SourceName: uwsgi-luci-support
+License: GPL-2.0-or-later
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:unbit:uwsgi
+Maintainer: Christian Marangi <ansuelsmth@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1276
+Filename: uwsgi-luci-support_2.0.26-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 2102
+SHA256sum: cf5b872c98a77f295eda7c1daed5c44ffe1b3e7d7a6d3c7d47dcac83bfc2e9b6
+Description:  Support files for LuCI on Nginx
+
+Package: uwsgi-syslog-plugin
+Version: 2.0.26-1
+Depends: libc, uwsgi
+Source: feeds/packages/net/uwsgi
+SourceName: uwsgi-syslog-plugin
+License: GPL-2.0-or-later
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:unbit:uwsgi
+Maintainer: Christian Marangi <ansuelsmth@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1592
+Filename: uwsgi-syslog-plugin_2.0.26-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 2405
+SHA256sum: 29a0d0c53986ac6b1b171f7a9d2e10a5c2aeb550be0e14734d067714f3fbccae
+Description:  The Syslog plugin for the uWSGI project.
+
+Package: uwsgi
+Version: 2.0.26-1
+Depends: libc, libpcre2, libcap, libuuid1
+Source: feeds/packages/net/uwsgi
+SourceName: uwsgi
+License: GPL-2.0-or-later
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1731423015
+CPE-ID: cpe:/a:unbit:uwsgi
+Maintainer: Christian Marangi <ansuelsmth@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 300976
+Filename: uwsgi_2.0.26-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 301336
+SHA256sum: 30a3741737ad7a67ff94a08c646d1d3dde49cdaa0534e977140a48b86e1543db
+Description:  The uWSGI project (to be used together with nginx or nginx-ssl).
+
+Package: wsdd2
+Version: 2023-12-21-b676d8ac-1
+Depends: libc
+Source: feeds/packages/net/wsdd2
+SourceName: wsdd2
+License: GPL-3.0-only
+LicenseFiles: COPYING
+Section: net
+SourceDateEpoch: 1731423015
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 18979
+Filename: wsdd2_2023-12-21-b676d8ac-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 19922
+SHA256sum: cc6082ae6041a0df91626d84d5592aed60c05476d4d237842b811c853577d81f
+Description:  Web Services for Devices or Web Services on Devices (WSD),
+ is a Microsoft API to simplify programming connections to web service
+ enabled devices, such as printers, scanners and file shares.
+ 
+ This daemon advertises and responds to probe requests from Windows clients looking for file shares.
+ It also implements LLMNR multicast name lookup services.
+
+Package: yq
+Version: 4.44.3-1
+Depends: libc
+Source: feeds/packages/utils/yq
+SourceName: yq
+License: MIT
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1731423015
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 3901857
+Filename: yq_4.44.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 3895976
+SHA256sum: 4c0437ef9fe4ffce5fb907c64276bbe088623be340ed0feef1bc70e05580dc16
+Description:  The aim of the project is to be the jq or sed of yaml files.
+
