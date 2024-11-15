@@ -10,8 +10,8 @@ Maintainer: sbwml <admin@cooluc.com>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 26619217
 Filename: alist_3.39.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26530464
-SHA256sum: f1cfa52e7ef9635846dec517ea48e3a3e80d11fcea4c3afc78f6ccf62983c326
+Size: 26530566
+SHA256sum: 9cf71506debc87aea5a4cd8d41839972f11943a8eb63a1721b3b4fd143530ad2
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -37,13 +37,13 @@ Depends: libc, luci-app-samba4, wsdd2
 Source: feeds/base/emortal/autosamba
 SourceName: autosamba
 Section: opt
-SourceDateEpoch: 1731625555
+SourceDateEpoch: 1731702108
 Maintainer: Lean
 Architecture: all
-Installed-Size: 1174
+Installed-Size: 1176
 Filename: autosamba_1-12_all.ipk
-Size: 1898
-SHA256sum: ad2da6ca5869ba91cb9a9708f2130af26e0436718092d0ac18a55444f5168255
+Size: 1904
+SHA256sum: 8e32762184b97a62e1508064f81fe0303c30a1481b4843cd9f3610999410099b
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
@@ -297,10 +297,10 @@ SourceDateEpoch: 1691751213
 ABIVersion: 1
 CPE-ID: cpe:/a:kernel:util-linux
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 108725
+Installed-Size: 108728
 Filename: libblkid1_2.39-2_arm_cortex-a5_neon-vfpv4.ipk
-Size: 109305
-SHA256sum: a423a0161585717d99265f9e0bed7528088c7562a57916ba8d72ebb57f2f9a7e
+Size: 109328
+SHA256sum: 048c67f726d2bf2043783477d3c14a5d1563acb26f8951fef475d6971eb85fda
 Description:  The libblkid library is used to identify block devices (disks) as to their
  content (e.g. filesystem type, partitions) as well as extracting additional
  information such as filesystem labels/volume names, partitions, unique
@@ -629,10 +629,10 @@ SourceDateEpoch: 1691751213
 ABIVersion: 1
 CPE-ID: cpe:/a:kernel:util-linux
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 139149
+Installed-Size: 139156
 Filename: libmount1_2.39-2_arm_cortex-a5_neon-vfpv4.ipk
-Size: 139600
-SHA256sum: ee5c706ff4e022421d3709dcf5d200b2ab59acbe060a5fd8b1313ba7f016b022
+Size: 139626
+SHA256sum: 8dc7122f7bf3268971a9a3d1eeb5b4a1987887463b3c455c5ba493c8adbc1e5c
 Description:  The libmount library is used to parse /etc/fstab, /etc/mtab and
  /proc/self/mountinfo files, manage the mtab file, evaluate mount options...
 
@@ -1999,7 +1999,7 @@ SHA256sum: f4f2a061b11a48d3dc65fde698b6b3dcfbe4f86d757872052d52a9382bb34629
 Description:  V2ray geo/ip data unpack tools
 
 Package: v2ray-geoip
-Version: 2024-11-14-1
+Version: 2024-11-15-1
 Depends: libc
 Source: feeds/base/v2ray-geodata
 SourceName: v2ray-geoip
@@ -2010,13 +2010,13 @@ SourceDateEpoch: 1727959000
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: all
 Installed-Size: 63947
-Filename: v2ray-geoip_2024-11-14-1_all.ipk
-Size: 61993
-SHA256sum: 2121a1649c8b144bd6ec8fe56cd2872ed4560c8d63354e6d379277e49a492238
+Filename: v2ray-geoip_2024-11-15-1_all.ipk
+Size: 61994
+SHA256sum: 35daabd3007859e6096d8d91482b4d1a70db4639d6c6284a5a9d10ba36e6eba2
 Description:  GeoIP List for V2Ray
 
 Package: v2ray-geosite
-Version: 2024-11-14-1
+Version: 2024-11-15-1
 Depends: libc
 Source: feeds/base/v2ray-geodata
 SourceName: v2ray-geosite
@@ -2027,9 +2027,9 @@ SourceDateEpoch: 1727959000
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: all
 Installed-Size: 2133483
-Filename: v2ray-geosite_2024-11-14-1_all.ipk
-Size: 2134274
-SHA256sum: 2cf7abfb9ad00642f43bbf092234b5fa386e781a637e461d05ed57101f8e16c9
+Filename: v2ray-geosite_2024-11-15-1_all.ipk
+Size: 2134272
+SHA256sum: e4a027520a0704a303778f4b87914567429b24f1bdb97cf6503d0e890c9c09b2
 Description:  Geosite List for V2Ray
 
 Package: zlib
