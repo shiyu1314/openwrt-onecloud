@@ -48,6 +48,17 @@ Size: 18064
 SHA256sum: 0c42747184abb1585c84d14a7053bf04dad0fb15105e5793fe1652ee3c12bf7e
 Description:  Firewall and Portforwarding application
 
+Package: luci-app-hd-idle
+Version: git-24.319.71435-cd1e372
+Depends: libc, hd-idle, lsblk
+Section: luci
+Architecture: all
+Installed-Size: 1542
+Filename: luci-app-hd-idle_git-24.319.71435-cd1e372_all.ipk
+Size: 2380
+SHA256sum: 07a48dd8f2dc10dba3f5050eeed76bfd8be0abc445f891dd63b2e55bca4e0496
+Description:  Hard Disk Idle Spin-Down module
+
 Package: luci-app-opkg
 Version: git-24.319.71435-cd1e372
 Depends: libc, opkg
@@ -70,6 +81,17 @@ Filename: luci-app-samba4_git-24.319.71435-cd1e372_all.ipk
 Size: 3212
 SHA256sum: 28014b4ecf4f32497b69d14dfa9685a827bb2176a9da2cf59283a19e35268945
 Description:  Network Shares - Samba 4 SMB/CIFS fileserver
+
+Package: luci-app-ttyd
+Version: git-24.319.71435-cd1e372
+Depends: libc, ttyd
+Section: luci
+Architecture: all
+Installed-Size: 2223
+Filename: luci-app-ttyd_git-24.319.71435-cd1e372_all.ipk
+Size: 3082
+SHA256sum: 50a77816cc894b4e5085c6e4d6bcb633fbe935ce07c5f55be7360c6da4421aaf
+Description:  ttyd - Command-line tool for sharing terminal over the web
 
 Package: luci-base
 Version: git-24.319.71435-cd1e372
@@ -118,6 +140,17 @@ Size: 8472
 SHA256sum: 320dcd349dbd3d5863c1b839bb2487ad9068abc9dbc2ff32d4d811f382436794
 Description:  Translation for luci-app-firewall - 简体中文 (Chinese Simplified)
 
+Package: luci-i18n-hd-idle-zh-cn
+Version: git-24.319.71435-cd1e372
+Depends: libc, luci-app-hd-idle
+Section: luci
+Architecture: all
+Installed-Size: 798
+Filename: luci-i18n-hd-idle-zh-cn_git-24.319.71435-cd1e372_all.ipk
+Size: 1571
+SHA256sum: 5cbc108d0387050c7b362c283e3131e74997d3341a2d73f43752fc5d32c0753f
+Description:  Translation for luci-app-hd-idle - 简体中文 (Chinese Simplified)
+
 Package: luci-i18n-opkg-zh-cn
 Version: git-24.319.71435-cd1e372
 Depends: libc, luci-app-opkg
@@ -140,6 +173,17 @@ Size: 2456
 SHA256sum: 5341b5fc0d52f816dfea1e1571c9fea7517447695197773f5012a804bd4e0426
 Description:  Translation for luci-app-samba4 - 简体中文 (Chinese Simplified)
 
+Package: luci-i18n-ttyd-zh-cn
+Version: git-24.319.71435-cd1e372
+Depends: libc, luci-app-ttyd
+Section: luci
+Architecture: all
+Installed-Size: 1912
+Filename: luci-i18n-ttyd-zh-cn_git-24.319.71435-cd1e372_all.ipk
+Size: 2686
+SHA256sum: 5f43a120210cd7ac851d0a8a9702b5969994767b7c07822e048533da7b31f106
+Description:  Translation for luci-app-ttyd - 简体中文 (Chinese Simplified)
+
 Package: luci-lib-base
 Version: git-24.319.71435-cd1e372
 Depends: libc, lua, luci-lib-nixio, luci-lib-ip, luci-lib-jsonc, liblucihttp-lua
@@ -150,6 +194,18 @@ Filename: luci-lib-base_git-24.319.71435-cd1e372_all.ipk
 Size: 10509
 SHA256sum: add8c60c3fface5110a996b31318399d942a99f55bcee4cc2f101bfcf8cc03d0
 Description:  basic libraries for luci
+
+Package: luci-lib-docker
+Version: git-24.319.71435-cd1e372
+Depends: libc, luci-lib-jsonc, luci-lua-runtime
+License: AGPL-3.0
+Section: luci
+Architecture: all
+Installed-Size: 3812
+Filename: luci-lib-docker_git-24.319.71435-cd1e372_all.ipk
+Size: 4686
+SHA256sum: 3df6fa001feebcc54ba95edcc51d45ee731a3c9956e4b2ad0e60f91f0e536ac2
+Description:  Docker Engine API for LuCI
 
 Package: luci-lib-ip
 Version: git-24.319.71435-cd1e372
@@ -162,6 +218,17 @@ Filename: luci-lib-ip_git-24.319.71435-cd1e372_arm_cortex-a5_neon-vfpv4.ipk
 Size: 11272
 SHA256sum: 8d0efc3e725c532e6917b5a9b44377da32609e5cc99f78fc7de5c742af7fa2cb
 Description:  Lua library for IP calculation and routing information
+
+Package: luci-lib-ipkg
+Version: git-24.319.71435-cd1e372
+Depends: libc, luci-base, luci-lua-runtime
+Section: luci
+Architecture: all
+Installed-Size: 2066
+Filename: luci-lib-ipkg_git-24.319.71435-cd1e372_all.ipk
+Size: 2918
+SHA256sum: 69958b269db53bf6bdfb9fe50629318917e542d1512ce3e1ebe25dbdabb554d4
+Description:  Legacy opkg interface class
 
 Package: luci-lib-jsonc
 Version: git-24.319.71435-cd1e372
