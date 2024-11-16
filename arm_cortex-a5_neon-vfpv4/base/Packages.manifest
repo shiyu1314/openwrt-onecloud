@@ -8,10 +8,10 @@ Section: net
 SourceDateEpoch: 1731416083
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 26619217
+Installed-Size: 26617907
 Filename: alist_3.39.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26530566
-SHA256sum: 9cf71506debc87aea5a4cd8d41839972f11943a8eb63a1721b3b4fd143530ad2
+Size: 26529208
+SHA256sum: 88ee371a13fdb8855b58f96c7af56ec11a3da9b5f08e8c9d184d20cd31bb5fb7
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -37,13 +37,13 @@ Depends: libc, luci-app-samba4, wsdd2
 Source: feeds/base/emortal/autosamba
 SourceName: autosamba
 Section: opt
-SourceDateEpoch: 1731702108
+SourceDateEpoch: 1731788248
 Maintainer: Lean
 Architecture: all
-Installed-Size: 1176
+Installed-Size: 1175
 Filename: autosamba_1-12_all.ipk
-Size: 1904
-SHA256sum: 8e32762184b97a62e1508064f81fe0303c30a1481b4843cd9f3610999410099b
+Size: 1900
+SHA256sum: b20eabeef61c30eebcbf0a9e2274ef094d230a6e62b9b5a0aabfcd2480a3d4ad
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
@@ -81,8 +81,8 @@ Maintainer: Felix Fietkau <nbd@nbd.name>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 238521
 Filename: busybox_1.36.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 238726
-SHA256sum: cbce98fab0ef0101136417549e3fd93732f364157d7650a9d89e8c8ffc6f39a5
+Size: 238742
+SHA256sum: f26445c64708ba2bd2491540943f8e5eae83f35020e28c81bc596f1bde66f0cf
 Description:  The Swiss Army Knife of embedded Linux.
  It slices, it dices, it makes Julian Fries.
 
@@ -395,10 +395,10 @@ ABIVersion: 1
 CPE-ID: cpe:/a:elfutils_project:elfutils
 Maintainer: Luiz Angelo Daros de Luca <luizluca@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 38745
+Installed-Size: 38746
 Filename: libelf1_0.189-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 39647
-SHA256sum: 0a41b5ec9f1299f0806b2142d00682fc2956edaef19734ae842642384f13bc2e
+Size: 39653
+SHA256sum: 22565a1c62e54623d79367084bb5933db0a514cc3728593f3aa36d52aa2d0396
 Description:  ELF manipulation libraries (libelf)
 
 Package: libext2fs2
@@ -894,10 +894,10 @@ ABIVersion: 3
 CPE-ID: cpe:/a:openssl:openssl
 Maintainer: Eneas U de Queiroz <cotequeiroz@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 1695577
+Installed-Size: 1695578
 Filename: libopenssl3_3.0.15-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1682375
-SHA256sum: d6423400efb003b0d9be3547196ee0952f25d3a96fbb25ed63e8e82e82713735
+Size: 1682376
+SHA256sum: d86f6432e1d3b38d6a088f87264a5f7b9da8a821526555715bb65e016062cdb3
 Description:  The OpenSSL Project is a collaborative effort to develop a robust,
  commercial-grade, full-featured, and Open Source toolkit implementing the
  Transport Layer Security (TLS) protocol as well as a full-strength
@@ -1404,10 +1404,10 @@ Section: net
 SourceDateEpoch: 1728498045
 Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 6259994
+Installed-Size: 6260873
 Filename: mosdns_5.3.3-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 6250651
-SHA256sum: cb59f85e2e0c4e7b5990e90f2bcabfabfdb357425eb6d3dc00502081a03a8159
+Size: 6251687
+SHA256sum: 2a2db2d1bbe874024eb331ca80bc6ea4fac967d871a8fa8ec15dc18a2164aeeb
 Description:  A plug-in DNS forwarder/splitter
 
 Package: netifd
@@ -1992,14 +1992,14 @@ Section: utils
 SourceDateEpoch: 1728498045
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 2843870
+Installed-Size: 2844376
 Filename: v2dat_2022-12-15-47b8ee51-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 2839279
-SHA256sum: f4f2a061b11a48d3dc65fde698b6b3dcfbe4f86d757872052d52a9382bb34629
+Size: 2839766
+SHA256sum: 73c4e498d41739e161cb10a6237f3bff5197fa2fd29dc4139ca4ffc5b04a9014
 Description:  V2ray geo/ip data unpack tools
 
 Package: v2ray-geoip
-Version: 2024-11-15-1
+Version: 2024-11-16-1
 Depends: libc
 Source: feeds/base/v2ray-geodata
 SourceName: v2ray-geoip
@@ -2010,13 +2010,13 @@ SourceDateEpoch: 1727959000
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: all
 Installed-Size: 63947
-Filename: v2ray-geoip_2024-11-15-1_all.ipk
+Filename: v2ray-geoip_2024-11-16-1_all.ipk
 Size: 61994
-SHA256sum: 35daabd3007859e6096d8d91482b4d1a70db4639d6c6284a5a9d10ba36e6eba2
+SHA256sum: 5720efd9db96ff59c7a8488fa4b9a1f2aec876e7e1568740eabfb0dc66790102
 Description:  GeoIP List for V2Ray
 
 Package: v2ray-geosite
-Version: 2024-11-15-1
+Version: 2024-11-16-1
 Depends: libc
 Source: feeds/base/v2ray-geodata
 SourceName: v2ray-geosite
@@ -2026,10 +2026,10 @@ Section: net
 SourceDateEpoch: 1727959000
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: all
-Installed-Size: 2133483
-Filename: v2ray-geosite_2024-11-15-1_all.ipk
-Size: 2134272
-SHA256sum: e4a027520a0704a303778f4b87914567429b24f1bdb97cf6503d0e890c9c09b2
+Installed-Size: 2136218
+Filename: v2ray-geosite_2024-11-16-1_all.ipk
+Size: 2136742
+SHA256sum: a3d6e8ab476a3b0178a654a18ec3a5ae0a18dd9c8eeadee130ab789a75755c97
 Description:  Geosite List for V2Ray
 
 Package: zlib

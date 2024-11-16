@@ -1,30 +1,30 @@
 Package: luci-app-mihomo
-Version: 1.11.0
+Version: 1.11.1
 Depends: libc, luci-base, mihomo
 Source: feeds/mihomo/luci-app-mihomo
 SourceName: luci-app-mihomo
 Section: luci
-SourceDateEpoch: 1731636121
+SourceDateEpoch: 1731769926
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 6755
-Filename: luci-app-mihomo_1.11.0_all.ipk
-Size: 7589
-SHA256sum: b75d042d950ac268d36e3e8ccf96f4a945ff50077ccbeb86ce405a8e6a8d47d1
+Installed-Size: 6757
+Filename: luci-app-mihomo_1.11.1_all.ipk
+Size: 7593
+SHA256sum: 7ae216780e7830f2d76f67e1735bb4da034f35907632b2f56d76dc0b1b5da4ab
 Description:  LuCI Support for mihomo
 
 Package: luci-i18n-mihomo-zh-cn
-Version: git-24.320.07321-305ba26
+Version: git-24.321.54726-bc20188
 Depends: libc, luci-app-mihomo
 Source: feeds/mihomo/luci-app-mihomo
 SourceName: luci-i18n-mihomo-zh-cn
 Section: luci
-SourceDateEpoch: 1731636121
+SourceDateEpoch: 1731769926
 Architecture: all
-Installed-Size: 2938
-Filename: luci-i18n-mihomo-zh-cn_git-24.320.07321-305ba26_all.ipk
-Size: 3671
-SHA256sum: 01905fb6a7fd910125d572a1c6a5f9b629e08cee739c5fcdde05a3cd23862f63
+Installed-Size: 2941
+Filename: luci-i18n-mihomo-zh-cn_git-24.321.54726-bc20188_all.ipk
+Size: 3672
+SHA256sum: cab3032529dd6f70c4e4e1f18f6fc83cbb67f2c5c8a3d59880683b74fd94c894
 Description:  Translation for luci-app-mihomo - 简体中文 (Chinese Simplified)
 
 Package: mihomo
@@ -35,12 +35,12 @@ SourceName: mihomo
 License: MIT
 Section: net
 Require-User: root:mihomo=7890
-SourceDateEpoch: 1731636121
+SourceDateEpoch: 1731769926
 Maintainer: Joseph Mory <morytyann@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 10214708
+Installed-Size: 10214583
 Filename: mihomo_2024-11-14-de19f927-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 10198132
-SHA256sum: 26680dfddb25254fe20e75c493d4ee2b14a8ea06f5c722fed20c5a5c3020246e
+Size: 10197719
+SHA256sum: 1ae7ff40c6040e9e11f2e92a5c51483df1d978a6859adf0a831255414d1d5ad5
 Description:  A rule based proxy in Go.
 

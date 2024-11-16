@@ -3,10 +3,10 @@ Version: 42
 Depends: libc
 Section: opt
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 1259
+Installed-Size: 1258
 Filename: autocore_42_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1974
-SHA256sum: c21339cd0397c36bbeb13d167bd499d218bc7132fd09072161bbddb574a84e8a
+Size: 1961
+SHA256sum: 74e33186dd7be21a6cdc2571dc9e143a9ba8ed2e117e175bd6516d5c059dfcb0
 Description:  auto core loadbalance script.
 
 Package: automount
@@ -14,22 +14,22 @@ Version: 10
 Depends: libc, block-mount, e2fsprogs, kmod-usb-storage, kmod-usb-storage-extras, kmod-usb-storage-uas, kmod-fs-ext4, kmod-fs-exfat, kmod-fs-vfat, ntfs3-mount
 Section: opt
 Architecture: all
-Installed-Size: 832
+Installed-Size: 831
 Filename: automount_10_all.ipk
-Size: 1589
-SHA256sum: 84e800a4ae5fbb62d5812d9c4e59fa9e5444d60f6dad12b5e01e40a33612e361
+Size: 1585
+SHA256sum: 43b06a15a2e1f121630dc12b5a6386beb3c975613e0a5f9933202c2898fb79c4
 Description:  Mount autoconfig hotplug script.
 
 Package: base-files
-Version: 1563-r24133-33b45c0a0e
+Version: 1563-r24138-cd9998ef1b
 Depends: libc, netifd, jsonfilter, usign, openwrt-keyring, fstools, fwtool
 License: GPL-2.0
 Section: base
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 45589
-Filename: base-files_1563-r24133-33b45c0a0e_arm_cortex-a5_neon-vfpv4.ipk
-Size: 46561
-SHA256sum: 5216b13adb8e46a82c04098bbf928a91113a5fe838a45b30c5acc3cb667d656a
+Installed-Size: 45594
+Filename: base-files_1563-r24138-cd9998ef1b_arm_cortex-a5_neon-vfpv4.ipk
+Size: 46563
+SHA256sum: 727e3103b58f1b78fa428b3a79f12f6dd451ca72d6373ff6dce9368802c1cbb9
 Description:  This package contains a base filesystem and system scripts for OpenWrt.
 
 Package: block-mount
@@ -1411,10 +1411,10 @@ Depends: libc, kmod-fs-ntfs3
 Conflicts: ntfs-3g
 Section: utils
 Architecture: all
-Installed-Size: 195
+Installed-Size: 194
 Filename: ntfs3-mount_10_all.ipk
-Size: 899
-SHA256sum: 8982fb7f98aa4575562d2dcec07550b514b4a5be60037285eca268a12a3bce8d
+Size: 890
+SHA256sum: 9e56c4701200456068b86e4de24aea33b4ee2d7d9dc70813dea10bf1a5c9310e
 Description:  NTFS mount script for Paragon NTFS3 driver
 
 Package: xtables-nft
