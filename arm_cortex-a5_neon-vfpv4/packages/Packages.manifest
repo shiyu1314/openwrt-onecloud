@@ -703,10 +703,10 @@ SourceDateEpoch: 1724545076
 CPE-ID: cpe:/a:nginx:nginx
 Maintainer: Thomas Heil <heil@terminal-consulting.de> Ansuel Smith <ansuelsmth@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 730
+Installed-Size: 844
 Filename: nginx-mod-luci_1.26.2-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1591
-SHA256sum: 9a0daab9936b20ed58b9c7b8a0e7f895ee71f5d176c86acce362b2d412ed7ba2
+Size: 1710
+SHA256sum: 73d3e5aa9b4d8937e069fdd8e3f8b9a917ca46d2726d4027b69511327b82e704
 Description:  Support file for LuCI in nginx. Include custom nginx configuration, autostart script for uwsgi.
 
 Package: nginx-ssl-util
