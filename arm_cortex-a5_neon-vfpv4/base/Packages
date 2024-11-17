@@ -1,13 +1,13 @@
 Package: alist
-Version: 3.39.1-1
+Version: 3.39.4-1
 Depends: libc, ca-bundle
 License: GPL-3.0
 Section: net
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 26617905
-Filename: alist_3.39.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26528987
-SHA256sum: 06aa8d7b7794d215ff2dbd7b9f994f64450874b1ab9cfa3571f9b18a1f261edb
+Installed-Size: 26624890
+Filename: alist_3.39.4-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 26534539
+SHA256sum: b878fd56316456dec63517cbc33e4c9194f30e59748019acfcd0958278bfb1b5
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -27,10 +27,10 @@ Version: 1-12
 Depends: libc, luci-app-samba4, wsdd2
 Section: opt
 Architecture: all
-Installed-Size: 1175
+Installed-Size: 1176
 Filename: autosamba_1-12_all.ipk
-Size: 1909
-SHA256sum: d03e6cb2634156c9bb9855ecacca5519217c0cf9289b319af8b0ef33d46888e7
+Size: 1898
+SHA256sum: fe6251985b7ffca6dcd00d18d1a726b0e5dd3551424ba6468565075a6504007d
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid

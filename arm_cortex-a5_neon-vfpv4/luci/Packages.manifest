@@ -168,10 +168,10 @@ License: MIT
 Section: luci
 SourceDateEpoch: 1731752580
 Architecture: all
-Installed-Size: 53933
+Installed-Size: 54972
 Filename: luci-i18n-base-zh-cn_git-24.321.37380-2756dc1_all.ipk
-Size: 54492
-SHA256sum: ee0ef64ddbdcfa9fab0468ae25890cb628500841c274156e223a1b6ff81355f6
+Size: 55541
+SHA256sum: e811adc306782a608a570ae497f72e8632b30560d9a6fcd22fe3013787333db5
 Description:  Translation for luci-base - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-firewall-zh-cn
