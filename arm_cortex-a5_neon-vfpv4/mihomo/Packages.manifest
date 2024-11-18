@@ -40,7 +40,7 @@ Maintainer: Joseph Mory <morytyann@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 10214596
 Filename: mihomo_2024-11-14-de19f927-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 10197542
-SHA256sum: 8b0fa643949a10adb05144622b125e493491a11b7eccd23735b327a0fe957420
+Size: 10197553
+SHA256sum: fbcc17dcc143d454cff47412d7b5220c7b3735716dcfd0c2f6cbe003abcd433f
 Description:  A rule based proxy in Go.
 

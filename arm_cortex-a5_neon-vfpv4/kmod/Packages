@@ -3,10 +3,10 @@ Version: 42
 Depends: libc
 Section: opt
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 1257
+Installed-Size: 1258
 Filename: autocore_42_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1968
-SHA256sum: d6d94a3f22c266df2e2ebe7cd42e4ebf763f6bfa0ab67be58843b01797fdad93
+Size: 1965
+SHA256sum: 99835d0bd07bc32d05d5947b57a30bf65335e10ad948c787e121fbf0e05518b8
 Description:  auto core loadbalance script.
 
 Package: automount
@@ -14,10 +14,10 @@ Version: 10
 Depends: libc, block-mount, e2fsprogs, kmod-usb-storage, kmod-usb-storage-extras, kmod-usb-storage-uas, kmod-fs-ext4, kmod-fs-exfat, kmod-fs-vfat, ntfs3-mount
 Section: opt
 Architecture: all
-Installed-Size: 832
+Installed-Size: 831
 Filename: automount_10_all.ipk
-Size: 1590
-SHA256sum: 44fa3edc2b7f6d26cb6c387585036902a5ec0889a6b269ecb618a2da76eff096
+Size: 1583
+SHA256sum: 58c075eed78b30b014cc7394b0dd0f6e59601a487c0eac0453fe1f75813f6987
 Description:  Mount autoconfig hotplug script.
 
 Package: base-files
@@ -26,10 +26,10 @@ Depends: libc, netifd, jsonfilter, usign, openwrt-keyring, fstools, fwtool
 License: GPL-2.0
 Section: base
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 45588
+Installed-Size: 45592
 Filename: base-files_1563-r24138-cd9998ef1b_arm_cortex-a5_neon-vfpv4.ipk
-Size: 46551
-SHA256sum: bf9b0fc170fa00a0e2be0d2e0c000203c5f52c1dbe87aa777633cf2bc0185d36
+Size: 46555
+SHA256sum: fba44ba56f5557d3cd54b7c0c12fbdcad960ceed8d598bd97a1e24f0b75f62a7
 Description:  This package contains a base filesystem and system scripts for OpenWrt.
 
 Package: block-mount
@@ -1411,10 +1411,10 @@ Depends: libc, kmod-fs-ntfs3
 Conflicts: ntfs-3g
 Section: utils
 Architecture: all
-Installed-Size: 194
+Installed-Size: 195
 Filename: ntfs3-mount_10_all.ipk
-Size: 892
-SHA256sum: fe21922285ed4731d43e7dc69b1237801525563df8069990f5001a52544d50dd
+Size: 898
+SHA256sum: f4c3350f4ac1c645092ebdb495b80c98491bdf1bd5425d9e7c31692da47d3a79
 Description:  NTFS mount script for Paragon NTFS3 driver
 
 Package: xtables-nft
