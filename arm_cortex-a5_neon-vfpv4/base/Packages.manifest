@@ -8,10 +8,10 @@ Section: net
 SourceDateEpoch: 1732240206
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 26628666
+Installed-Size: 26628667
 Filename: alist_3.40.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26537632
-SHA256sum: d4cf1c6b15f70bb62cd546e71e85b642932dbcd5e4058590d1da1da57dded8d6
+Size: 26537619
+SHA256sum: 9420fa70d7527ca2464259a99c74e4884473b2bd8eab7c62c60abc8d6b4f1468
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -37,13 +37,13 @@ Depends: libc, luci-app-samba4, wsdd2
 Source: feeds/base/emortal/autosamba
 SourceName: autosamba
 Section: opt
-SourceDateEpoch: 1732325922
+SourceDateEpoch: 1732393236
 Maintainer: Lean
 Architecture: all
-Installed-Size: 1176
+Installed-Size: 1175
 Filename: autosamba_1-12_all.ipk
-Size: 1906
-SHA256sum: de4a02eb34eed5337c138493bd34c4026881bd4a35b34c8f6cb4a87cb9f8742f
+Size: 1900
+SHA256sum: 858047b00a4a3e3c7e5e399f739969d8c29ccf26f41a4d9fc0a166a1bfdc1f46
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
