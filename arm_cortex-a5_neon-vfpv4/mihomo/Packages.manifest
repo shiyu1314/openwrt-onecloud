@@ -1,46 +1,46 @@
 Package: luci-app-mihomo
-Version: 1.12.0
+Version: 1.13.0
 Depends: libc, luci-base, mihomo
 Source: feeds/mihomo/luci-app-mihomo
 SourceName: luci-app-mihomo
 Section: luci
-SourceDateEpoch: 1732107628
+SourceDateEpoch: 1732276438
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 6922
-Filename: luci-app-mihomo_1.12.0_all.ipk
-Size: 7765
-SHA256sum: 0a7cb89877f03ebe953ac1bdd18ba886b5cfd451164df62c9c542b904d60b821
+Installed-Size: 7024
+Filename: luci-app-mihomo_1.13.0_all.ipk
+Size: 7858
+SHA256sum: 4b8b5940eb5213cee3688305ff415fd754f0e595c9c19c282f44c2840ce3e36d
 Description:  LuCI Support for mihomo
 
 Package: luci-i18n-mihomo-zh-cn
-Version: git-24.325.46828-709520c
+Version: git-24.327.42838-6682e68
 Depends: libc, luci-app-mihomo
 Source: feeds/mihomo/luci-app-mihomo
 SourceName: luci-i18n-mihomo-zh-cn
 Section: luci
-SourceDateEpoch: 1732107628
+SourceDateEpoch: 1732276438
 Architecture: all
-Installed-Size: 3067
-Filename: luci-i18n-mihomo-zh-cn_git-24.325.46828-709520c_all.ipk
-Size: 3793
-SHA256sum: 419a0da7b0586095b1e9f8d6908f3364638538918e316487c2bbc11d7cc49705
+Installed-Size: 3139
+Filename: luci-i18n-mihomo-zh-cn_git-24.327.42838-6682e68_all.ipk
+Size: 3868
+SHA256sum: b399ef900142dd3a98ad26c7b07ec7a08f1aa441d96db2f2ab8fe8c9c78911d8
 Description:  Translation for luci-app-mihomo - 简体中文 (Chinese Simplified)
 
 Package: mihomo
-Version: 2024-11-14-de19f927-2
+Version: 2024-11-14-de19f927-3
 Depends: libc, ca-bundle, curl, yq, firewall4, ip-full, kmod-inet-diag, kmod-nft-tproxy, kmod-tun
 Source: feeds/mihomo/mihomo
 SourceName: mihomo
 License: MIT
 Section: net
 Require-User: root:mihomo=7890
-SourceDateEpoch: 1732107628
+SourceDateEpoch: 1732276438
 Maintainer: Joseph Mory <morytyann@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 10213952
-Filename: mihomo_2024-11-14-de19f927-2_arm_cortex-a5_neon-vfpv4.ipk
-Size: 10197127
-SHA256sum: 5a471ffb2edb568243d638109c358aa0614d703205d55b7b39fcfb8fcba344a0
+Installed-Size: 10213278
+Filename: mihomo_2024-11-14-de19f927-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 10196203
+SHA256sum: c6f9a12f838668308e22fcac48297765ec8a75b10f731fd3a9f12a31adb5451e
 Description:  A rule based proxy in Go.
 
