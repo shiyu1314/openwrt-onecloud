@@ -11,10 +11,10 @@ SourceDateEpoch: 1702915356
 CPE-ID: cpe:/a:tatsuhiro_tsujikawa:aria2
 Maintainer: Imre Kaloz <kaloz@openwrt.org>, Hsing-Wang Liao <kuoruan@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 563776
+Installed-Size: 563777
 Filename: aria2_1.37.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 563763
-SHA256sum: c07cb2f2a702ab7fcf433ef1bc8438e8ac609f02e234544dd52d7406347ed3aa
+Size: 563766
+SHA256sum: 5fee65a9740e574c0f930bddd425d8fc063c96cd237a1612096cdc4e05a4e2e9
 Description:  aria2 is a lightweight multi-protocol & multi-source command-line download
  utility
 
@@ -137,10 +137,10 @@ SourceDateEpoch: 1732284499
 CPE-ID: cpe:/a:linuxfoundation:containerd
 Maintainer: Gerard Ryan <G.M0N3Y.2503@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 36783237
+Installed-Size: 36780964
 Filename: containerd_1.7.22-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 36481442
-SHA256sum: a4bb08d6cab8758b4aeee6e98e23b4ccca1b720558a3db7410d3ccf8f68969c0
+Size: 36478983
+SHA256sum: 6590aba3f9dd7d34e4f90f4f3701e871af6b3018805988a875fb31c3d4108a67
 Description:  An industry-standard container runtime with an emphasis on simplicity, robustness and portability
 
 Package: coreutils-stty
@@ -227,10 +227,10 @@ Section: utils
 SourceDateEpoch: 1732284499
 Maintainer: Gerard Ryan <G.M0N3Y.2503@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 9104116
+Installed-Size: 9104111
 Filename: docker_27.3.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 9086932
-SHA256sum: da8389a32011d548c75a2e5827801e2f5d1b00a7b79dc09bda296edcaa841960
+Size: 9087059
+SHA256sum: 9be8b438e6738dfa664fd215c3bebfcc24a84b8ef228751604e4c11ffa098c9b
 Description:  The CLI used in the Docker CE and Docker EE products.
 
 Package: dockerd
@@ -245,10 +245,10 @@ Require-User: docker:docker
 SourceDateEpoch: 1732284499
 Maintainer: Gerard Ryan <G.M0N3Y.2503@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 20821009
+Installed-Size: 20821169
 Filename: dockerd_27.3.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 20779862
-SHA256sum: a173f38b6342550e782a0d033d25e8949a6fffafe69ab0be97302e9fe934c4df
+Size: 20780238
+SHA256sum: d0fcd9accd3e8f7e9f85d53361f5bfa65c9d70b312eace1436133ba7b5d1c22a
 Description:  The Docker CE Engine.
 
 Package: fuse-utils
@@ -686,10 +686,10 @@ SourceDateEpoch: 1724545076
 CPE-ID: cpe:/a:nginx:nginx
 Maintainer: Thomas Heil <heil@terminal-consulting.de> Ansuel Smith <ansuelsmth@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 982892
+Installed-Size: 982894
 Filename: nginx-all-module_1.26.2-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 965810
-SHA256sum: 30361b89960433e652396e6cf5c9050ed9047f07749021d7c87ef5849438da69
+Size: 965812
+SHA256sum: 638645b7447699b6d22eab88766a228794c909511d24b6a6f5a574f8589917f7
 Description:  nginx is an HTTP and reverse proxy server, as well as a mail proxy server, written by Igor Sysoev. This variant is compiled with ALL module selected.
 
 Package: nginx-mod-luci
@@ -833,10 +833,10 @@ SourceDateEpoch: 1732284499
 CPE-ID: cpe:/a:linuxfoundation:runc
 Maintainer: Gerard Ryan <G.M0N3Y.2503@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 3584421
+Installed-Size: 3584427
 Filename: runc_1.1.14-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 3555443
-SHA256sum: 539d6f1c2c45adb4b32f39752d92271631435f7844b95d6e6c5f5ef9c827a521
+Size: 3555362
+SHA256sum: 23637f1006a34b708e11a2f9ea118026a57ce8bc4af56ac9fd3cbc74def4ffc4
 Description:  runc is a CLI tool for spawning and running containers according to the OCI specification.
 
 Package: samba4-libs
@@ -850,10 +850,10 @@ Section: net
 SourceDateEpoch: 1732284499
 CPE-ID: cpe:/a:samba:samba
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 9118643
+Installed-Size: 9118545
 Filename: samba4-libs_4.18.8-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 9016750
-SHA256sum: 5421430544652ac3ded31804f8a1e3c48a60f10527c321ebc039c8828ebbd16c
+Size: 9015257
+SHA256sum: 36b738254e97f0b8b6a644224fac5d6c6866bdd485a3d1e87e7da7a48ebe9145
 Description:  Samba 4.18.8 libs
 
 Package: samba4-server
@@ -868,10 +868,10 @@ Section: net
 SourceDateEpoch: 1732284499
 CPE-ID: cpe:/a:samba:samba
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 247027
+Installed-Size: 247025
 Filename: samba4-server_4.18.8-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 247161
-SHA256sum: f04596060ea2432e23fc615d331386b2ff8ae32434fbfc1be98967a195647772
+Size: 247035
+SHA256sum: 33cb0907eafa8a551cdccec54694ec344e6e64be89cbff0f3f19473223f22d33
 Description:  installs: smbd (nmbd) smbpasswd pdbedit testparm (nmblookup) (smbcacls sharesec)
  (samba samba-tool ntlm_auth samba-gpupdate samba_dnsupdate samba_kcc samba_spnupdate samba_upgradedns samba_downgrade_db)
  
@@ -892,8 +892,8 @@ Maintainer: Maxim Storchak <m.storchak@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 219125
 Filename: smartmontools_7.3-2_arm_cortex-a5_neon-vfpv4.ipk
-Size: 219780
-SHA256sum: 9322c538b6429a021af29a33979a66621f0fe1fffbbe875d662a6d87a6fc9b2d
+Size: 219783
+SHA256sum: 95e7512bdeb47d05427a501530d1a0288132c82e3f3bb0d2b3bfd59f0114c648
 Description:  smartmontools contains utility programs (smartctl) to
  control/monitor storage systems using the Self-Monitoring, Analysis
  and Reporting Technology System (S.M.A.R.T.) built into most modern
@@ -1002,8 +1002,8 @@ Maintainer: Christian Marangi <ansuelsmth@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 300973
 Filename: uwsgi_2.0.26-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 301316
-SHA256sum: 5105005c8c19bfc3c8069da432b706e75756acfce4af257e0a93ae72b6253af4
+Size: 301326
+SHA256sum: 5d04a0ae9a591214820788267267cfd433cdcc6c791dd4cb57e32a7d57d19581
 Description:  The uWSGI project (to be used together with nginx or nginx-ssl).
 
 Package: wsdd2
@@ -1040,7 +1040,7 @@ Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 3903175
 Filename: yq_4.44.3-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 3897604
-SHA256sum: 5a0938a891742354f43bf46cba042b6bb4e3a35c8268dd79bf609b3cc4d556dd
+Size: 3897480
+SHA256sum: 4adc43ea6bf71d2f9243c2aac18018934f9f75316f581441bf3e4fc2bca3812d
 Description:  The aim of the project is to be the jq or sed of yaml files.
 

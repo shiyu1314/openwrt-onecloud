@@ -4,12 +4,12 @@ Depends: libc
 Source: feeds/base/emortal/autocore
 SourceName: autocore
 Section: opt
-SourceDateEpoch: 1732393236
+SourceDateEpoch: 1732479488
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 1256
+Installed-Size: 1254
 Filename: autocore_42_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1963
-SHA256sum: 75f8edbed53222ee4a7b011e777d62f035d882b4d1f361cd504ba8c599656043
+Size: 1956
+SHA256sum: 5b08ed1b87f888454e04e5607ae05aa86e29472af80e0500e43eeabdf5d19c8d
 Description:  auto core loadbalance script.
 
 Package: automount
@@ -18,17 +18,17 @@ Depends: libc, block-mount, e2fsprogs, kmod-usb-storage, kmod-usb-storage-extras
 Source: feeds/base/emortal/automount
 SourceName: automount
 Section: opt
-SourceDateEpoch: 1732393236
+SourceDateEpoch: 1732479488
 Maintainer: Lean
 Architecture: all
-Installed-Size: 831
+Installed-Size: 829
 Filename: automount_10_all.ipk
-Size: 1587
-SHA256sum: f1a8e91e8f58a7d4ab92347d3d3657a0bc8f85f9c2681e353568238dd4231b29
+Size: 1581
+SHA256sum: 4c0d862011e8f28cf24a2b544c05451f023d4e67c1f71084a378695a39daf8f6
 Description:  Mount autoconfig hotplug script.
 
 Package: base-files
-Version: 1563-r24138-cd9998ef1b
+Version: 1563-r24143-a281c02288
 Depends: libc, netifd, jsonfilter, usign, openwrt-keyring, fstools, fwtool
 Source: feeds/base/base-files
 SourceName: base-files
@@ -36,10 +36,10 @@ License: GPL-2.0
 Section: base
 SourceDateEpoch: 1727132020
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 45592
-Filename: base-files_1563-r24138-cd9998ef1b_arm_cortex-a5_neon-vfpv4.ipk
-Size: 46562
-SHA256sum: f440689bec696b18e082e38e680e41aa2630d108474194e51078938abe8c50bd
+Installed-Size: 45587
+Filename: base-files_1563-r24143-a281c02288_arm_cortex-a5_neon-vfpv4.ipk
+Size: 46554
+SHA256sum: ce743692fc3861c9069e31b1af5be8f24f7628c457470313a7b1e1bf858bf85e
 Description:  This package contains a base filesystem and system scripts for OpenWrt.
 
 Package: block-mount
@@ -1844,12 +1844,12 @@ Conflicts: ntfs-3g
 Source: feeds/base/emortal/automount
 SourceName: ntfs3-mount
 Section: utils
-SourceDateEpoch: 1732393236
+SourceDateEpoch: 1732479488
 Architecture: all
-Installed-Size: 195
+Installed-Size: 193
 Filename: ntfs3-mount_10_all.ipk
-Size: 892
-SHA256sum: 874f7094b3e8ed559941de6649550de073121c024b68726bf072f29cd70ae73e
+Size: 888
+SHA256sum: 22a7c4c501a0e763edcae6ffaef0dc668b2718c92b6344b9220bc2ba013600cb
 Description:  NTFS mount script for Paragon NTFS3 driver
 
 Package: xtables-nft

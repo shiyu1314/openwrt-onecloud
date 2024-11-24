@@ -4,10 +4,10 @@ Depends: libc, ca-bundle
 License: GPL-3.0
 Section: net
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 26628667
+Installed-Size: 26628647
 Filename: alist_3.40.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26537619
-SHA256sum: 9420fa70d7527ca2464259a99c74e4884473b2bd8eab7c62c60abc8d6b4f1468
+Size: 26537191
+SHA256sum: 575c365e38a8afb64fba0cb5f08874aa3b0d70dc1afa3104a3a613e2a84e2b4d
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -27,10 +27,10 @@ Version: 1-12
 Depends: libc, luci-app-samba4, wsdd2
 Section: opt
 Architecture: all
-Installed-Size: 1175
+Installed-Size: 1173
 Filename: autosamba_1-12_all.ipk
-Size: 1900
-SHA256sum: 858047b00a4a3e3c7e5e399f739969d8c29ccf26f41a4d9fc0a166a1bfdc1f46
+Size: 1895
+SHA256sum: e9ef0d22d42437b4275d101678259986fafdd3a4c56123c3b7fdc7b880c03bf2
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
@@ -58,8 +58,8 @@ Essential: yes
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 238521
 Filename: busybox_1.36.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 238742
-SHA256sum: f26445c64708ba2bd2491540943f8e5eae83f35020e28c81bc596f1bde66f0cf
+Size: 238743
+SHA256sum: e306d9dc3bfd6a5bbfb218c71a4cfd4c7ee647fbfb2849f6ecde656592270b08
 Description:  The Swiss Army Knife of embedded Linux.
  It slices, it dices, it makes Julian Fries.
 
@@ -300,10 +300,10 @@ Section: libs
 ABIVersion: 1
 CPE-ID: cpe:/a:elfutils_project:elfutils
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 38746
+Installed-Size: 38745
 Filename: libelf1_0.189-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 39653
-SHA256sum: 22565a1c62e54623d79367084bb5933db0a514cc3728593f3aa36d52aa2d0396
+Size: 39618
+SHA256sum: e5289b3ebef2333fb77f579e7250753a1b70fe69bee3d86d545f9717efbb2cca
 Description:  ELF manipulation libraries (libelf)
 
 Package: libext2fs2
@@ -694,8 +694,8 @@ CPE-ID: cpe:/a:openssl:openssl
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 1695578
 Filename: libopenssl3_3.0.15-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1682376
-SHA256sum: d86f6432e1d3b38d6a088f87264a5f7b9da8a821526555715bb65e016062cdb3
+Size: 1682338
+SHA256sum: c9c502a4900a9a879a8e3b3a5a4980468596bca2d6d424e1ee087331d8ef83bc
 Description:  The OpenSSL Project is a collaborative effort to develop a robust,
  commercial-grade, full-featured, and Open Source toolkit implementing the
  Transport Layer Security (TLS) protocol as well as a full-strength
@@ -1087,8 +1087,8 @@ Section: net
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 6260873
 Filename: mosdns_5.3.3-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 6251687
-SHA256sum: 2a2db2d1bbe874024eb331ca80bc6ea4fac967d871a8fa8ec15dc18a2164aeeb
+Size: 6251628
+SHA256sum: cc8cdf60beb5e005f8da75a5cf1257ce51a4b63b3679ec08b98b7b7d184e2c95
 Description:  A plug-in DNS forwarder/splitter
 
 Package: netifd
@@ -1535,34 +1535,34 @@ Depends: libc
 License: GPL-3.0
 Section: utils
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 2844376
+Installed-Size: 2844374
 Filename: v2dat_2022-12-15-47b8ee51-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 2839766
-SHA256sum: 73c4e498d41739e161cb10a6237f3bff5197fa2fd29dc4139ca4ffc5b04a9014
+Size: 2839731
+SHA256sum: e98ddbf7aa7f47a8b16d09650041e9289be95107552d968cd75dd14917a20339
 Description:  V2ray geo/ip data unpack tools
 
 Package: v2ray-geoip
-Version: 2024-11-23-1
+Version: 2024-11-24-1
 Depends: libc
 License: CC-BY-SA-4.0
 Section: net
 Architecture: all
 Installed-Size: 64037
-Filename: v2ray-geoip_2024-11-23-1_all.ipk
-Size: 62131
-SHA256sum: 78e8420b02fb6e52f9aa450815832e4673a65c6646e5960e9087199a097b22b2
+Filename: v2ray-geoip_2024-11-24-1_all.ipk
+Size: 62132
+SHA256sum: f42a844aef14142e778c66040f370edda1a665fe7e75a36cb3327e193e4b03cd
 Description:  GeoIP List for V2Ray
 
 Package: v2ray-geosite
-Version: 2024-11-23-1
+Version: 2024-11-24-1
 Depends: libc
 License: GPL-3.0
 Section: net
 Architecture: all
-Installed-Size: 2135121
-Filename: v2ray-geosite_2024-11-23-1_all.ipk
-Size: 2135901
-SHA256sum: bf346f2763411ec29e32ac061f0d2f7ec1f11d67ce5db3ab635d2a566fa00272
+Installed-Size: 2138688
+Filename: v2ray-geosite_2024-11-24-1_all.ipk
+Size: 2139396
+SHA256sum: 27e50a5ea2f761c05cd2b21bbf20d431fc115a63bef297de903b7cd3d44cf3f2
 Description:  Geosite List for V2Ray
 
 Package: zlib
