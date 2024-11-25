@@ -10,8 +10,8 @@ Maintainer: sbwml <admin@cooluc.com>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 26628647
 Filename: alist_3.40.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26537191
-SHA256sum: 575c365e38a8afb64fba0cb5f08874aa3b0d70dc1afa3104a3a613e2a84e2b4d
+Size: 26537391
+SHA256sum: ab271909c539e6ab0d9504912a755051bee0e38dd1f72994985050fc97ce7536
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -37,13 +37,13 @@ Depends: libc, luci-app-samba4, wsdd2
 Source: feeds/base/emortal/autosamba
 SourceName: autosamba
 Section: opt
-SourceDateEpoch: 1732479488
+SourceDateEpoch: 1732565909
 Maintainer: Lean
 Architecture: all
-Installed-Size: 1173
+Installed-Size: 1174
 Filename: autosamba_1-12_all.ipk
-Size: 1895
-SHA256sum: e9ef0d22d42437b4275d101678259986fafdd3a4c56123c3b7fdc7b880c03bf2
+Size: 1899
+SHA256sum: 8571b5fe8883ec693de7001579cae99cc90aeb6b950badd45eee0b897bb88fdb
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
@@ -759,20 +759,20 @@ SHA256sum: 7484fe1c394da3868236f33121f0ef1894a4db0010bd882be48693a202941bfa
 Description:  nghttp3 is a thin HTTP/3 layer over an underlying QUIC stack.
 
 Package: libngtcp2
-Version: 1.9.0-1
+Version: 1.9.1-1
 Depends: libc, libnghttp3, libopenssl3
 Source: feeds/base/libs/ngtcp2
 SourceName: libngtcp2
 License: MIT
 LicenseFiles: COPYING
 Section: libs
-SourceDateEpoch: 1732017631
+SourceDateEpoch: 1732528834
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 385235
-Filename: libngtcp2_1.9.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 385813
-SHA256sum: fc7b5e9893f5c7675ba70e8399142b0e83bfd11fdc9f72c20e5c49d640d264d6
+Installed-Size: 385604
+Filename: libngtcp2_1.9.1-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 386279
+SHA256sum: be4325c78dbf7c08ce887225c0f0a9ca286af00cbbe70ee4b0b9197d8e1e2e6f
 Description:  ngtcp2 project is an effort to implement QUIC protocol which is now being discussed in IETF QUICWG for its standardization.
 
 Package: libnl-tiny1
@@ -1999,7 +1999,7 @@ SHA256sum: e98ddbf7aa7f47a8b16d09650041e9289be95107552d968cd75dd14917a20339
 Description:  V2ray geo/ip data unpack tools
 
 Package: v2ray-geoip
-Version: 2024-11-24-1
+Version: 2024-11-25-1
 Depends: libc
 Source: feeds/base/v2ray-geodata
 SourceName: v2ray-geoip
@@ -2010,13 +2010,13 @@ SourceDateEpoch: 1727959000
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: all
 Installed-Size: 64037
-Filename: v2ray-geoip_2024-11-24-1_all.ipk
+Filename: v2ray-geoip_2024-11-25-1_all.ipk
 Size: 62132
-SHA256sum: f42a844aef14142e778c66040f370edda1a665fe7e75a36cb3327e193e4b03cd
+SHA256sum: c6bc566b6b625c76ae83e4df7c555c7927470248ee97e70af95e9b5193fd2198
 Description:  GeoIP List for V2Ray
 
 Package: v2ray-geosite
-Version: 2024-11-24-1
+Version: 2024-11-25-1
 Depends: libc
 Source: feeds/base/v2ray-geodata
 SourceName: v2ray-geosite
@@ -2026,10 +2026,10 @@ Section: net
 SourceDateEpoch: 1727959000
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: all
-Installed-Size: 2138688
-Filename: v2ray-geosite_2024-11-24-1_all.ipk
-Size: 2139396
-SHA256sum: 27e50a5ea2f761c05cd2b21bbf20d431fc115a63bef297de903b7cd3d44cf3f2
+Installed-Size: 2139507
+Filename: v2ray-geosite_2024-11-25-1_all.ipk
+Size: 2140091
+SHA256sum: 6eae297fcc59e21c87ea5dd00cb6c6ab3b0ef41050cdda2a7736ef83c45b3a9b
 Description:  Geosite List for V2Ray
 
 Package: zlib
