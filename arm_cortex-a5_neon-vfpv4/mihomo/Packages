@@ -26,9 +26,9 @@ Depends: libc, ca-bundle, curl, yq, firewall4, ip-full, kmod-inet-diag, kmod-nft
 License: MIT
 Section: net
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 10226128
+Installed-Size: 10226116
 Filename: mihomo_2024-11-24-eb985b00-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 10208845
-SHA256sum: f7ae9c963d9be71a2f2ea01f593d396b94c76aba87f566b511374bd11dc5760e
+Size: 10208695
+SHA256sum: d612936d4b0d8bd922d21c70cca0ce40556e7a472c4c47012fac7b133ec44c65
 Description:  A rule based proxy in Go.
 
