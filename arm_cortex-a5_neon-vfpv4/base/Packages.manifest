@@ -10,8 +10,8 @@ Maintainer: sbwml <admin@cooluc.com>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 26628647
 Filename: alist_3.40.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26537353
-SHA256sum: a8080a79de8162a2377d9c568a98e9fb3ad08d8f5bea8fa974eb25be26bd58da
+Size: 26537224
+SHA256sum: 796461d7f2a7db592290e00e363f260ac7988b861ec7490b78f952577e557c6c
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -37,13 +37,13 @@ Depends: libc, luci-app-samba4, wsdd2
 Source: feeds/base/emortal/autosamba
 SourceName: autosamba
 Section: opt
-SourceDateEpoch: 1732652341
+SourceDateEpoch: 1732738753
 Maintainer: Lean
 Architecture: all
-Installed-Size: 1174
+Installed-Size: 1175
 Filename: autosamba_1-12_all.ipk
-Size: 1903
-SHA256sum: 4b90061efe881a6f1cc88d797893aee838152301f351097c8eb388cc06c7460f
+Size: 1904
+SHA256sum: 86969de74e91abd2b3c843427ae26dd3d4a6b2b82fee2a9489dfc12cf95fae1f
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
@@ -1999,7 +1999,7 @@ SHA256sum: e98ddbf7aa7f47a8b16d09650041e9289be95107552d968cd75dd14917a20339
 Description:  V2ray geo/ip data unpack tools
 
 Package: v2ray-geoip
-Version: 2024-11-26-1
+Version: 2024-11-27-1
 Depends: libc
 Source: feeds/base/v2ray-geodata
 SourceName: v2ray-geoip
@@ -2010,13 +2010,13 @@ SourceDateEpoch: 1727959000
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: all
 Installed-Size: 64037
-Filename: v2ray-geoip_2024-11-26-1_all.ipk
+Filename: v2ray-geoip_2024-11-27-1_all.ipk
 Size: 62132
-SHA256sum: 244a323037615016c55d1d055600a8a885791422ff4db3655708776e66c4c710
+SHA256sum: fc70170ca936369365ce278b8696233c51342fedbc66567b819cdea09567ec45
 Description:  GeoIP List for V2Ray
 
 Package: v2ray-geosite
-Version: 2024-11-26-1
+Version: 2024-11-27-1
 Depends: libc
 Source: feeds/base/v2ray-geodata
 SourceName: v2ray-geosite
@@ -2026,10 +2026,10 @@ Section: net
 SourceDateEpoch: 1727959000
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: all
-Installed-Size: 2155725
-Filename: v2ray-geosite_2024-11-26-1_all.ipk
-Size: 2156140
-SHA256sum: a39d668075a4359ba4ddc97e01f489638c9d486a5ba5f5fba17869f962a51439
+Installed-Size: 2155938
+Filename: v2ray-geosite_2024-11-27-1_all.ipk
+Size: 2156649
+SHA256sum: 6ccb7fecaf45b175ad24fac7fbf1abf4cae2b1d4ad051d229d76b4b3bb845c92
 Description:  Geosite List for V2Ray
 
 Package: zlib

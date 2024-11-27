@@ -4,12 +4,12 @@ Depends: libc
 Source: feeds/base/emortal/autocore
 SourceName: autocore
 Section: opt
-SourceDateEpoch: 1732652341
+SourceDateEpoch: 1732738753
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 1258
+Installed-Size: 1259
 Filename: autocore_42_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1959
-SHA256sum: e5d8daef6594f36a953f74426e926a604edf88aa15558b78d0dfed5a53c4aec4
+Size: 1968
+SHA256sum: 8c95735ff8d0a7d3f0bf42a574e49127e5db4fcbcf7d521d4b6eebb8ffb7d58d
 Description:  auto core loadbalance script.
 
 Package: automount
@@ -18,13 +18,13 @@ Depends: libc, block-mount, e2fsprogs, kmod-usb-storage, kmod-usb-storage-extras
 Source: feeds/base/emortal/automount
 SourceName: automount
 Section: opt
-SourceDateEpoch: 1732652341
+SourceDateEpoch: 1732738753
 Maintainer: Lean
 Architecture: all
 Installed-Size: 831
 Filename: automount_10_all.ipk
-Size: 1588
-SHA256sum: bf474b51303afb68533f30c017dcbdfec0178db64f788f161627d0cdccf3d6a6
+Size: 1583
+SHA256sum: 3da164769d3a1f2b0bec7aa0df04fdcb952620e458ff3d06052eef97aff30c57
 Description:  Mount autoconfig hotplug script.
 
 Package: base-files
@@ -36,10 +36,10 @@ License: GPL-2.0
 Section: base
 SourceDateEpoch: 1727132020
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 45589
+Installed-Size: 45592
 Filename: base-files_1563-r24143-a281c02288_arm_cortex-a5_neon-vfpv4.ipk
-Size: 46555
-SHA256sum: 616aa3e9aede0f06afb5c37d47597093d15d701ca9f93d0ec21d7600da272954
+Size: 46570
+SHA256sum: de7a05e6da2c464c933cc514f0b248f462d436c22f9401b92cf9c1044a51df9f
 Description:  This package contains a base filesystem and system scripts for OpenWrt.
 
 Package: block-mount
@@ -1844,12 +1844,12 @@ Conflicts: ntfs-3g
 Source: feeds/base/emortal/automount
 SourceName: ntfs3-mount
 Section: utils
-SourceDateEpoch: 1732652341
+SourceDateEpoch: 1732738753
 Architecture: all
-Installed-Size: 195
+Installed-Size: 194
 Filename: ntfs3-mount_10_all.ipk
-Size: 897
-SHA256sum: 386b92472ebc46617e787400a935121ca9e4ffa3c88245d92002a057094be404
+Size: 899
+SHA256sum: f700a242de1f99786a424a517ab25575688edabda115fad09f0b8ac605738ca4
 Description:  NTFS mount script for Paragon NTFS3 driver
 
 Package: xtables-nft

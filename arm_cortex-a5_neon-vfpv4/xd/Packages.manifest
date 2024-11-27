@@ -1,16 +1,16 @@
 Package: luci-app-adguardhome
-Version: git-24.294.29298-aa10ba5
+Version: git-24.332.30301-4a48c56
 Depends: libc, curl, luci-lua-runtime
 Source: feeds/xd/luci-app-adguardhome
 SourceName: luci-app-adguardhome
 Section: luci
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 90179
-Filename: luci-app-adguardhome_git-24.294.29298-aa10ba5_all.ipk
-Size: 91338
-SHA256sum: 5884e49d15e564da89fb90080e091e62d818febbf9503f3731b88407e16528dc
+Installed-Size: 90175
+Filename: luci-app-adguardhome_git-24.332.30301-4a48c56_all.ipk
+Size: 91332
+SHA256sum: 3234819e2e51085205905c81c39386f6267c3505c614cb1536a0c232baf4dc4f
 Description:  LuCI support for adguardhome
 
 Package: luci-app-diskman
@@ -20,13 +20,13 @@ Source: feeds/xd/luci-app-diskman
 SourceName: luci-app-diskman
 License: AGPL-3.0
 Section: luci
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 20580
+Installed-Size: 20578
 Filename: luci-app-diskman_0.2.11_all.ipk
-Size: 21416
-SHA256sum: a45343290dd997ac876d87caca6984b6191e0b62c3a1f13730b25f312d51398d
+Size: 21417
+SHA256sum: c78d1c124203ab5cf4df8c21c6babb40368710c66f37788f38463ebc3a5a371e
 Description:  Disk Manager interface for LuCI
 
 Package: luci-app-dockerman
@@ -36,28 +36,28 @@ Source: feeds/xd/luci-app-dockerman
 SourceName: luci-app-dockerman
 License: AGPL-3.0
 Section: luci
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 53247
+Installed-Size: 53242
 Filename: luci-app-dockerman_v0.5.26_all.ipk
-Size: 54156
-SHA256sum: 639ee1eb3b78ca8a710befecd34c5405730c5170cb73859197ebbabc105ba7fd
+Size: 54154
+SHA256sum: 4c67cdc3c3761a04502dd7a3b8d42b0da0548b8a4991e5ae4aafea06437a8718
 Description:  LuCI Support for docker
 
 Package: luci-app-emby
-Version: git-24.294.29298-aa10ba5
+Version: git-24.332.30301-4a48c56
 Depends: libc, lsblk, coreutils, docker, dockerd, luci-lib-taskd, luci-lua-runtime
 Source: feeds/xd/luci-app-emby
 SourceName: luci-app-emby
 Section: luci
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 3531
-Filename: luci-app-emby_git-24.294.29298-aa10ba5_all.ipk
-Size: 4401
-SHA256sum: 73f501753efa689b139eaaf57c79661e44d11bb24c2f7259d626169d77f0734f
+Installed-Size: 3527
+Filename: luci-app-emby_git-24.332.30301-4a48c56_all.ipk
+Size: 4402
+SHA256sum: 135002c6840ba159733bdfa01f01ed41a8c3f4a0e12c01015ad65bc3ecb70f23
 Description:  LuCI support for Emby
 
 Package: luci-app-usb-printer
@@ -66,119 +66,119 @@ Depends: libc, p910nd, kmod-usb-printer, luci-lua-runtime
 Source: feeds/xd/luci-app-usb-printer
 SourceName: luci-app-usb-printer
 Section: luci
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 3314
+Installed-Size: 3313
 Filename: luci-app-usb-printer_1.0_all.ipk
-Size: 4149
-SHA256sum: 9d1e8614a484fce34d6ce1f11178bd14b75c749c827cb0764be86d0a758a7cb2
+Size: 4139
+SHA256sum: d11351437515100a8b68a148e6a946e58321f263a4e269c6c6de7e20070ee6ea
 Description:  USB Printer Share via TCP/IP
 
 Package: luci-i18n-adguardhome-zh-cn
-Version: git-24.294.29298-aa10ba5
+Version: git-24.332.30301-4a48c56
 Depends: libc, luci-app-adguardhome
 Source: feeds/xd/luci-app-adguardhome
 SourceName: luci-i18n-adguardhome-zh-cn
 Section: luci
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Maintainer: <https://github.com/rufengsuixing/luci-app-adguardhome>
 Architecture: all
-Installed-Size: 2334
-Filename: luci-i18n-adguardhome-zh-cn_git-24.294.29298-aa10ba5_all.ipk
-Size: 3136
-SHA256sum: b908c67a5e41c565a64cb5449f07a82369ecaf6def1f0f15733193f57176f3ab
+Installed-Size: 2328
+Filename: luci-i18n-adguardhome-zh-cn_git-24.332.30301-4a48c56_all.ipk
+Size: 3126
+SHA256sum: f61c2050546837e9f19383249e40f31e60359421754012221dcb7b594987022b
 Description:  Translation for luci-app-adguardhome - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-diskman-zh-cn
-Version: git-24.294.29298-aa10ba5
+Version: git-24.332.30301-4a48c56
 Depends: libc, luci-app-diskman
 Source: feeds/xd/luci-app-diskman
 SourceName: luci-i18n-diskman-zh-cn
 License: AGPL-3.0
 Section: luci
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Maintainer: lisaac <lisaac.cn@gmail.com>
 Architecture: all
-Installed-Size: 1880
-Filename: luci-i18n-diskman-zh-cn_git-24.294.29298-aa10ba5_all.ipk
-Size: 2683
-SHA256sum: 2b9fc04564e282ab8750c69975797c2f2d90f83b27172da0ba1cf1ad3fc67957
+Installed-Size: 1877
+Filename: luci-i18n-diskman-zh-cn_git-24.332.30301-4a48c56_all.ipk
+Size: 2677
+SHA256sum: f39f84b69744509c5375f2c9452e0fa523a6fb2699b7148b530c50e4eca356fa
 Description:  Translation for luci-app-diskman - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-dockerman-zh-cn
-Version: git-24.294.29298-aa10ba5
+Version: git-24.332.30301-4a48c56
 Depends: libc, luci-app-dockerman
 Source: feeds/xd/luci-app-dockerman
 SourceName: luci-i18n-dockerman-zh-cn
 License: AGPL-3.0
 Section: luci
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Maintainer: lisaac <lisaac.cn@gmail.com> Florian Eckert <fe@dev.tdt.de>
 Architecture: all
-Installed-Size: 4900
-Filename: luci-i18n-dockerman-zh-cn_git-24.294.29298-aa10ba5_all.ipk
-Size: 5689
-SHA256sum: a1f9049acbb8871857abc0bce0adb0aab0e293a4ec41d52ba73fdc659f6b3eba
+Installed-Size: 4896
+Filename: luci-i18n-dockerman-zh-cn_git-24.332.30301-4a48c56_all.ipk
+Size: 5686
+SHA256sum: e00b0372a14176e712200580c34452914520241f270d004ef85b72671a64c483
 Description:  Translation for luci-app-dockerman - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-emby-zh-cn
-Version: git-24.294.29298-aa10ba5
+Version: git-24.332.30301-4a48c56
 Depends: libc, luci-app-emby
 Source: feeds/xd/luci-app-emby
 SourceName: luci-i18n-emby-zh-cn
 Section: luci
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Architecture: all
-Installed-Size: 990
-Filename: luci-i18n-emby-zh-cn_git-24.294.29298-aa10ba5_all.ipk
-Size: 1745
-SHA256sum: de22d53481e1c561112e4941a794460396f7c4c2a15f4b6991e4e9e986838f7f
+Installed-Size: 988
+Filename: luci-i18n-emby-zh-cn_git-24.332.30301-4a48c56_all.ipk
+Size: 1757
+SHA256sum: cbf5a765a5c076c72eeee89e0177e4b10eae068ab608f0ccc3d4d561d10df724
 Description:  Translation for luci-app-emby - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-usb-printer-zh-cn
-Version: git-24.294.29298-aa10ba5
+Version: git-24.332.30301-4a48c56
 Depends: libc, luci-app-usb-printer
 Source: feeds/xd/luci-app-usb-printer
 SourceName: luci-i18n-usb-printer-zh-cn
 Section: luci
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Architecture: all
-Installed-Size: 941
-Filename: luci-i18n-usb-printer-zh-cn_git-24.294.29298-aa10ba5_all.ipk
-Size: 1702
-SHA256sum: 27f776b79d0bad3e62a0ad98e6694b162ad74fb98a6ca033997d03a8fd5b672e
+Installed-Size: 937
+Filename: luci-i18n-usb-printer-zh-cn_git-24.332.30301-4a48c56_all.ipk
+Size: 1698
+SHA256sum: 5bb8cd06d9cac89686869e05f8d3a799631bc653cec0e6c19905e3fc4f79a580
 Description:  Translation for luci-app-usb-printer - 简体中文 (Chinese Simplified)
 
 Package: luci-lib-taskd
-Version: git-24.294.29298-aa10ba5
+Version: git-24.332.30301-4a48c56
 Depends: taskd (>=1.0.3-1), libc, luci-lib-xterm, taskd, luci-lua-runtime
 Source: feeds/xd/luci-lib-taskd
 SourceName: luci-lib-taskd
 Section: luci
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 6125
-Filename: luci-lib-taskd_git-24.294.29298-aa10ba5_all.ipk
-Size: 6973
-SHA256sum: d9b1852e5402503fa47f7e3ae34a199dae7afe0818136938fab1016495f1dd59
+Installed-Size: 6126
+Filename: luci-lib-taskd_git-24.332.30301-4a48c56_all.ipk
+Size: 6971
+SHA256sum: cbd04df0cf1001bd16c5c11876028fef977d769e408f51cbf5e73bf6d4d55a11
 Description:  Task library
 
 Package: luci-lib-xterm
-Version: git-24.294.29298-aa10ba5
+Version: git-24.332.30301-4a48c56
 Depends: libc, luci-lua-runtime
 Source: feeds/xd/luci-lib-xterm
 SourceName: luci-lib-xterm
 License: MIT
 Section: luci
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 77227
-Filename: luci-lib-xterm_git-24.294.29298-aa10ba5_all.ipk
-Size: 78111
-SHA256sum: 4155ec24375f69070070dad3e84d38d7e4cf92f6fe953dc951413a0f6ac2a626
+Installed-Size: 77226
+Filename: luci-lib-xterm_git-24.332.30301-4a48c56_all.ipk
+Size: 78109
+SHA256sum: 84f3f1bab0acdfea4a7598843c9af5b9e3c22b8a2423c103ae21ffe6c2786631
 Description:  Xterm.js library
 
 Package: my-default-settings
@@ -188,12 +188,12 @@ Source: feeds/xd/my-default-settings
 SourceName: my-default-settings
 License: GPL-3.0
 Section: luci
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Architecture: all
-Installed-Size: 1901
+Installed-Size: 1888
 Filename: my-default-settings_1_all.ipk
-Size: 2627
-SHA256sum: c5b18d2589207fac4ec27748974d592225c633e20bcaa8dbfc2e4a4aab5430b5
+Size: 2610
+SHA256sum: a2b1d56a65c1c2e53cf45398851f42ab0b110162b7919386b4891a618bf22084
 Description:  LuCI support for my default settings
 
 Package: taskd
@@ -202,12 +202,12 @@ Depends: libc, procd, script-utils, coreutils-stty
 Source: feeds/xd/taskd
 SourceName: taskd
 Section: utils
-SourceDateEpoch: 1729411698
+SourceDateEpoch: 1732695901
 Maintainer: jjm2473 <jjm2473@gmail.com>
 Architecture: all
-Installed-Size: 1626
+Installed-Size: 1623
 Filename: taskd_1.0.3-2_all.ipk
-Size: 2381
-SHA256sum: 6d08e26f1cdd0a2bb42d4fb33b5226e3607be1afdbb2a40408f52c8ae870574b
+Size: 2372
+SHA256sum: 465cb1d5a87cd653cddfb74b0d348373509bc2133d9cf28fb68905dae9412966
 Description:  Simple Task Manager based on procd
 
