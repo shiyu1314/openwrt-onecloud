@@ -1,12 +1,12 @@
 Package: luci-app-adguardhome
-Version: git-24.332.30301-4a48c56
+Version: git-24.333.29141-b8babc4
 Depends: libc, curl, luci-lua-runtime
 Section: luci
 Architecture: all
-Installed-Size: 90175
-Filename: luci-app-adguardhome_git-24.332.30301-4a48c56_all.ipk
-Size: 91332
-SHA256sum: 3234819e2e51085205905c81c39386f6267c3505c614cb1536a0c232baf4dc4f
+Installed-Size: 90266
+Filename: luci-app-adguardhome_git-24.333.29141-b8babc4_all.ipk
+Size: 91427
+SHA256sum: 4e2a9549a4bed40766b4da7f917fea18d2e464a9adc98ecaed31ae107f88ad2a
 Description:  LuCI support for adguardhome
 
 Package: luci-app-diskman
@@ -15,10 +15,10 @@ Depends: libc, blkid, e2fsprogs, parted, smartmontools, btrfs-progs, lsblk, luci
 License: AGPL-3.0
 Section: luci
 Architecture: all
-Installed-Size: 20578
+Installed-Size: 20577
 Filename: luci-app-diskman_0.2.11_all.ipk
 Size: 21417
-SHA256sum: c78d1c124203ab5cf4df8c21c6babb40368710c66f37788f38463ebc3a5a371e
+SHA256sum: b08b5fca6ea40d717caf503f158411408b36b96f7ce07184d6d2a99c303f304e
 Description:  Disk Manager interface for LuCI
 
 Package: luci-app-dockerman
@@ -27,21 +27,21 @@ Depends: libc, luci-base, luci-compat, luci-lib-docker, luci-lib-ip, docker, doc
 License: AGPL-3.0
 Section: luci
 Architecture: all
-Installed-Size: 53242
+Installed-Size: 53241
 Filename: luci-app-dockerman_v0.5.26_all.ipk
-Size: 54154
-SHA256sum: 4c67cdc3c3761a04502dd7a3b8d42b0da0548b8a4991e5ae4aafea06437a8718
+Size: 54157
+SHA256sum: 357f4e34d6758a2bbb6e93c00b38c870dfd6e180c9c1b76703d388fe5dd7c417
 Description:  LuCI Support for docker
 
 Package: luci-app-emby
-Version: git-24.332.30301-4a48c56
+Version: git-24.333.29141-b8babc4
 Depends: libc, lsblk, coreutils, docker, dockerd, luci-lib-taskd, luci-lua-runtime
 Section: luci
 Architecture: all
-Installed-Size: 3527
-Filename: luci-app-emby_git-24.332.30301-4a48c56_all.ipk
-Size: 4402
-SHA256sum: 135002c6840ba159733bdfa01f01ed41a8c3f4a0e12c01015ad65bc3ecb70f23
+Installed-Size: 3530
+Filename: luci-app-emby_git-24.333.29141-b8babc4_all.ipk
+Size: 4406
+SHA256sum: 88b6cde6448e152a95b211d3b92c0a9e7e72f4433babccc8ae153cf1b7fdfe5a
 Description:  LuCI support for Emby
 
 Package: luci-app-usb-printer
@@ -49,90 +49,90 @@ Version: 1.0
 Depends: libc, p910nd, kmod-usb-printer, luci-lua-runtime
 Section: luci
 Architecture: all
-Installed-Size: 3313
+Installed-Size: 3315
 Filename: luci-app-usb-printer_1.0_all.ipk
-Size: 4139
-SHA256sum: d11351437515100a8b68a148e6a946e58321f263a4e269c6c6de7e20070ee6ea
+Size: 4143
+SHA256sum: b870ec40f34b0a2dc122402fc757371dc9f84f9e84d76fb1980d4cdd1d9ceab1
 Description:  USB Printer Share via TCP/IP
 
 Package: luci-i18n-adguardhome-zh-cn
-Version: git-24.332.30301-4a48c56
+Version: git-24.333.29141-b8babc4
 Depends: libc, luci-app-adguardhome
 Section: luci
 Architecture: all
-Installed-Size: 2328
-Filename: luci-i18n-adguardhome-zh-cn_git-24.332.30301-4a48c56_all.ipk
-Size: 3126
-SHA256sum: f61c2050546837e9f19383249e40f31e60359421754012221dcb7b594987022b
+Installed-Size: 2333
+Filename: luci-i18n-adguardhome-zh-cn_git-24.333.29141-b8babc4_all.ipk
+Size: 3138
+SHA256sum: ee527bdda480ab898925f713aa878323a73ca8144bd616fd6da05464fb9b7923
 Description:  Translation for luci-app-adguardhome - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-diskman-zh-cn
-Version: git-24.332.30301-4a48c56
+Version: git-24.333.29141-b8babc4
 Depends: libc, luci-app-diskman
 License: AGPL-3.0
 Section: luci
 Architecture: all
-Installed-Size: 1877
-Filename: luci-i18n-diskman-zh-cn_git-24.332.30301-4a48c56_all.ipk
-Size: 2677
-SHA256sum: f39f84b69744509c5375f2c9452e0fa523a6fb2699b7148b530c50e4eca356fa
+Installed-Size: 1881
+Filename: luci-i18n-diskman-zh-cn_git-24.333.29141-b8babc4_all.ipk
+Size: 2685
+SHA256sum: 06633d19ebde2b01cb788d70ac04433ce2a8395e2beb3f6adc13dfb441dae7fb
 Description:  Translation for luci-app-diskman - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-dockerman-zh-cn
-Version: git-24.332.30301-4a48c56
+Version: git-24.333.29141-b8babc4
 Depends: libc, luci-app-dockerman
 License: AGPL-3.0
 Section: luci
 Architecture: all
-Installed-Size: 4896
-Filename: luci-i18n-dockerman-zh-cn_git-24.332.30301-4a48c56_all.ipk
-Size: 5686
-SHA256sum: e00b0372a14176e712200580c34452914520241f270d004ef85b72671a64c483
+Installed-Size: 4900
+Filename: luci-i18n-dockerman-zh-cn_git-24.333.29141-b8babc4_all.ipk
+Size: 5688
+SHA256sum: 0676712d692452bea5de04f0910518c48a0f69ed77a79f7727f1072fdf8bee8e
 Description:  Translation for luci-app-dockerman - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-emby-zh-cn
-Version: git-24.332.30301-4a48c56
+Version: git-24.333.29141-b8babc4
 Depends: libc, luci-app-emby
 Section: luci
 Architecture: all
-Installed-Size: 988
-Filename: luci-i18n-emby-zh-cn_git-24.332.30301-4a48c56_all.ipk
-Size: 1757
-SHA256sum: cbf5a765a5c076c72eeee89e0177e4b10eae068ab608f0ccc3d4d561d10df724
+Installed-Size: 991
+Filename: luci-i18n-emby-zh-cn_git-24.333.29141-b8babc4_all.ipk
+Size: 1751
+SHA256sum: e0a8dc44ecaa2e92a93c46a6bc22269724705990bd41cc4a8a71cd8c73ee50ef
 Description:  Translation for luci-app-emby - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-usb-printer-zh-cn
-Version: git-24.332.30301-4a48c56
+Version: git-24.333.29141-b8babc4
 Depends: libc, luci-app-usb-printer
 Section: luci
 Architecture: all
-Installed-Size: 937
-Filename: luci-i18n-usb-printer-zh-cn_git-24.332.30301-4a48c56_all.ipk
-Size: 1698
-SHA256sum: 5bb8cd06d9cac89686869e05f8d3a799631bc653cec0e6c19905e3fc4f79a580
+Installed-Size: 941
+Filename: luci-i18n-usb-printer-zh-cn_git-24.333.29141-b8babc4_all.ipk
+Size: 1707
+SHA256sum: cb1ebdc415ddf2fcb5a44b8cf8d5de596c33c8b4885c10ba9d75c2733baa2048
 Description:  Translation for luci-app-usb-printer - 简体中文 (Chinese Simplified)
 
 Package: luci-lib-taskd
-Version: git-24.332.30301-4a48c56
+Version: git-24.333.29141-b8babc4
 Depends: taskd (>=1.0.3-1), libc, luci-lib-xterm, taskd, luci-lua-runtime
 Section: luci
 Architecture: all
-Installed-Size: 6126
-Filename: luci-lib-taskd_git-24.332.30301-4a48c56_all.ipk
-Size: 6971
-SHA256sum: cbd04df0cf1001bd16c5c11876028fef977d769e408f51cbf5e73bf6d4d55a11
+Installed-Size: 6123
+Filename: luci-lib-taskd_git-24.333.29141-b8babc4_all.ipk
+Size: 6977
+SHA256sum: be9fd387a350c14bc11fec49d466adbaf0879f5d03fa41cc264a3a30659a7b2a
 Description:  Task library
 
 Package: luci-lib-xterm
-Version: git-24.332.30301-4a48c56
+Version: git-24.333.29141-b8babc4
 Depends: libc, luci-lua-runtime
 License: MIT
 Section: luci
 Architecture: all
-Installed-Size: 77226
-Filename: luci-lib-xterm_git-24.332.30301-4a48c56_all.ipk
-Size: 78109
-SHA256sum: 84f3f1bab0acdfea4a7598843c9af5b9e3c22b8a2423c103ae21ffe6c2786631
+Installed-Size: 77228
+Filename: luci-lib-xterm_git-24.333.29141-b8babc4_all.ipk
+Size: 78111
+SHA256sum: cb5c2d03aa4146f4ac9de2042a50f604101971e702dc3190122cf2eb60c0d9b2
 Description:  Xterm.js library
 
 Package: my-default-settings
@@ -141,10 +141,10 @@ Depends: libc, luci, luci-compat
 License: GPL-3.0
 Section: luci
 Architecture: all
-Installed-Size: 1888
+Installed-Size: 1905
 Filename: my-default-settings_1_all.ipk
-Size: 2610
-SHA256sum: a2b1d56a65c1c2e53cf45398851f42ab0b110162b7919386b4891a618bf22084
+Size: 2630
+SHA256sum: 20f978fab69ad4f854a3e02dc7d06aa584a5ca2be5e760180c3004e7fe560dfb
 Description:  LuCI support for my default settings
 
 Package: taskd
@@ -152,9 +152,9 @@ Version: 1.0.3-2
 Depends: libc, procd, script-utils, coreutils-stty
 Section: utils
 Architecture: all
-Installed-Size: 1623
+Installed-Size: 1624
 Filename: taskd_1.0.3-2_all.ipk
-Size: 2372
-SHA256sum: 465cb1d5a87cd653cddfb74b0d348373509bc2133d9cf28fb68905dae9412966
+Size: 2377
+SHA256sum: a13d2ce175b414538553ef38c5025bbdeae392e2b973f9ffac27bfded6f7b17e
 Description:  Simple Task Manager based on procd
 
