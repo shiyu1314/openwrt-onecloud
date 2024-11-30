@@ -38,9 +38,9 @@ Require-User: root:mihomo=7890
 SourceDateEpoch: 1732852019
 Maintainer: Joseph Mory <morytyann@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 10226128
+Installed-Size: 10226198
 Filename: mihomo_2024-11-24-eb985b00-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 10208562
-SHA256sum: 7cd93e61b3b649ac785fe792fbd6b40035076ede20a8d1a04e25e7ea67ad6cdb
+Size: 10208746
+SHA256sum: bd8186f762d3740307e67f419d3a4b4c315c10c5babbb6a5f42feb959f2a6da8
 Description:  A rule based proxy in Go.
 
