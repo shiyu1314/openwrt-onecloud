@@ -4,10 +4,10 @@ Depends: libc, ca-bundle
 License: GPL-3.0
 Section: net
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 26628666
+Installed-Size: 26628667
 Filename: alist_3.40.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26537703
-SHA256sum: 186fedd410c24528333821d2e252f4c714e9fc0925b71bb36afdffacf406ca7a
+Size: 26537469
+SHA256sum: 0836ad2b6b098c68489643b9b6df7e61e33290e2dbefd476901718eade14c3df
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -27,10 +27,10 @@ Version: 1-12
 Depends: libc, luci-app-samba4, wsdd2
 Section: opt
 Architecture: all
-Installed-Size: 1174
+Installed-Size: 1175
 Filename: autosamba_1-12_all.ipk
 Size: 1901
-SHA256sum: 0a3f5605e8df6e7bd472d62a6a60d75a5947691749884929356b84c51f91626e
+SHA256sum: 9cfcbbc30b01dd2db90985ecc2f6fdee7c2b2e6025158f819bdcec450db1ce53
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
@@ -980,10 +980,10 @@ Version: 1.0
 Depends: libc, luci-theme-argon
 Section: luci
 Architecture: all
-Installed-Size: 3199
+Installed-Size: 3195
 Filename: luci-app-argon-config_1.0_all.ipk
-Size: 4055
-SHA256sum: 454590edb283a840a2e2a94ca44c92115b39e8bb0a33aec42f8784318e87fbc0
+Size: 4049
+SHA256sum: 5e84440a49d328892ccc9a01941cab3e7a82b37841c5aeb6286016dbc6678349
 Description:  LuCI app for Argon theme configuration
 
 Package: luci-app-aria2
@@ -1021,14 +1021,14 @@ SHA256sum: 7f1bb7b25c12dd58a7dcd27a18d1e8a002f4cea513de6653b57c2642dae6200e
 Description:  Translation for luci-app-alist - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-argon-config-zh-cn
-Version: git-24.302.55388-76ca08a
+Version: git-24.336.56889-26e4d57
 Depends: libc, luci-app-argon-config
 Section: luci
 Architecture: all
-Installed-Size: 1459
-Filename: luci-i18n-argon-config-zh-cn_git-24.302.55388-76ca08a_all.ipk
-Size: 2267
-SHA256sum: 803bea6dc1289458d328ac0ceb6720960abea4cea14c0b0f26687760126aa4fc
+Installed-Size: 1456
+Filename: luci-i18n-argon-config-zh-cn_git-24.336.56889-26e4d57_all.ipk
+Size: 2263
+SHA256sum: 79f3f0425a2908be58dca02aa92a303561ac458bbc73879171a47736554a5601
 Description:  Translation for luci-app-argon-config - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-aria2-zh-cn
@@ -1059,10 +1059,10 @@ Version: 2.3.1
 Depends: libc, curl, jsonfilter, luci-lua-runtime
 Section: luci
 Architecture: all
-Installed-Size: 772902
+Installed-Size: 773064
 Filename: luci-theme-argon_2.3.1_all.ipk
-Size: 773716
-SHA256sum: 510b208d85e87ceaef2121d0239ab8954c2e192b03e11a085f1c934f10c9fd60
+Size: 773899
+SHA256sum: e7b34fcfc2e3affa1488cd2adc359893a937bb658e293b057b55d234f0d0cca6
 Description:  Argon Theme
 
 Package: mkf2fs
@@ -1542,27 +1542,27 @@ SHA256sum: 1f07384d1a3d14711ac9c75e062ef47e9556f4377fd941c22f709a3b57d0f531
 Description:  V2ray geo/ip data unpack tools
 
 Package: v2ray-geoip
-Version: 2024-11-30-1
+Version: 2024-12-01-1
 Depends: libc
 License: CC-BY-SA-4.0
 Section: net
 Architecture: all
 Installed-Size: 64441
-Filename: v2ray-geoip_2024-11-30-1_all.ipk
+Filename: v2ray-geoip_2024-12-01-1_all.ipk
 Size: 62508
-SHA256sum: e30e54897a3af4e7fe3ae1778c2ed1e97470cf854af5d7a5399ed73c05c3ccc5
+SHA256sum: 2fe474cd0e86ca9af6ed11bedee8750b2554274da892fa39ec32be3fab671b48
 Description:  GeoIP List for V2Ray
 
 Package: v2ray-geosite
-Version: 2024-11-30-1
+Version: 2024-12-01-1
 Depends: libc
 License: GPL-3.0
 Section: net
 Architecture: all
-Installed-Size: 2182631
-Filename: v2ray-geosite_2024-11-30-1_all.ipk
-Size: 2183369
-SHA256sum: 5d952adb97d65fd54a6b1be4b3a2cfd3565f99f6fdb5f25b12c9251b5a8d49fd
+Installed-Size: 2188733
+Filename: v2ray-geosite_2024-12-01-1_all.ipk
+Size: 2189701
+SHA256sum: 669c1d420cab562a62517f65a49e6017e9ad2e46f46817b23b6d27bc3b6ccf9e
 Description:  Geosite List for V2Ray
 
 Package: zlib
