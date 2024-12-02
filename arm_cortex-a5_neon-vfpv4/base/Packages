@@ -4,10 +4,10 @@ Depends: libc, ca-bundle
 License: GPL-3.0
 Section: net
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 26628667
+Installed-Size: 26628666
 Filename: alist_3.40.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26537469
-SHA256sum: 0836ad2b6b098c68489643b9b6df7e61e33290e2dbefd476901718eade14c3df
+Size: 26537703
+SHA256sum: d925587be4f102ff23689b0778bea94138426bb781d0fc9f506452733cfd43c6
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -27,10 +27,10 @@ Version: 1-12
 Depends: libc, luci-app-samba4, wsdd2
 Section: opt
 Architecture: all
-Installed-Size: 1175
+Installed-Size: 1174
 Filename: autosamba_1-12_all.ipk
-Size: 1901
-SHA256sum: 9cfcbbc30b01dd2db90985ecc2f6fdee7c2b2e6025158f819bdcec450db1ce53
+Size: 1899
+SHA256sum: ab96d4ae1abcdd792166943932d29e3c75e1f1cf8f9f60aa56eddeb3abd7983d
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
@@ -1542,27 +1542,27 @@ SHA256sum: 1f07384d1a3d14711ac9c75e062ef47e9556f4377fd941c22f709a3b57d0f531
 Description:  V2ray geo/ip data unpack tools
 
 Package: v2ray-geoip
-Version: 2024-12-01-1
+Version: 2024-12-02-1
 Depends: libc
 License: CC-BY-SA-4.0
 Section: net
 Architecture: all
 Installed-Size: 64441
-Filename: v2ray-geoip_2024-12-01-1_all.ipk
+Filename: v2ray-geoip_2024-12-02-1_all.ipk
 Size: 62508
-SHA256sum: 2fe474cd0e86ca9af6ed11bedee8750b2554274da892fa39ec32be3fab671b48
+SHA256sum: fd9b2c6d1d5f77e9b1360289a838df5512b6185728e5dd7bde88e75db18d40bb
 Description:  GeoIP List for V2Ray
 
 Package: v2ray-geosite
-Version: 2024-12-01-1
+Version: 2024-12-02-1
 Depends: libc
 License: GPL-3.0
 Section: net
 Architecture: all
-Installed-Size: 2188733
-Filename: v2ray-geosite_2024-12-01-1_all.ipk
-Size: 2189701
-SHA256sum: 669c1d420cab562a62517f65a49e6017e9ad2e46f46817b23b6d27bc3b6ccf9e
+Installed-Size: 2187433
+Filename: v2ray-geosite_2024-12-02-1_all.ipk
+Size: 2187831
+SHA256sum: 766448015d244d473456bb71b3e36ba9995edd4ca3d3a354edaa5be651e9e729
 Description:  Geosite List for V2Ray
 
 Package: zlib
