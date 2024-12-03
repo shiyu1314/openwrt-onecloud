@@ -1,0 +1,23 @@
+From 41e5fc307ef92a747a5b81758185cca47307faf6 Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Fri, 30 Aug 2019 09:15:31 -0400
+Subject: [PATCH 12/43] QUIC: Add OPENSSL_NO_QUIC wrapper
+
+---
+ ssl/ssl_local.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/ssl/ssl_local.h
++++ b/ssl/ssl_local.h
+@@ -1491,9 +1491,11 @@ struct ssl_st {
+     unsigned char handshake_traffic_hash[EVP_MAX_MD_SIZE];
+     unsigned char client_app_traffic_secret[EVP_MAX_MD_SIZE];
+     unsigned char server_app_traffic_secret[EVP_MAX_MD_SIZE];
++# ifndef OPENSSL_NO_QUIC
+     unsigned char client_hand_traffic_secret[EVP_MAX_MD_SIZE];
+     unsigned char server_hand_traffic_secret[EVP_MAX_MD_SIZE];
+     unsigned char client_early_traffic_secret[EVP_MAX_MD_SIZE];
++# endif
+     unsigned char exporter_master_secret[EVP_MAX_MD_SIZE];
+     unsigned char early_exporter_master_secret[EVP_MAX_MD_SIZE];
+     EVP_CIPHER_CTX *enc_read_ctx; /* cryptographic state */
