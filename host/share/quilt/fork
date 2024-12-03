@@ -1,0 +1,101 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt fork [new_name]\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Fork the topmost patch.  Forking a patch means creating a verbatim copy
+of it under a new name, and use that new name instead of the original
+one in the current series.  This is useful when a patch has to be
+modified, but the original version of it should be preserved, e.g.
+because it is used in another series, or for the history.  A typical
+sequence of commands would be: fork, edit, refresh.
+
+If new_name is missing, the name of the forked patch will be the current
+patch name, followed by \`-2'.  If the patch name already ends in a
+dash-and-number, the number is further incremented (e.g., patch.diff,
+patch-2.diff, patch-3.diff).
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o h -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -gt 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+top_patch=$(find_top_patch) || exit 1
+
+if [ $# -eq 1 ]
+then
+	new_patch="$1"
+else
+	new_patch="$(next_filename "$top_patch")"
+fi
+
+new_patch=${new_patch#$QUILT_PATCHES/}
+
+if patch_in_series $new_patch || \
+   [ -d "$QUILT_PC/$new_patch" ] || \
+   [ -e "$(patch_file_name $new_patch)" ]
+then
+	printf $"Patch %s exists already, please choose a new name\n" \
+	       "$(print_patch $new_patch)" >&2
+	exit 1
+fi
+
+if ! rename_in_db "$top_patch" "$new_patch" || \
+   ! rename_in_series "$top_patch" "$new_patch" || \
+   ! mv "$QUILT_PC/$top_patch" "$QUILT_PC/$new_patch" || \
+   ( [ -e "$(patch_file_name $top_patch)" ] && \
+     ! cp -p "$(patch_file_name $top_patch)" \
+	     "$(patch_file_name $new_patch)" )
+then
+	printf $"Fork of patch %s to patch %s failed\n" \
+	       "$(print_patch $top_patch)" \
+	       "$(print_patch $new_patch)" >&2
+	exit 1
+fi
+
+printf $"Fork of patch %s created as %s\n" \
+       "$(print_patch $top_patch)" \
+       "$(print_patch $new_patch)"

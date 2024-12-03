@@ -1,0 +1,179 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt files [-v] [-a] [-l] [--combine patch] [patch]\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Print the list of files that the topmost or specified patch changes.
+
+-a	List all files in all applied patches.
+
+-l	Add patch name to output.
+
+-v	Verbose, more user friendly output.
+
+--combine patch
+	Create a listing for all patches between this patch and
+	the topmost or specified patch. A patch name of \`-' is
+	equivalent to specifying the first applied patch.
+
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o vhal --long combine: -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-v)
+		opt_verbose=1
+		shift ;;
+	-a)
+		opt_all=1
+		shift ;;
+	-l)
+		opt_labels=1
+		shift ;;
+	-h)
+		usage -h ;;
+	--combine)
+		opt_all=1
+		if [ "$2" = - ]
+		then
+			:
+		else
+			first_patch=$2
+		fi
+		shift 2 ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -gt 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+if [ -n "$first_patch" ]
+then
+	first_patch=$(find_patch_in_series "$first_patch") || exit 1
+fi
+
+last_patch=$(find_patch_in_series "$1") || exit 1
+
+if [ -n "$opt_all" -a -z "$first_patch" ]
+then
+	first_patch=$(applied_patches | head -n 1)
+fi
+
+if [ -n "$opt_all" ]
+then
+	set -- $(patches_before "$last_patch") "$last_patch"
+	while [ $# -ge 1 -a "$1" != "$first_patch" ]
+	do
+		shift
+	done
+	if [ $# -eq 0 ]
+	then
+		printf $"Patch %s not applied before patch %s\n" \
+		       "$(print_patch "$first_patch")" \
+		       "$(print_patch "$last_patch")" >&2
+		exit 1
+	fi
+	patches=( "$@" )
+else
+	patches=( "$last_patch" )
+fi
+
+list_files_in_patch()
+{
+	local patch=$1
+	local status
+	local saved_IFS=$IFS
+
+	if [ -n "$opt_all" ] && [ -n "$opt_verbose" ] && [ -z "$opt_labels" ]
+	then
+		echo "$patch"
+	fi
+	if [ -n "$opt_verbose" ] && [ -z "$opt_labels" ]
+	then
+		use_status=yes
+	fi
+	# Note: If opt_labels is set, then use_status is not set.
+	IFS=
+	if is_applied "$patch"
+	then
+		files_in_patch "$patch"
+	else
+		filenames_in_patch "$patch"
+	fi |
+	sort |
+	while read file
+	do
+		if [ -n "$opt_labels" ]
+		then
+			if [ -n "$opt_verbose" ]
+			then
+				echo -n "[$patch] "
+			else
+				echo -n "$patch "
+			fi
+		fi
+		if [ -z "$use_status" ]
+		then
+			echo "$file"
+		else
+			status=" "
+			if [ -s $(backup_file_name "$patch" "$file") ]
+			then
+				if ! [ -s "$file" ]
+				then
+					status="-"
+				fi
+			else
+				if [ -s "$file" ]
+				then
+					status="+"
+				fi
+			fi
+			echo "$status $file"
+		fi
+	done
+	IFS=$saved_IFS
+}
+
+setup_pager
+
+for patch in "${patches[@]}"
+do
+	list_files_in_patch "$patch"
+done

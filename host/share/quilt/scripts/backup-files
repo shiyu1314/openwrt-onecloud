@@ -1,0 +1,391 @@
+#! /usr/bin/env bash
+
+set -e
+# Keep /dev/null opened as we will need it repeatedly
+exec 4> /dev/null
+
+# Copyright (C) 2006 Steve Langasek <vorlon@debian.org>
+# Copyright (C) 2011 Jean Delvare <jdelvare@suse.de>
+# Loosely based on C implementation by Andreas Gruenbacher <agruen@suse.de>
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; version 2 dated June, 1991.
+
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program;  if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+# MA 02110-1301, USA.
+
+usage ()
+{
+	echo "Usage: $0 -B prefix {-b|-r|-c|-L} [-s] [-k] [-t] [-L] {-f {file|-}|-|file ...}
+
+	Create or restore backup copies of a list of files.
+
+	Mandatory parameters:
+	-B	Path name prefix for backup files
+
+	Action parameters:
+	-b	Create backup (preserve links)
+	-r	Restore the backup
+	-c	Create simple copy
+	-L	Ensure that source files have a link count of 1
+
+	Common options:
+	-s	Silent operation; only print error messages
+
+	Restore options:
+	-k	Keep backup files
+	-t	Touch original files after restore (update their mtimes)
+
+	Backup options:
+	-L	Ensure that source files have a link count of 1
+
+	File list parameters:
+	-f	Read the filenames to process from file (- = standard input)
+	-	Read the filenames to process from backup
+"
+}
+
+if test -n "$STAGING_DIR_HOST"; then
+	: ${QUILT_DIR="$STAGING_DIR_HOST/share/quilt"}
+else
+	: ${QUILT_DIR=/workdir/openwrt/staging_dir/host/share/quilt}
+fi
+
+. $QUILT_DIR/scripts/utilfns
+
+ensure_nolinks()
+{
+	local filename=$1
+	local link_count tmpname
+
+	link_count=$(stat -c %h "$filename")
+	if [ $link_count -gt 1 ]; then
+		tmpname=$(mktemp "$filename.XXXXXX")
+		cp -p "$filename" "$tmpname"
+		mv "$tmpname" "$filename"
+	fi
+}
+
+notify_action()
+{
+	[ $ECHO != : ] || return 0
+	local action=$1 filename=$2
+
+	while read -d $'\0' -r
+	do
+		$ECHO "$action ${REPLY#./}"
+	done < "$filename"
+}
+
+backup()
+{
+	local file=$1
+	local backup=$OPT_PREFIX$file
+	local dir
+
+	dir=$(dirname "$backup")
+	[ -d "$dir" ] || mkdir -p "$dir"
+
+	if [ -L "$file" -o -e "$file" ]; then
+		$ECHO "Copying $file"
+		if [ -n "$OPT_NOLINKS" -a "$(stat -c %h "$file")" = 1 ]; then
+			cp -p "$file" "$backup"
+		else
+			ln "$file" "$backup" 2>&4 || cp -p "$file" "$backup"
+			if [ -n "$OPT_NOLINKS" ]; then
+				ensure_nolinks "$file"
+			fi
+		fi
+	else
+		$ECHO "New file $file"
+		: > "$backup"
+	fi
+}
+
+restore()
+{
+	local file=$1
+	local backup=$OPT_PREFIX$file
+
+	if [ ! -L "$backup" -a ! -e "$backup" ]; then
+		return 1
+	fi
+	if [ -L "$backup" -o -s "$backup" ]; then
+		$ECHO "Restoring $file"
+		if [ -L "$file" -o -e "$file" ]; then
+			rm "$file"
+		else
+			mkdir -p "$(dirname "$file")"
+		fi
+		if [ -L "$backup" ]; then
+			ln -s "$(readlink "$backup")" "$file"
+		else
+			ln "$backup" "$file" 2>&4 || cp -p "$backup" "$file"
+		fi
+
+		if [ -n "$OPT_TOUCH" -a ! -L "$file" ]; then
+			touch "$file"
+		fi
+	else
+		$ECHO "Removing $file"
+		if [ -L "$file" -o -e "$file" ]; then
+			rm "$file"
+		fi
+	fi
+
+	if [ -z "$OPT_KEEP_BACKUP" ]; then
+		rm "$backup"
+		rmdir -p "${backup%/*}" 2>&4 || true
+	fi
+}
+
+restore_all()
+{
+	local EMPTY_FILES NONEMPTY_FILES
+
+	# Store the list of files to process
+	EMPTY_FILES=$(gen_tempfile)
+	NONEMPTY_FILES=$(gen_tempfile)
+	LINK_FILES=$(gen_tempfile)
+	trap "rm -f \"$EMPTY_FILES\" \"$NONEMPTY_FILES\" \"$LINK_FILES\"" EXIT
+
+	cd "$OPT_PREFIX"
+	find . -type f -size 0 -print0 > "$EMPTY_FILES"
+	find . -type f -size +0 -print0 > "$NONEMPTY_FILES"
+	find . -type l -print0 > "$LINK_FILES"
+	cd "$OLDPWD"
+
+	if [ -s "$EMPTY_FILES" ]; then
+		xargs -0 rm -f < "$EMPTY_FILES"
+		notify_action Removing "$EMPTY_FILES"
+	fi
+
+	if [ -s "$NONEMPTY_FILES" ]; then
+		# Try a mass link (or copy) first, as it is much faster.
+		# It is however not portable and may thus fail. If it fails,
+		# fallback to per-file processing, which always works.
+		local target_dir=$PWD
+
+		if (cd "$OPT_PREFIX" && \
+		    xargs -0 cp -l --parents --remove-destination \
+				--target-directory="$target_dir" \
+				< "$NONEMPTY_FILES" 2>&4); then
+			notify_action Restoring "$NONEMPTY_FILES"
+		else
+			(cd "$OPT_PREFIX" && find . -type d -print0) \
+			| xargs -0 mkdir -p
+
+			xargs -0 rm -f < "$NONEMPTY_FILES"
+
+			while read -d $'\0' -r
+			do
+				local file=${REPLY#./}
+				local backup=$OPT_PREFIX$file
+
+				$ECHO "Restoring $file"
+				ln "$backup" "$file" 2>&4 || cp -p "$backup" "$file"
+			done < "$NONEMPTY_FILES"
+		fi
+
+		if [ -n "$OPT_TOUCH" ]; then
+			xargs -0 touch -c < "$NONEMPTY_FILES"
+		fi
+	fi
+
+	if [ -s "$LINK_FILES" ]; then
+		(cd "$OPT_PREFIX" && find . -type d -print0) \
+		| xargs -0 mkdir -p
+
+		while read -d $'\0' -r
+		do
+			local file=${REPLY#./}
+			local backup=$OPT_PREFIX$file
+
+			$ECHO "Restoring $file"
+			ln -sf "$(readlink "$backup")" "$file"
+		done < "$LINK_FILES"
+	fi
+
+	if [ -z "$OPT_KEEP_BACKUP" ]; then
+		rm -rf "$OPT_PREFIX"
+	fi
+}
+
+noop_nolinks()
+{
+	local file=$1
+
+	if [ -e "$file" ]; then
+		ensure_nolinks "$file"
+	fi
+}
+
+copy()
+{
+	local file=$1
+	local backup=$OPT_PREFIX$file
+	local dir
+
+	dir=$(dirname "$backup")
+	[ -d "$dir" ] || mkdir -p "$dir"
+
+	if [ -L "$file" -o -e "$file" ]; then
+		$ECHO "Copying $file"
+		cp -p "$file" "$backup"
+	else
+		$ECHO "New file $file"
+		: > "$backup"
+	fi
+}
+
+copy_many()
+{
+	local NONEMPTY_FILES
+
+	# Store the list of non-empty files to process
+	NONEMPTY_FILES=$(gen_tempfile)
+	trap "rm -f \"$NONEMPTY_FILES\"" EXIT
+
+	# Keep the temporary file opened to speed up the loop
+	exec 3> "$NONEMPTY_FILES"
+	cat "$OPT_FILE" \
+	| while read
+	do
+		if [ -L "$REPLY" -o -e "$REPLY" ]; then
+			printf '%s\0' "$REPLY" >&3
+		else
+			# This is a rare case, not worth optimizing
+			copy "$REPLY"
+		fi
+	done
+	exec 3>&-
+
+	if [ -s "$NONEMPTY_FILES" ]; then
+		# Try a mass copy first, as it is much faster.
+		# It is however not portable and may thus fail. If it fails,
+		# fallback to per-file processing, which always works.
+
+		if xargs -0 cp -p --parents --target-directory="$OPT_PREFIX" \
+		   < "$NONEMPTY_FILES" 2>&4; then
+			notify_action Copying "$NONEMPTY_FILES"
+		else
+			while read -d $'\0' -r
+			do
+				copy "$REPLY"
+			done < "$NONEMPTY_FILES"
+		fi
+	fi
+}
+
+# Test if some backed up files have a link count greater than 1
+some_files_have_links()
+{
+	(cd "$OPT_PREFIX" && find . -type f -print0) \
+	| xargs -0 stat -c %h 2>&4 | grep -qv '^1$'
+}
+
+
+ECHO=echo
+while [ $# -gt 0 ]; do
+	case $1 in
+	-b)	OPT_WHAT=backup
+		;;
+	-r)	OPT_WHAT=restore
+		;;
+	-c)	OPT_WHAT=copy
+		;;
+	-B)	OPT_PREFIX=$2
+		shift
+		;;
+	-f)	OPT_FILE=$2
+		shift
+		;;
+	-s)	ECHO=:
+		;;
+	-k)	OPT_KEEP_BACKUP=1
+		;;
+	-L)	OPT_NOLINKS=1
+		;;
+	-t)	OPT_TOUCH=1
+		;;
+	-?*)	usage
+		exit 0
+		;;
+	*)	break
+		;;
+	esac
+
+	shift
+done
+
+if [ -z "$OPT_PREFIX" ]; then
+	usage
+	exit 1
+fi
+
+if [ "${OPT_PREFIX:(-1)}" != / ]; then
+	echo "Prefix must be a directory" >&2
+	exit 1
+fi
+
+if [ -z "$OPT_WHAT" ]; then
+	if [ -n "$OPT_NOLINKS" ]; then
+		OPT_WHAT=noop_nolinks
+	else
+		echo "Please specify an action" >&2
+		exit 1
+	fi
+fi
+
+if [ -n "$OPT_FILE" ]; then
+	if [ "$OPT_WHAT" = copy ]; then
+		copy_many
+		exit
+	fi
+
+	cat "$OPT_FILE" \
+	| while read nextfile; do
+		$OPT_WHAT "$nextfile"
+	done
+	exit
+fi
+
+if [ "$1" = - ]; then
+	# No backup directory? We're done
+	[ -d "$OPT_PREFIX" ] || exit 0
+
+	if [ "$OPT_WHAT" = restore ]; then
+		restore_all
+		exit
+	fi
+
+	# We typically expect the link count of backed up files to be 1
+	# already, so check quickly that this is the case, and only if not,
+	# take the slow path and walk the file list in search of files to fix.
+	if [ "$OPT_WHAT" = noop_nolinks ] && ! some_files_have_links; then
+		exit
+	fi
+
+	find "$OPT_PREFIX" -type f -print \
+	| while read
+	do
+		$OPT_WHAT "${REPLY#$OPT_PREFIX}"
+	done
+	if [ ${PIPESTATUS[0]} != 0 ]; then
+		exit 1
+	fi
+	exit
+fi
+
+while [ $# -gt 0 ]; do
+	$OPT_WHAT "$1"
+	shift
+done

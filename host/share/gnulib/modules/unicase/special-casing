@@ -1,0 +1,45 @@
+Description:
+Special casing table.
+
+Files:
+lib/unicase/special-casing.in.h
+lib/unicase/special-casing.c
+lib/unicase/special-casing-table.gperf
+
+Depends-on:
+gen-header
+gperf
+
+configure.ac:
+AC_PROG_MKDIR_P
+
+Makefile.am:
+lib_SOURCES += unicase/special-casing.c
+
+$(srcdir)/unicase/special-casing-table.h: $(srcdir)/unicase/special-casing-table.gperf
+	$(V_GPERF)$(GPERF) -m 10 $(srcdir)/unicase/special-casing-table.gperf > $(srcdir)/unicase/special-casing-table.h-t && \
+	mv $(srcdir)/unicase/special-casing-table.h-t $(srcdir)/unicase/special-casing-table.h
+BUILT_SOURCES        += unicase/special-casing-table.h
+MOSTLYCLEANFILES     += unicase/special-casing-table.h-t
+MAINTAINERCLEANFILES += unicase/special-casing-table.h
+EXTRA_DIST           += unicase/special-casing-table.h
+
+# Generate special-casing.h with a declaration that depends on the gperf version.
+unicase/special-casing.h: unicase/special-casing.in.h unicase/special-casing-table.h
+	$(AM_V_GEN)$(MKDIR_P) '%reldir%/unicase'
+	$(AM_V_at)declaration=`grep '^gl_unicase_special_lookup' $(srcdir)/unicase/special-casing-table.h | sed -e 's/register //g'` && \
+	$(SED_HEADER_STDOUT) \
+	  -e "/gl_unicase_special_lookup/s/gl_unicase_special_lookup.*/$${declaration};/" \
+	  $(srcdir)/unicase/special-casing.in.h > $@-t
+	$(AM_V_at)mv $@-t $@
+BUILT_SOURCES        += unicase/special-casing.h
+MOSTLYCLEANFILES     += unicase/special-casing.h unicase/special-casing.h-t
+
+Include:
+"unicase/special-casing.h"
+
+License:
+LGPLv3+ or GPLv2+
+
+Maintainer:
+all

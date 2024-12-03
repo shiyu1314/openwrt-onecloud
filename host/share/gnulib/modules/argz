@@ -1,0 +1,51 @@
+Description:
+Argv style string arrays in a single null delimited char*.
+
+Files:
+lib/argz.in.h
+lib/argz.c
+m4/argz.m4
+
+Depends-on:
+gen-header
+memmove         [test -n "$ARGZ_H"]
+mempcpy         [test -n "$ARGZ_H"]
+stpcpy          [test -n "$ARGZ_H"]
+strndup         [test -n "$ARGZ_H"]
+strnlen         [test -n "$ARGZ_H"]
+strstr          [test -n "$ARGZ_H"]
+
+configure.ac:
+gl_FUNC_ARGZ
+gl_CONDITIONAL_HEADER([argz.h])
+AC_PROG_MKDIR_P
+gl_CONDITIONAL([GL_COND_OBJ_ARGZ], [test -n "$ARGZ_H"])
+
+Makefile.am:
+BUILT_SOURCES += $(ARGZ_H)
+
+# We need the following in order to create <argz.h> when the system
+# doesn't have one that works with the given compiler.
+if GL_GENERATE_ARGZ_H
+argz.h: argz.in.h $(top_builddir)/config.status
+@NMD@	$(AM_V_GEN)$(MKDIR_P) '%reldir%'
+	$(gl_V_at)$(SED_HEADER_TO_AT_t) $(srcdir)/argz.in.h
+	$(AM_V_at)mv $@-t $@
+else
+argz.h: $(top_builddir)/config.status
+	rm -f $@
+endif
+MOSTLYCLEANFILES += argz.h argz.h-t
+
+if GL_COND_OBJ_ARGZ
+lib_SOURCES += argz.c
+endif
+
+Include:
+<argz.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

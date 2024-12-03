@@ -1,0 +1,35 @@
+Description:
+Test whether a file descriptor is a pipe.
+
+Files:
+lib/isapipe.c
+lib/isapipe.h
+m4/isapipe.m4
+
+Depends-on:
+stdbool         [test $HAVE_ISAPIPE = 0]
+sys_stat        [test $HAVE_ISAPIPE = 0]
+unistd          [test $HAVE_ISAPIPE = 0]
+msvc-nothrow    [test $HAVE_ISAPIPE = 0]
+fstat           [test $HAVE_ISAPIPE = 0]
+
+configure.ac:
+gl_ISAPIPE
+gl_CONDITIONAL([GL_COND_OBJ_ISAPIPE], [test $HAVE_ISAPIPE = 0])
+AM_COND_IF([GL_COND_OBJ_ISAPIPE], [
+  gl_PREREQ_ISAPIPE
+])
+
+Makefile.am:
+if GL_COND_OBJ_ISAPIPE
+lib_SOURCES += isapipe.c
+endif
+
+Include:
+"isapipe.h"
+
+License:
+LGPL
+
+Maintainer:
+Paul Eggert, Jim Meyering

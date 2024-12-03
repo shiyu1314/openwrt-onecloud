@@ -1,0 +1,29 @@
+Description:
+wcsnlen() function: determine the length of a size-bounded wide string.
+
+Files:
+lib/wcsnlen.c
+lib/wcsnlen-impl.h
+m4/wcsnlen.m4
+
+Depends-on:
+wchar
+
+configure.ac:
+gl_FUNC_WCSNLEN
+gl_CONDITIONAL([GL_COND_OBJ_WCSNLEN], [test $HAVE_WCSNLEN = 0])
+gl_WCHAR_MODULE_INDICATOR([wcsnlen])
+
+Makefile.am:
+if GL_COND_OBJ_WCSNLEN
+lib_SOURCES += wcsnlen.c
+endif
+
+Include:
+<wchar.h>
+
+License:
+LGPL
+
+Maintainer:
+all

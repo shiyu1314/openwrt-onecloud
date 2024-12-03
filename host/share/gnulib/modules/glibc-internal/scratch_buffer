@@ -1,0 +1,50 @@
+Description:
+Variable-sized buffer with on-stack default allocation.
+
+Files:
+lib/scratch_buffer.h
+lib/malloc/scratch_buffer.h
+lib/malloc/scratch_buffer_grow.c
+lib/malloc/scratch_buffer_grow_preserve.c
+lib/malloc/scratch_buffer_set_array_size.c
+
+Depends-on:
+c99
+builtin-expect
+gen-header
+libc-config
+stdbool
+stddef
+malloc-posix
+realloc-posix
+free-posix
+
+configure.ac:
+AC_PROG_MKDIR_P
+
+Makefile.am:
+BUILT_SOURCES += malloc/scratch_buffer.gl.h
+
+malloc/scratch_buffer.gl.h: malloc/scratch_buffer.h
+	$(AM_V_GEN)$(MKDIR_P) '%reldir%/malloc'
+	$(AM_V_at)$(SED_HEADER_STDOUT) \
+	      -e 's|__always_inline|inline _GL_ATTRIBUTE_ALWAYS_INLINE|g' \
+	      -e 's|__glibc_likely|_GL_LIKELY|g' \
+	      -e 's|__glibc_unlikely|_GL_UNLIKELY|g' \
+	      -e '/libc_hidden_proto/d' \
+	      $(srcdir)/malloc/scratch_buffer.h > $@-t
+	$(AM_V_at)mv $@-t $@
+MOSTLYCLEANFILES += malloc/scratch_buffer.gl.h malloc/scratch_buffer.gl.h-t
+
+lib_SOURCES += malloc/scratch_buffer_grow.c \
+               malloc/scratch_buffer_grow_preserve.c \
+               malloc/scratch_buffer_set_array_size.c
+
+Include:
+<scratch_buffer.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all, glibc

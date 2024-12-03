@@ -1,0 +1,36 @@
+Description:
+Search for an exact or abbreviated match of a string in an array of strings.
+
+Files:
+lib/argmatch.h
+lib/argmatch.c
+
+Depends-on:
+assert-h
+c99
+error
+exitfail
+getprogname
+gettext-h
+memcmp
+quote
+quotearg
+stdbool
+stdlib
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += argmatch.c
+
+Include:
+"argmatch.h"
+
+Link:
+$(MBRTOWC_LIB)
+
+License:
+GPL
+
+Maintainer:
+all

@@ -1,0 +1,33 @@
+Description:
+cosf() function: cosine function.
+
+Files:
+lib/cosf.c
+m4/cosf.m4
+
+Depends-on:
+math
+extensions
+cos             [test $HAVE_COSF = 0]
+
+configure.ac:
+gl_FUNC_COSF
+gl_CONDITIONAL([GL_COND_OBJ_COSF], [test $HAVE_COSF = 0])
+gl_MATH_MODULE_INDICATOR([cosf])
+
+Makefile.am:
+if GL_COND_OBJ_COSF
+lib_SOURCES += cosf.c
+endif
+
+Include:
+<math.h>
+
+Link:
+$(COSF_LIBM)
+
+License:
+LGPL
+
+Maintainer:
+all

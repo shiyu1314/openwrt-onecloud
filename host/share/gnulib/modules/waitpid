@@ -1,0 +1,28 @@
+Description:
+waitpid() function: wait for process state change
+
+Files:
+lib/waitpid.c
+m4/waitpid.m4
+
+Depends-on:
+sys_wait
+
+configure.ac:
+gl_FUNC_WAITPID
+gl_CONDITIONAL([GL_COND_OBJ_WAITPID], [test $HAVE_WAITPID = 0])
+gl_SYS_WAIT_MODULE_INDICATOR([waitpid])
+
+Makefile.am:
+if GL_COND_OBJ_WAITPID
+lib_SOURCES += waitpid.c
+endif
+
+Include:
+<sys/wait.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

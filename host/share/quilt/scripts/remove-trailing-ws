@@ -1,0 +1,148 @@
+#! /usr/bin/env perl
+
+use warnings;
+
+# Remove trailing whitespace from modified lines in working files.
+#
+# Input: diff between original and working files (unified or context
+#	 format).
+
+use strict;
+use FileHandle;
+use File::Temp qw( :mktemp );
+use Getopt::Std;
+use vars qw($opt_p $opt_n);
+
+# This ugly trick lets the script work even if gettext support is missing.
+# We did so because Locale::gettext doesn't ship with the standard perl
+# distribution.
+BEGIN {
+    if (eval { require Locale::gettext }) {
+	import Locale::gettext;
+	require POSIX;
+	import POSIX, qw(setlocale);
+    } else {
+	eval '
+	    use constant LC_MESSAGES => 0;
+	    sub setlocale($$) { }
+	    sub bindtextdomain($$) { }
+	    sub textdomain($) { }
+	    sub gettext($) { shift }
+	'
+    }
+}
+
+setlocale(LC_MESSAGES, "");
+bindtextdomain("quilt", $ENV{'STAGING_DIR_HOST'} ? $ENV{'STAGING_DIR_HOST'} . '/share/locale' : "/workdir/openwrt/staging_dir/host/share/locale");
+textdomain("quilt");
+
+sub _($) {
+    return gettext(shift);
+}
+
+$opt_p = 0;
+getopts('np:')
+    or die sprintf(_("SYNOPSIS: %s [-p num] [-n] [patch]\n"), $0);
+
+my %files;
+my $file;
+while (<>) {
+    print unless $opt_n;
+    if (/^--- ./) {
+	# unified diff
+	$file = undef;
+	while (<>) {
+	    print unless $opt_n;
+	    if (/^\+\+\+ (.+?)(?:[ \t][^\t]*)?$/) {
+		$file = $1;
+		$file =~ s<^([^/]+/+){$opt_p}><>;
+		#print STDERR "[$file]\n";
+	    } elsif ($file && /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/) {
+		my $removed = defined $2 ? $2 : 1;
+		my $added = defined $4 ? $4 : 1;
+		my $line_number = $3;
+
+		while ($removed || $added) {
+		    $_ = <>;
+		    defined $_
+			or die sprintf(_("%s: I'm confused.\n"), $0);
+		    if (/^\+/) {
+			push @{$files{$file}}, $line_number
+			    if s/(^\+.*?)[ \t]+$/$1/;
+			$added--;
+			$line_number++;
+		    } elsif (/^-/) {
+			$removed--;
+		    } elsif (/^ / || /^$/) {
+			$removed--;
+			$added--;
+			$line_number++;
+		    }
+		    print unless $opt_n;
+		}
+	    }
+	}
+    } elsif (/^\*\*\* ./) {
+	# context diff
+	$file = undef;
+	while (<>) {
+	    print unless $opt_n;
+	    if ($file && /^--- (\d+)(?:,(\d+))? ----$/) {
+		my $line_number = $1;
+		my $last_line = defined $2 ? $2 : $1;
+		while ($line_number <= $last_line) {
+		    $_ = <>;
+		    defined $_ or last;
+		    if (s/(^[+!] .*?)[ \t]+$/$1/) {
+			push @{$files{$file}}, $line_number;
+		    }
+		    $line_number++;
+		    print unless $opt_n;
+		    last if (/^\*\*\*[* ]/);
+		}
+	    } elsif (/^--- (.+?)(?:[ \t][^\t]*)?$/) {
+		$file = $1;
+		$file =~ s<^([^/]+/+){$opt_p}><>;
+		#print STDERR "[$file]\n";
+	    }
+	}
+    }
+}
+
+foreach my $file (sort keys %files) {
+    my @lines = @{$files{$file}};
+    if ($opt_n) {
+	print STDERR sprintf(
+_("Warning: trailing whitespace in line %s of %s\n"), $lines[0], $file)
+	    if @lines == 1;
+	print STDERR sprintf(
+_("Warning: trailing whitespace in lines %s of %s\n"), join(',', @lines), $file)
+	    if @lines > 1;
+    } else {
+	print STDERR sprintf(
+_("Removing trailing whitespace from line %s of %s\n"), $lines[0], $file)
+	    if @lines == 1;
+	print STDERR sprintf(
+_("Removing trailing whitespace from lines %s of %s\n"), join(',', @lines), $file)
+	    if @lines > 1;
+    }
+
+    unless ($opt_n) {
+	my $fh = new FileHandle("< $file")
+	    or die "$file: $!\n";
+	my ($tmp, $tmpname) = mkstemp("$file.XXXXXX")
+	    or die "$file.*: $!\n";
+	while (<$fh>) {
+	    if (@lines && $lines[0] == $.) {
+		    s/[ \t]+$//;
+		    shift @lines;
+	    }
+	    print $tmp $_;
+	}
+	$fh->close;
+	$tmp->close
+	    or die "$tmpname: $!\n";
+	rename $tmpname, $file
+	    or die sprintf(_("Renaming %s to %s: %s\n"), $tmpname, $file, $!);
+    }
+}

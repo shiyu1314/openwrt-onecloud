@@ -1,0 +1,13 @@
+Files:
+tests/test-alignasof.c
+tests/macros.h
+
+Depends-on:
+assert-h
+stdint
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-alignasof
+check_PROGRAMS += test-alignasof

@@ -1,0 +1,28 @@
+Description:
+times() function: get process times
+
+Files:
+lib/times.c
+m4/times.m4
+
+Depends-on:
+sys_times
+
+configure.ac:
+gl_FUNC_TIMES
+gl_CONDITIONAL([GL_COND_OBJ_TIMES], [test $HAVE_TIMES = 0])
+gl_SYS_TIMES_MODULE_INDICATOR([times])
+
+Makefile.am:
+if GL_COND_OBJ_TIMES
+lib_SOURCES += times.c
+endif
+
+Include:
+<sys/times.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Simon Josefsson

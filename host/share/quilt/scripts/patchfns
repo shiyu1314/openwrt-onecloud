@@ -1,0 +1,1240 @@
+# This file contains the common functions used in all quilt script
+# It is meant to be sourced by bash scripts.
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+export TEXTDOMAIN=quilt
+if [ -n "$STAGING_DIR_HOST" ]; then
+	export TEXTDOMAINDIR="$STAGING_DIR_HOST/share/locale"
+else
+	export TEXTDOMAINDIR=/workdir/openwrt/staging_dir/host/share/locale
+fi
+
+: ${LC_CTYPE:=$LANG}
+: ${LC_MESSAGES:=$LANG}
+ORIGINAL_LANG=$LANG
+export LANG=POSIX
+
+DB_VERSION=2
+
+: ${QUILT_PC:=.pc}
+
+# Support compatibility layer
+if [ -d $QUILT_DIR/compat ]
+then
+	export PATH="$QUILT_DIR/compat:$PATH"
+fi
+
+unset CDPATH
+shopt -s dotglob
+
+. $QUILT_DIR/scripts/utilfns
+
+# ========================================================
+
+declare -a exit_handlers
+
+add_exit_handler()
+{
+	exit_handlers[${#exit_handlers[@]}]=$1
+}
+
+remove_exit_handler()
+{
+	declare -a handlers
+	local h
+	for h in "${exit_handlers[@]}"
+	do
+		[ "$h" = "$1" ] && continue
+		handlers[${#handlers[@]}]=$h
+	done
+	exit_handlers=( "${handlers[@]}" )
+}
+
+run_exit_handlers()
+{
+	local h
+	for h in "${exit_handlers[@]}"
+	do
+		eval $h
+	done
+}
+
+trap run_exit_handlers EXIT
+
+# ========================================================
+
+# Join multiple stings using the given separator.
+array_join()
+{
+	local sep=$1 str=$2
+	shift 2
+
+	printf %s "$str"
+
+	for str in "$@"
+	do
+		printf %s%s "$sep" "$str"
+	done
+}
+
+# Quote a string for use in a basic regular expression.
+quote_bre()
+{
+	echo "$1" | sed -e 's:\([][^$/.*\\]\):\\\1:g'
+}
+
+# Quote a string for use in an extended regular expression.
+quote_re()
+{
+	echo "$1" | sed -e 's:\([][?{(|)}^$/.+*\\]\):\\\1:g'
+}
+
+# Quote a string for use in a globing pattern.
+quote_glob()
+{
+	echo "$1" | sed -e 's:\([][*?\\]\):\\\1:g'
+}
+
+# Ensure there is a trailing newline at the end of a file
+ensure_trailing_newline()
+{
+	local last_char
+
+	last_char=$(tail -c 1 "$1")
+	if ! [ -z "$last_char" -o "$last_char" = $'\n' -o "$last_char" = $'\r' ]
+	then
+		echo "" >> "$1"
+	fi
+}
+
+patch_file_name()
+{
+	echo "$QUILT_PATCHES/$1"
+}
+
+# The -pN option and possibly others that should be passed to patch.
+patch_args()
+{
+	local patch=$1
+
+	if [ -e "$SERIES" ]
+	then
+		awk '
+			{sub(/(^|[ \t]+)#.*/, "") }
+		$1 == "'"$patch"'" \
+			{ p_printed=0
+			  for (i=2; i<=NF; i++) {
+				print $i
+				if ($i ~ /^-p/)
+					p_printed=1
+			  }
+			  if (!p_printed)
+				print "-p1" ;
+			  exit
+			}
+		' "$SERIES"
+	fi
+}
+
+patch_strip_level()
+{
+	local patch=$1 i
+	for i in $(patch_args $patch)
+	do
+		case $i in
+		-p*)
+			echo ${i:2}
+			return ;;
+		esac
+	done
+	echo "1"
+}
+
+# Also remove -R if present.
+change_db_strip_level()
+{
+	local level=$1 patch=$2
+
+	if [ x$level != x-p1 ]
+	then
+		level="$level"
+	else
+		level=""
+	fi
+
+	if [ -e "$SERIES" ]
+	then
+		local tmpfile=$(gen_tempfile)
+		awk '
+		function remove_arg(nr, j) {
+			for (j=nr; j<NF; j++)
+				$j=$(j+1)
+			NF--
+		}
+		function insert_arg(nr, value, j) {
+			for (j=NF; j>=nr; j--)
+				$(j+1)=$j
+			$nr=value
+		}
+
+		/^'"$(quote_re $patch)"'([ \t]|$)/ \
+			{ p_printed=0
+			  for (i=2; i<=NF && $i !~ /^#/; i++) {
+				if ($i ~ /^-p/) {
+					if ("'"$level"'" == "")
+						remove_arg(i--)
+					else
+						$i="'"$level"'"
+					p_printed=1
+					continue
+				}
+				if ($i == "-R") {
+					remove_arg(i--)
+					continue
+				}
+			  }
+			  if (!p_printed && "'"$level"'" != "")
+				insert_arg(2, "'"$level"'")
+			}
+			{ print }
+		' "$SERIES" > $tmpfile
+		if ! cmp "$SERIES" $tmpfile >/dev/null 2>/dev/null
+		then
+			cat $tmpfile > "$SERIES"
+		fi
+		rm -f $tmpfile
+	else
+		return 1
+	fi
+}
+
+patch_in_series()
+{
+	local patch=$1
+
+	if [ -e "$SERIES" ]
+	then
+		grep -q "^$(quote_bre $patch)\([ \t]\|$\)" "$SERIES"
+	else
+		return 1
+	fi
+}
+
+# Insert new patch after topmost patch
+insert_in_series()
+{
+	local patch=$1 patch_args=$2
+	local before tmpfile
+
+	if [ -e "$SERIES" -a ! -f "$SERIES" ]; then
+		printf $"%s is not a regular file\n" "$SERIES" >&2
+		return 1
+	fi
+
+	before=${3-$(patch_after "$(top_patch)")}
+
+	if [ -n "$patch_args" ]
+	then
+		patch_args=" $patch_args"
+	fi
+
+	tmpfile=$(gen_tempfile) || return 1
+	mkdir -p "$(dirname "$SERIES")"
+	if [ -n "$before" ]
+	then
+		awk '
+		/^'"$(quote_re $before)"'([ \t]|$)/ \
+				{ print "'"$patch$patch_args"'" }
+				{ print }
+		' "$SERIES" > $tmpfile
+		status=$?
+		if [ $status -ne 0 ]
+		then
+			rm -f $tmpfile
+			return 1
+		fi
+	else
+		if [ -e "$SERIES" ]
+		then
+			cat "$SERIES" > $tmpfile
+
+			# Ensure there is a trailing newline before we append the rest
+			ensure_trailing_newline $tmpfile
+		fi
+		echo "$patch$patch_args" >> $tmpfile
+	fi
+	cat $tmpfile > "$SERIES"
+	rm -f $tmpfile
+}
+
+remove_from_series()
+{
+	local patch=$1
+
+	tmpfile=$(gen_tempfile) || return 1
+	awk '
+	! /^'"$(quote_re $patch)"'([ \t]|$)/ \
+				{ print }
+	' "$SERIES" > $tmpfile
+	if [ $? -ne 0 ]
+	then
+		rm -f $tmpfile
+		return 1
+	fi
+	cat $tmpfile > "$SERIES"
+	rm -f $tmpfile
+}
+
+rename_in_series()
+{
+	local from=$1 to=$2
+
+	tmpfile=$(gen_tempfile) || return 1
+	awk '
+	/^'"$(quote_re $from)"'([ \t]|$)/ \
+		{ sub(/'"$(quote_re $from)"'/, "'"${to//\"/\\\"}"'")
+		  good=1 }
+		{ print }
+	END	{ exit(! good) }
+	' "$SERIES" > $tmpfile
+	if [ $? -ne 0 ]
+	then
+		rm -f $tmpfile
+		return 1
+	fi
+	cat $tmpfile > "$SERIES"
+	rm -f $tmpfile
+}
+
+rename_in_db()
+{
+	local from=$1 to=$2
+	local tmpfile
+	tmpfile=$(gen_tempfile) || return 1
+	awk '
+	/^'"$(quote_re $from)"'$/ \
+		{ sub(/'"$(quote_re $from)"'/, "'"${to//\"/\\\"}"'")
+		  good=1 }
+		{ print }
+	END	{ exit(! good) }
+	' $DB > $tmpfile
+	if [ $? -eq 0 ]
+	then
+		cat $tmpfile > $DB
+		rm -f $tmpfile
+	else
+		rm -f $tmpfile
+		return 1
+	fi
+}
+
+backup_file_name()
+{
+	local patch=$1
+	while [ $# -gt 1 ]
+	do
+		echo "$QUILT_PC/$patch/$2"
+		shift
+	done
+}
+
+cat_series()
+{
+	if [ -e "$SERIES" ]
+	then
+		sed -e '/^#/d' -e 's/^[ '$'\t'']*//' \
+		    -e 's/[ '$'\t''].*//' -e '/^$/d' "$SERIES"
+	else
+		return 1
+	fi
+}
+
+top_patch()
+{
+	local patch=$(tail -n 1 $DB 2>/dev/null)
+	[ -n "$patch" ] && echo "$patch"
+}
+
+is_numeric()
+{
+	[[ "$1" =~ ^[0-9]+$ ]]
+}
+
+is_applied()
+{
+	local patch=$1
+	[ -e $DB ] || return 1
+	grep -q "^$(quote_bre $patch)\$" $DB
+}
+
+applied_patches()
+{
+	[ -e $DB ] || return 1
+	cat $DB
+}
+
+applied_before()
+{
+	local patch=$1
+
+	if [ -n "$patch" ]
+	then
+		awk '
+		$0 == "'"$patch"'"	{ exit }
+					{ print }
+		' $DB
+	fi
+}
+
+patches_before()
+{
+	local patch=$1
+
+	if [ -n "$patch" ]
+	then
+		cat_series \
+		| awk '
+		$0 == "'"$patch"'"	{ exit }
+					{ print }
+		'
+	fi
+}
+
+patches_after()
+{
+	local patch=$1
+	if [ -n "$patch" ]
+	then
+		cat_series \
+		| awk '
+		seen == 1		{ print }
+		$0 == "'"$patch"'"	{ seen=1 }
+		'
+	else
+		cat_series
+	fi
+}
+
+patch_after()
+{
+	local patch="$1"
+	patch=$(patches_after "$patch" | head -n 1)
+	[ -n "$patch" ] && echo "$patch"
+}
+
+# List all patches that have been applied on top of patch $1
+patches_on_top_of()
+{
+	local patch=$1
+	[ -e $DB ] || return
+	awk '
+	$0 == "'"$patch"'"	{ seen=1 ; next }
+	seen == 1		{ print }
+	' $DB
+}
+
+# Print the name of the patch that modified the file $2 next after
+# patch $1, or print nothing if patch $1 is on top.
+next_patch_for_file()
+{
+	local patch=$1 file=$2
+	local patches_on_top=$(patches_on_top_of $patch)
+
+	if [ -n "$patches_on_top" ]
+	then
+		for patch in $patches_on_top
+		do
+			if file_in_patch "$file" $patch
+			then
+				echo $patch
+				break
+			fi
+		done
+	fi
+}
+
+add_to_db()
+{
+	echo $1 >> $DB
+}
+
+remove_from_db()
+{
+	local patch=$1
+	local tmpfile
+	if tmpfile=$(gen_tempfile)
+	then
+		grep -v "^$(quote_bre $patch)\$" $DB > $tmpfile
+		cat $tmpfile > $DB
+		rm -f $tmpfile
+		[ -s $DB ] || rm -f $DB
+	fi
+}
+
+find_first_patch()
+{
+	local patch=$(cat_series | head -n 1)
+	if [ -z "$patch" ]
+	then
+		printf $"No patches in series\n" >&2
+		return 1
+	fi
+
+	echo "$patch"
+}
+
+find_last_patch()
+{
+	local patch=$(cat_series | tail -n 1)
+	if [ -z "$patch" ]
+	then
+		printf $"No patches in series\n" >&2
+		return 1
+	fi
+
+	echo "$patch"
+}
+
+find_top_patch()
+{
+	if ! top_patch
+	then
+		if find_first_patch > /dev/null
+		then
+			printf $"No patches applied\n" >&2
+		fi
+		return 1
+	fi
+}
+
+find_patch()
+{
+	local name="$1"
+	if [ -e "$SERIES" ]
+	then
+		if ! [ -f "$SERIES" ]
+		then
+			printf $"%s is not a regular file\n" "$SERIES" >&2
+			return 1
+		fi
+
+		local patch=${1#$SUBDIR_DOWN$QUILT_PATCHES/}
+		local bre=$(quote_bre "$patch")
+		set -- $(sed -e "/^$bre\(\|\.patch\|\.diff\?\)\(\|\.gz\|\.bz2\|\.xz\|\.lzma\|\.lz\)\([ "$'\t'"]\|$\)/!d" \
+			       -e 's/[ '$'\t''].*//' "$SERIES")
+		if [ $# -eq 1 ]
+		then
+			echo $1
+			return 0
+		else
+			# We may have an exact match, which overrides
+			# extension expansion
+			while [ $# -gt 0 ]
+			do
+				if [ $1 = "$patch" ]
+				then
+					echo $1
+					return 0
+				fi
+				shift
+			done
+		fi
+	fi
+	# Finding the first patch will error when the series is empty
+	if [ -n "$(find_first_patch)" ]
+	then
+		printf $"Patch %s is not in series\n" "$name" >&2
+	fi
+	return 1
+}
+
+find_patch_in_series()
+{
+	local name="$1"
+
+	if [ -n "$name" ]
+	then
+		find_patch "$name"
+	else
+		find_top_patch
+	fi
+}
+
+find_applied_patch()
+{
+	local name="$1"
+
+	if [ -n "$name" ]
+	then
+		local patch
+
+		patch=$(find_patch "$name") || return 1
+		if ! is_applied "$patch"
+		then
+			printf $"Patch %s is not applied\n" \
+			       "$(print_patch $patch)" >&2
+			return 1
+		fi
+		echo "$patch"
+	else
+		find_top_patch
+	fi
+}
+
+find_unapplied_patch()
+{
+	local name="$1"
+
+	if [ -n "$name" ]
+	then
+		local patch
+
+		patch=$(find_patch "$name") || return 1
+		if is_applied "$patch"
+		then
+			printf $"Patch %s is currently applied\n" \
+				"$(print_patch $patch)" >&2
+			return 2
+		fi
+		echo "$patch"
+	else
+		local start
+
+		if start=$(top_patch)
+		then
+			patch_after "$start"
+		else
+			find_first_patch || return 2
+		fi
+		if [ $? -ne 0 ]
+		then
+			printf $"File series fully applied, ends at patch %s\n" \
+				"$(print_patch $start)" >&2
+			return 2
+		fi
+	fi
+}
+
+file_in_patch()
+{
+	local file=$1 patch=$2
+	[ -f "$QUILT_PC/$patch/$file" ]
+}
+
+files_in_patch()
+{
+	local patch="$1"
+	local path="$QUILT_PC/$patch"
+
+	if [ -d "$path" ]
+	then
+		find "$path" -type f \
+			       -a ! -path "$(quote_glob "$path")/.timestamp" |
+		sed -e "s/$(quote_bre "$path")\///"
+	fi
+}
+
+# Note that we can only guess which files a patch touches because of the
+# complicated heuristics that patch uses (see "Multiple Patches in a File"
+# in the diff info pages).
+filenames_in_patch()
+{
+	local patch=$1
+	local patch_file=$(patch_file_name $patch)
+	if [ -e "$patch_file" ]
+	then
+		local strip=$(patch_strip_level $patch)
+		[ "$strip" = ab ] && strip=1
+		awk '
+		$1 == "+++" || $1 == "---" && $3 != "----" || \
+		$1 == "***" && $3 != "****" \
+			{ sub(/\t.*/, "")
+			  if (sub(/^... /, "") == 0 || $0 == "" || $0 == "/dev/null")
+				next
+			  for (n=0 ; n<'$strip'; n++)
+			      sub(/^[^\/]+\//, "")
+			  if (!printed[$0]++)
+			      print $0 }' $patch_file
+	fi
+}
+
+files_in_patch_ordered()
+{
+	local patch=$1
+
+	(   files_in_patch $patch | sort
+	    echo "-"
+	    filenames_in_patch $patch
+	) | awk '
+	$1 == "-" { out=1 ; next }
+	!out	{ files[$0]=1
+		  new_files[++n]=$0 }
+	out	{ if ($0 in files) {
+		    print $0
+		    printed[$0]=1
+		  }
+		}
+	END	{
+		  for (i=1; i<=n; i++)
+		    if (!(new_files[i] in printed))
+		      print new_files[i]
+		}
+	'
+}
+
+diff_file()
+{
+	local file=$1 old_file=$2 new_file=$3
+	local index old_hdr old_date new_hdr new_date line
+
+	: ${opt_strip_level:=1}
+	if [ $opt_strip_level = ab ]
+	then
+		old_hdr=a/$file
+		new_hdr=b/$file
+	elif [ $opt_strip_level -eq 0 ]
+	then
+		old_hdr=$file.orig
+		new_hdr=$file
+	else
+		local dir=$(basename "$PWD")
+		old_hdr=$dir.orig/$file
+		new_hdr=$dir/$file
+	fi
+	index=$new_hdr
+
+	if [ -s "$old_file" ]
+	then
+		[ -n "$QUILT_NO_DIFF_TIMESTAMPS" ] \
+		|| old_date=$'\t'$(date +'%Y-%m-%d %H:%M:%S.%N %z' \
+					-r "$old_file")
+	else
+		old_file=/dev/null
+		old_hdr=/dev/null
+		[ -n "$QUILT_NO_DIFF_TIMESTAMPS" ] \
+		|| old_date=$'\t'"1970-01-01 00:00:00.000000000 +0000"
+	fi
+	if [ -e "$new_file" ]
+	then
+		[ -n "$QUILT_NO_DIFF_TIMESTAMPS" ] \
+		|| new_date=$'\t'$(date +'%Y-%m-%d %H:%M:%S.%N %z' \
+					-r "$new_file")
+	else
+		[ $opt_strip_level = 0 ] \
+		&& old_hdr=$new_hdr
+		new_file=/dev/null
+		new_hdr=/dev/null
+		[ -n "$QUILT_NO_DIFF_TIMESTAMPS" ] \
+		|| new_date=$'\t'"1970-01-01 00:00:00.000000000 +0000"
+	fi
+
+	diff $QUILT_DIFF_OPTS \
+	     --label "$old_hdr$old_date" --label "$new_hdr$new_date" \
+	     "$old_file" "$new_file" \
+	| if read line
+	then
+		local status=0
+
+		if [[ "$line" =~ ^Binary\ files\ .*\ differ$ ]]
+		then
+			status=1
+		elif [ -z "$QUILT_NO_DIFF_INDEX" ]
+		then
+			echo "Index: $index"
+			echo "==================================================================="
+		fi
+
+		echo "$line"
+		cat
+
+		return $status
+	fi
+
+	# Test the return value of diff, and propagate the error retcode if any
+	if [ ${PIPESTATUS[0]} == 2 -o ${PIPESTATUS[1]} == 1 ]
+	then
+		printf $"Diff failed on file '%s', aborting\n" "$new_file" >&2
+		return 1
+	fi
+}
+
+cat_file()
+{
+	local filename
+
+	for filename in "$@"
+	do
+		if [ -e "$filename" ]
+		then
+			case "$filename" in
+			*.gz|*.tgz)
+				gzip -cd "$filename" ;;
+			*.bz2)
+				bzip2 -cd "$filename" ;;
+			*.xz)
+				xz -cd "$filename" ;;
+			*.lzma)
+				lzma -cd "$filename" ;;
+			*.lz)
+				lzip -cd "$filename" ;;
+			*)
+				cat "$filename" ;;
+			esac
+		fi
+	done
+}
+
+cat_to_new_file()
+{
+	local filename=$1 backup=$2
+
+	# If the file exists, back it up if requested. Return immediately upon
+	# failure.
+	if [ -e "$filename" -a -n "$backup" ]
+	then
+		if [ -L "$filename" ]
+		then
+			cp -p "$filename" "$filename~"
+		else
+			mv "$filename" "$filename~"
+		fi || return
+	fi
+
+	# If the destination file is a symbolic link, preserve it unless its
+	# target is read-only. In other cases, delete the patch file first in
+	# case it has hard links.
+	if [ -e "$filename" -a ! \( -L "$filename" -a -w "$filename" \) ]
+	then
+		rm -f "$filename"
+	fi
+
+	case "$filename" in
+	*.gz)
+		gzip -c ;;
+	*.bz2)
+		bzip2 -c ;;
+	*.xz)
+		xz -c ;;
+	*.lzma)
+		lzma -c ;;
+	*.lz)
+		lzip -c ;;
+	*)
+		cat ;;
+	esac \
+	> "$filename"
+}
+
+patch_header()
+{
+	awk '
+	!(MAYBE_CONTEXT || MAYBE_UNIFIED) {
+		if (/^\*\*\*[ \t][^ \t]/) {
+			eaten=$0
+			MAYBE_CONTEXT=1
+			next
+		}
+		if (/^---[ \t][^ \t]/) {
+			eaten=$0
+			MAYBE_UNIFIED=1
+			next
+		}
+	}
+	MAYBE_CONTEXT {
+		if (/^---[ \t][^ \t]/)
+			exit
+		print eaten
+		MAYBE_CONTEXT=0
+	}
+	MAYBE_UNIFIED {
+		if (/^+++[ \t][^ \t]/)
+			exit
+		print eaten
+		MAYBE_UNIFIED=0
+	}
+	/^Index:[ \t][^ \t]|^diff -/ { exit }
+	{ print }
+	'
+}
+
+patch_body()
+{
+	awk '
+	!(body || MAYBE_CONTEXT || MAYBE_UNIFIED) {
+		if (/^\*\*\*[ \t][^ \t]/) {
+			eaten=$0
+			MAYBE_CONTEXT=1
+			next
+		}
+		if (/^---[ \t][^ \t]/) {
+			eaten=$0
+			MAYBE_UNIFIED=1
+			next
+		}
+	}
+	MAYBE_CONTEXT {
+		if (/^---[ \t][^ \t]/) {
+			print eaten
+			body=1
+		}
+		MAYBE_CONTEXT=0
+	}
+	MAYBE_UNIFIED {
+		if (/^+++[ \t][^ \t]/) {
+			print eaten
+			body=1
+		}
+		MAYBE_UNIFIED=0
+	}
+	!body && /^Index:[ \t][^ \t]|^diff -/ { body=1 }
+	body { print }
+	'
+}
+
+strip_diffstat()
+{
+	awk '
+	/#? .* \| / \
+		{ eat = eat $0 "\n"
+		  next }
+	/^#? .* files? changed(, .* insertions?\(\+\))?(, .* deletions?\(-\))?/ \
+		{ eat = ""
+		  next }
+		{ print eat $0
+		  eat = "" }
+	'
+}
+
+in_array()
+{
+	local a=$1
+	while [ $# -gt 1 ]
+	do
+		shift
+		[ "$a" = "$1" ] && return 0
+	done
+	return 1
+}
+
+first_modified_by()
+{
+	local file=$1 patch
+	local -a patches
+	if [ $# -eq 0 ]
+	then
+		patches=( $(applied_patches) )
+	else
+		shift
+		patches=( "$@" )
+	fi
+	for patch in ${patches[@]}
+	do
+		if [ -f "$QUILT_PC/$patch/$file" ]
+		then
+			echo $patch
+			return 0
+		fi
+	done
+	return 1
+}
+
+apply_patch_temporarily()
+{
+	local workdir=$1 patch=$2 patch_file patch_args
+
+	patch_file=$(patch_file_name "$patch")
+	patch_args=$(patch_args "$patch")
+
+	shift 2
+
+	local prefix=$QUILT_PC/$patch/
+	[ ${prefix:0:1} == / ] || prefix=$PWD/$prefix
+	if ! ( cd "$workdir" && \
+	       $QUILT_DIR/scripts/backup-files -B "$prefix" -r -k -s "${@:--}" )
+	then
+		printf $"Failed to copy files to temporary directory\n" >&2
+		return 1
+	fi
+
+	if [ -s $patch_file ]
+	then
+		if ! cat_file $patch_file \
+		     | patch -d "$workdir" $QUILT_PATCH_OPTS $patch_args \
+			     --no-backup-if-mismatch -f \
+			     >/dev/null 2>/dev/null
+		then
+			# Generating a relative diff for a subset of files in
+			# the patch will fail. Also, if a patch was force
+			# applied, we know that it won't apply cleanly. In
+			# all other cases, print a warning.
+
+			if [ ! -e $QUILT_PC/$patch~refresh -a $# -eq 0 ]
+			then
+				printf $"Failed to patch temporary files\n" >&2
+				return 1
+			fi
+		fi
+	fi
+}
+
+next_filename()
+{
+	local patch=$1 base num
+	base=$(echo "$patch" \
+	       | sed -r -e 's:(\.gz|\.bz2|\.xz|\.lzma|\.lz)$::' -e 's:(\.diff?|\.patch)$::')
+	num=$(echo "$base" | sed -nre 's:.*-([0-9]+)$:\1:'p)
+	[ -n "$num" ] || num=1
+	echo "${base%-$num}-$((num+1))${patch#$base}"
+}
+
+create_db()
+{
+	if ! [ -e $QUILT_PC ]
+	then
+		mkdir -p $QUILT_PC
+		echo $DB_VERSION > $QUILT_PC/.version
+	fi
+	if ! [ -e $QUILT_PC/.quilt_patches ]
+	then
+		echo "$QUILT_PATCHES" > $QUILT_PC/.quilt_patches
+	fi
+	if ! [ -e $QUILT_PC/.quilt_series ]
+	then
+		echo "$QUILT_SERIES" > $QUILT_PC/.quilt_series
+	fi
+}
+
+version_check()
+{
+	[ -e $QUILT_PC ] || return 0
+
+	if [ -e $QUILT_PC/.version ]
+	then
+		version="$(< $QUILT_PC/.version)"
+		if [ "$version" -gt $DB_VERSION ]
+		then
+			printf $"The quilt meta-data in this tree has version %s, but this version of quilt can only handle meta-data formats up to and including version %s. Please pop all the patches using the version of quilt used to push them before downgrading.\n" "$version" "$DB_VERSION" >&2
+			exit 1
+		elif [ "$version" = $DB_VERSION ]
+		then
+			return 0
+		fi
+	fi
+	return 1
+}
+
+consistency_check()
+{
+	local top applied patches
+
+	top=$(top_patch)
+	applied=$(applied_before "$top")
+	patches=$(patches_before "$top")
+
+	if [ "$applied" != "$patches" ]
+	then
+		return 1
+	else
+		# Skip check until series file is modified again
+		touch "$DB"
+		return 0
+	fi
+}
+
+print_patch()
+{
+	echo "${QUILT_PATCHES_PREFIX:+$SUBDIR_DOWN$QUILT_PATCHES/}$1"
+}
+
+# Generate a format suitable to print patch names with printf
+patch_format()
+{
+	local prefix=${QUILT_PATCHES_PREFIX:+$SUBDIR_DOWN$QUILT_PATCHES/}
+
+	echo -n "${prefix/\%/%%}%s"
+}
+
+setup_colors()
+{
+	local C=diff_hdr=32:diff_add=36:diff_mod=35:diff_rem=35:diff_hunk=33:diff_ctx=35:diff_cctx=33:patch_offs=33:patch_fuzz=35:patch_fail=31:series_app=32:series_top=33:series_una=00:clear=00
+	[ -n "$QUILT_COLORS" ] && C="$C:$QUILT_COLORS"
+
+	C=${C//=/=\'$'\e'[}
+	C=color_${C//:/m\'; color_}m\'
+	eval $C
+}
+
+quilt_command()
+{
+	local command=$1
+	shift
+
+	# Refreshing here must produce the same output as "quilt refresh" on
+	# the command line
+	export QUILT_NO_DIFF_INDEX
+	export QUILT_NO_DIFF_TIMESTAMPS
+	# Propagate tracing options in case we are called recursively
+	export BASH_OPTS
+
+	QUILT_COMMAND="" bash $BASH_OPTS -c "${SUBDIR:+cd $SUBDIR;} [ ! -e \"$QUILTRC\" ] || source \"$QUILTRC\"; . $QUILT_DIR/$command" "quilt $command" "$@"
+}
+
+check_external_tool()
+{
+	local tool=$1 package=$2 options=$3
+	local command=$QUILT_COMMAND
+
+	[ -n "$options" ] && command="$command $options"
+
+	if ! type "$tool" &> /dev/null
+	then
+		printf $"You have to install '%s' (from package %s) to use 'quilt %s'\n" \
+		       "$tool" "$package" "$command" >&2
+		exit 1
+	fi
+}
+
+declare pager_fifo pager_fifo_dir pager_pid
+
+wait_for_pager()
+{
+	exec >&-
+	wait $pager_pid
+	rm $pager_fifo 2>/dev/null
+	rmdir $pager_fifo_dir 2>/dev/null
+}
+
+wait_for_pager_signal()
+{
+	remove_exit_handler wait_for_pager
+	wait_for_pager
+	trap - INT HUP TERM QUIT
+}
+
+# Spawn pager process and redirect the rest of our output to it
+setup_pager()
+{
+	test -t 1 || return 0
+
+	# QUILT_PAGER = QUILT_PAGER | GIT_PAGER | PAGER | less -R
+	# NOTE: QUILT_PAGER='' is significant
+	QUILT_PAGER=${QUILT_PAGER-${GIT_PAGER-${PAGER-less -R}}}
+
+	[ -z "$QUILT_PAGER" -o "$QUILT_PAGER" = "cat" ]  && return 0
+
+	export LESS="${LESS:-FRSX}"
+
+	# NOTE: with "exec > >($pager)" there is no way to get the pid of the
+	# pager so we can't wait for it to complete.  Otherwise we wouldn't
+	# need temporary files here.  Alternatively, in recent versions of
+	# bash, a coprocess could be used instead.
+
+	pager_fifo_dir="$(gen_tempfile -d)"
+	pager_fifo="$pager_fifo_dir/0"
+	mkfifo -m 600 "$pager_fifo"
+	LANG=$ORIGINAL_LANG $QUILT_PAGER < "$pager_fifo" &
+	pager_pid=$!
+	exec > "$pager_fifo"
+
+	trap wait_for_pager_signal INT HUP TERM QUIT
+	add_exit_handler wait_for_pager
+}
+
+#
+# If the working directory does not contain a $QUILT_PATCHES directory,
+# quilt searches for its base directory up the directory tree. If no
+# $QUILT_PATCHES directory exists, the quilt operations that create
+# patches will create $QUILT_PATCHES in the current working directory.
+#
+# When quilt is invoked from a directory below the base directory, it
+# changes into the base directory, and sets $SUBDIR to the relative
+# path from the base directory to the directory in which it was
+# invoked. (e.g., if quilt is invoked in /usr/src/linux/drivers/net
+# and the base direcory is /usr/src/linux, $SUBDIR is set to
+# drivers/net/.
+
+unset SUBDIR SUBDIR_DOWN
+if ! [ -d "$QUILT_PC" -o -d "${QUILT_PATCHES:-patches}" ]
+then
+    basedir=$PWD
+    while [ -n "$basedir" ]
+    do
+	basedir=${basedir%/*}
+	down=$down../
+	if [ -d "$basedir/$QUILT_PC" -o -d "$basedir/${QUILT_PATCHES:-patches}" ]
+	then
+	    SUBDIR="${PWD#$basedir/}/"
+	    SUBDIR_DOWN=$down
+	    if ! cd "$basedir/"
+	    then
+		printf $"Cannot change into parent directory %s/\n" "$basedir" >&2
+		exit 1
+	    fi
+	    break
+	fi
+    done
+    unset basedir down
+fi
+
+if [ -r $QUILT_PC/.quilt_patches ]
+then
+	QUILT_PATCHES=$(< $QUILT_PC/.quilt_patches)
+else
+	: ${QUILT_PATCHES:=patches}
+fi
+if [ -r $QUILT_PC/.quilt_series ]
+then
+	QUILT_SERIES=$(< $QUILT_PC/.quilt_series)
+else
+	: ${QUILT_SERIES:=series}
+fi
+
+if [ "${QUILT_SERIES:0:1}" = / ]
+then
+	SERIES=$QUILT_SERIES
+elif [ -f "$QUILT_PC/$QUILT_SERIES" ]
+then
+	SERIES=$QUILT_PC/$QUILT_SERIES
+	# We know the file exists, no need to re-check later
+	skip_series_check=1
+elif [ -f "$QUILT_SERIES" ]
+then
+	SERIES=$QUILT_SERIES
+	# We know the file exists, no need to re-check later
+	skip_series_check=1
+else
+	SERIES=$QUILT_PATCHES/$QUILT_SERIES
+fi
+
+DB="$QUILT_PC/applied-patches"
+
+if [ -z "$skip_version_check" ]
+then
+	if ! version_check
+	then
+		printf $"The working tree was created by an older version of quilt. Please run 'quilt upgrade'.\n" >&2
+		exit 1
+	fi
+
+	# Check if series file was modified manually, and if this is the case,
+	# make sure it is still consistent with the applied patches
+	if [ -s "$DB" -a ! "$DB" -nt "$SERIES" ] && [ "$QUILT_COMMAND" != pop ] && ! consistency_check
+	then
+		printf $"The series file no longer matches the applied patches. Please run 'quilt pop -a'.\n" >&2
+		exit 1
+	fi
+fi
+
+if [ -z "$skip_series_check" ]
+then
+	if [ ! -f "$SERIES" ]
+	then
+		printf $"No series file found\n" >&2
+		exit 1
+	fi
+fi

@@ -1,0 +1,34 @@
+Description:
+POSIX compatible signal blocking.
+
+Files:
+lib/sigprocmask.c
+m4/signalblocking.m4
+
+Depends-on:
+signal-h
+stdint          [test $HAVE_POSIX_SIGNALBLOCKING = 0]
+raise           [test $HAVE_POSIX_SIGNALBLOCKING = 0]
+msvc-inval      [test $HAVE_POSIX_SIGNALBLOCKING = 0]
+
+configure.ac:
+gl_SIGNALBLOCKING
+gl_CONDITIONAL([GL_COND_OBJ_SIGPROCMASK], [test $HAVE_POSIX_SIGNALBLOCKING = 0])
+AM_COND_IF([GL_COND_OBJ_SIGPROCMASK], [
+  gl_PREREQ_SIGPROCMASK
+])
+gl_SIGNAL_MODULE_INDICATOR([sigprocmask])
+
+Makefile.am:
+if GL_COND_OBJ_SIGPROCMASK
+lib_SOURCES += sigprocmask.c
+endif
+
+Include:
+<signal.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

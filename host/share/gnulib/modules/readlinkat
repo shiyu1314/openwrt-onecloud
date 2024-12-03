@@ -1,0 +1,42 @@
+Description:
+readlinkat() function: read symlinks relative to a directory
+
+Files:
+lib/readlinkat.c
+lib/at-func.c
+m4/readlinkat.m4
+
+Depends-on:
+unistd
+extensions
+at-internal     [test $HAVE_READLINKAT = 0 || test $REPLACE_READLINKAT = 1]
+errno           [test $HAVE_READLINKAT = 0 || test $REPLACE_READLINKAT = 1]
+fchdir          [test $HAVE_READLINKAT = 0 || test $REPLACE_READLINKAT = 1]
+fcntl-h         [test $HAVE_READLINKAT = 0 || test $REPLACE_READLINKAT = 1]
+filename        [test $HAVE_READLINKAT = 0 || test $REPLACE_READLINKAT = 1]
+fstatat         [test $HAVE_READLINKAT = 1 && test $REPLACE_READLINKAT = 1]
+openat-die      [test $HAVE_READLINKAT = 0 || test $REPLACE_READLINKAT = 1]
+openat-h        [test $HAVE_READLINKAT = 0 || test $REPLACE_READLINKAT = 1]
+save-cwd        [test $HAVE_READLINKAT = 0 || test $REPLACE_READLINKAT = 1]
+readlink        [test $HAVE_READLINKAT = 0 || test $REPLACE_READLINKAT = 1]
+
+configure.ac:
+gl_FUNC_READLINKAT
+gl_CONDITIONAL([GL_COND_OBJ_READLINKAT],
+               [test $HAVE_READLINKAT = 0 || test $REPLACE_READLINKAT = 1])
+gl_UNISTD_MODULE_INDICATOR([readlinkat])
+
+Makefile.am:
+if GL_COND_OBJ_READLINKAT
+lib_SOURCES += readlinkat.c
+endif
+
+Include:
+<fcntl.h>
+<unistd.h>
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering, Eric Blake

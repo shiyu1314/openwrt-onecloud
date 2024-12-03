@@ -1,0 +1,645 @@
+The scripts in this package simplify working with a series of patches.
+The usual tasks like applying, refreshing and reversing are supported.
+
+Please see the paper "How To Survive With Many Patches /or/
+Introduction to Quilt" for an introduction.
+
+
+Command reference
+=================
+
+quilt add [-P patch] {file} ...
+
+  Add one or more files to the topmost or named patch.  Files must be
+  added to the patch before being modified.  Files that are modified by
+  patches already applied on top of the specified patch cannot be added.
+
+  -P patch
+  	Patch to add files to.
+
+
+quilt annotate [-P patch] {file}
+
+  Print an annotated listing of the specified file showing which
+  patches modify which lines. Only applied patches are included.
+
+  -P patch
+  	Stop checking for changes at the specified rather than the
+  	topmost patch.
+
+
+quilt applied [patch]
+
+  Print a list of applied patches, or all patches up to and including the
+  specified patch in the file series.
+
+
+quilt delete [-r] [--backup] [patch|-n]
+
+  Remove the specified or topmost patch from the series file.  If the
+  patch is applied, quilt will attempt to remove it first. (Only the
+  topmost patch can be removed right now.)
+
+  -n	Delete the next patch after topmost, rather than the specified
+  	or topmost patch.
+
+  -r	Remove the deleted patch file from the patches directory as well.
+
+  --backup
+  	Rename the patch file to patch~ rather than deleting it.
+  	Ignored if not used with `-r'.
+
+
+quilt diff [-p n|-p ab] [-u|-U num|-c|-C num] [--combine patch|-z] [-R] [-P patch] [--snapshot] [--diff=utility] [--no-timestamps] [--no-index] [--sort] [--color[=always|auto|never]] [file ...]
+
+  Produces a diff of the specified file(s) in the topmost or specified
+  patch.  If no files are specified, all files that are modified are
+  included.
+
+  -p n	Create a -p n style patch (-p0 or -p1 are supported).
+
+  -p ab	Create a -p1 style patch, but use a/file and b/file as the
+  	original and new filenames instead of the default
+  	dir.orig/file and dir/file names.
+
+  -u, -U num, -c, -C num
+  	Create a unified diff (-u, -U) with num lines of context. Create
+  	a context diff (-c, -C) with num lines of context. The number of
+  	context lines defaults to 3.
+
+  --no-timestamps
+  	Do not include file timestamps in patch headers.
+
+  --no-index
+  	Do not output Index: lines.
+
+  -z	Write to standard output the changes that have been made
+  	relative to the topmost or specified patch.
+
+  -R	Create a reverse diff.
+
+  -P patch
+  	Create a diff for the specified patch.  (Defaults to the topmost
+  	patch.)
+
+  --combine patch
+  	Create a combined diff for all patches between this patch and
+  	the patch specified with -P. A patch name of `-' is equivalent
+  	to specifying the first applied patch.
+
+  --snapshot
+  	Diff against snapshot (see `quilt snapshot -h').
+
+  --diff=utility
+  	Use the specified utility for generating the diff. The utility
+  	is invoked with the original and new file name as arguments.
+
+  --color[=always|auto|never]
+  	Use syntax coloring (auto activates it only if the output is a tty).
+
+  --sort	Sort files by their name instead of preserving the original order.
+
+
+quilt edit file ...
+
+  Edit the specified file(s) in $EDITOR after adding it (them) to
+  the topmost patch.
+
+
+quilt files [-v] [-a] [-l] [--combine patch] [patch]
+
+  Print the list of files that the topmost or specified patch changes.
+
+  -a	List all files in all applied patches.
+
+  -l	Add patch name to output.
+
+  -v	Verbose, more user friendly output.
+
+  --combine patch
+  	Create a listing for all patches between this patch and
+  	the topmost or specified patch. A patch name of `-' is
+  	equivalent to specifying the first applied patch.
+
+
+
+quilt fold [-R] [-q] [-f] [-p strip-level]
+
+  Integrate the patch read from standard input into the topmost patch:
+  After making sure that all files modified are part of the topmost
+  patch, the patch is applied with the specified strip level (which
+  defaults to 1).
+
+  -R	Apply patch in reverse.
+
+  -q	Quiet operation.
+
+  -f	Force apply, even if the patch has rejects. Unless in quiet mode,
+  	apply the patch interactively: the patch utility may ask questions.
+
+  -p strip-level
+  	The number of pathname components to strip from file names
+  	when applying patchfile.
+
+
+quilt fork [new_name]
+
+  Fork the topmost patch.  Forking a patch means creating a verbatim copy
+  of it under a new name, and use that new name instead of the original
+  one in the current series.  This is useful when a patch has to be
+  modified, but the original version of it should be preserved, e.g.
+  because it is used in another series, or for the history.  A typical
+  sequence of commands would be: fork, edit, refresh.
+
+  If new_name is missing, the name of the forked patch will be the current
+  patch name, followed by `-2'.  If the patch name already ends in a
+  dash-and-number, the number is further incremented (e.g., patch.diff,
+  patch-2.diff, patch-3.diff).
+
+
+quilt graph [--all] [--reduce] [--lines[=num]] [--edge-labels=files] [-T ps] [patch]
+
+  Generate a dot(1) directed graph showing the dependencies between
+  applied patches. A patch depends on another patch if both touch the same
+  file or, with the --lines option, if their modifications overlap. Unless
+  otherwise specified, the graph includes all patches that the topmost
+  patch depends on.
+  When a patch name is specified, instead of the topmost patch, create a
+  graph for the specified patch. The graph will include all other patches
+  that this patch depends on, as well as all patches that depend on this
+  patch.
+
+  --all	Generate a graph including all applied patches and their
+  	dependencies. (Unapplied patches are not included.)
+
+  --reduce
+  	Eliminate transitive edges from the graph.
+
+  --lines[=num]
+  	Compute dependencies by looking at the lines the patches modify.
+  	Unless a different num is specified, two lines of context are
+  	included.
+
+  --edge-labels=files
+  	Label graph edges with the file names that the adjacent patches
+  	modify.
+
+  -T ps	Directly produce a PostScript output file.
+
+
+quilt grep [-h|options] {pattern}
+
+  Grep through the source files, recursively, skipping patches and quilt
+  meta-information. If no filename argument is given, the whole source
+  tree is searched. Please see the grep(1) manual page for options.
+
+  -h	Print this help. The grep -h option can be passed after a
+  	double-dash (--). Search expressions that start with a dash
+  	can be passed after a second double-dash (-- --).
+
+
+quilt header [-a|-r|-e] [--backup] [--strip-diffstat] [--strip-trailing-whitespace] [patch]
+
+  Print or change the header of the topmost or specified patch.
+
+  -a, -r, -e
+  	Append to (-a) or replace (-r) the exiting patch header, or
+  	edit (-e) the header in $EDITOR. If none of these options is
+  	given, print the patch header.
+
+  --strip-diffstat
+  	Strip diffstat output from the header.
+
+  --strip-trailing-whitespace
+  	Strip trailing whitespace at the end of lines of the header.
+
+  --backup
+  	Create a backup copy of the old version of a patch as patch~.
+
+
+quilt import [-p num] [-R] [-P patch] [-f] [-d {o|a|n}] patchfile ...
+
+  Import external patches.  The patches will be inserted following the
+  current top patch, and must be pushed after import to apply them.
+
+  -p num
+  	Number of directory levels to strip when applying (default=1)
+
+  -R
+  	Apply patch in reverse.
+
+  -P patch
+  	Patch filename to use inside quilt. This option can only be
+  	used when importing a single patch.
+
+  -f	Overwrite/update existing patches.
+
+  -d {o|a|n}
+  	When overwriting in existing patch, keep the old (o), all (a), or
+  	new (n) patch header. If both patches include headers, this option
+  	must be specified. This option is only effective when -f is used.
+
+
+quilt mail {--mbox file|--send} [-m text] [-M file] [--prefix prefix] [--sender ...] [--from ...] [--to ...] [--cc ...] [--bcc ...] [--subject ...] [--reply-to message] [--charset ...] [--signature file] [first_patch [last_patch]]
+
+  Create mail messages from a specified range of patches, or all patches in
+  the series file, and either store them in a mailbox file, or send them
+  immediately. The editor is opened with a template for the introduction.
+  Please see /workdir/openwrt/staging_dir/host/share/doc/quilt/README.MAIL for details.
+  When specifying a range of patches, a first patch name of `-' denotes the
+  first, and a last patch name of `-' denotes the last patch in the series.
+
+  -m text
+  	Text to use as the text in the introduction. When this option is
+  	used, the editor will not be invoked, and the patches will be
+  	processed immediately.
+
+  -M file
+  	Like the -m option, but read the introduction from file.
+
+  --prefix prefix
+  	Use an alternate prefix in the bracketed part of the subjects
+  	generated. Defaults to `patch'.
+
+  --mbox file
+  	Store all messages in the specified file in mbox format. The mbox
+  	can later be sent using formail, for example.
+
+  --send
+  	Send the messages directly.
+
+  --sender
+  	The envelope sender address to use. The address must be of the form
+  	`user@domain.name'. No display name is allowed.
+
+  --from, --subject
+  	The values for the From and Subject headers to use. If no --from
+  	option is given, the value of the --sender option is used.
+
+  --to, --cc, --bcc
+  	Append a recipient to the To, Cc, or Bcc header.
+
+  --charset
+  	Specify a particular message encoding on systems which don't use
+  	UTF-8 or ISO-8859-15. This character encoding must match the one
+  	used in the patches.
+
+  --signature file
+  	Append the specified signature to messages (defaults to ~/.signature
+  	if found; use `-' for no signature).
+
+  --reply-to message
+  	Add the appropriate headers to reply to the specified message.
+
+
+quilt new [-p n|-p ab] {patchname}
+
+  Create a new patch with the specified file name, and insert it after the
+  topmost patch. The name can be prefixed with a sub-directory name, allowing
+  for grouping related patches together.
+
+  -p n	Create a -p n style patch (-p0 or -p1 are supported).
+
+  -p ab	Create a -p1 style patch, but use a/file and b/file as the
+  	original and new filenames instead of the default
+  	dir.orig/file and dir/file names.
+
+  Quilt can be used in sub-directories of a source tree. It determines the
+  root of a source tree by searching for a  directory above the
+  current working directory. Create a  directory in the intended root
+  directory if quilt chooses a top-level directory that is too high up
+  in the directory tree.
+
+
+quilt next [patch]
+
+  Print the name of the next patch after the specified or topmost patch in
+  the series file.
+
+
+quilt patches [-v] [--color[=always|auto|never]] {file} [files...]
+
+  Print the list of patches that modify any of the specified files. (Uses a
+  heuristic to determine which files are modified by unapplied patches.
+  Note that this heuristic is much slower than scanning applied patches.)
+
+  -v	Verbose, more user friendly output.
+
+  --color[=always|auto|never]
+  	Use syntax coloring (auto activates it only if the output is a tty).
+
+
+quilt pop [-afRqv] [--refresh] [num|patch]
+
+  Remove patch(es) from the stack of applied patches.  Without options,
+  the topmost patch is removed.  When a number is specified, remove the
+  specified number of patches.  When a patch name is specified, remove
+  patches until the specified patch end up on top of the stack.  Patch
+  names may include the patches/ prefix, which means that filename
+  completion can be used.
+
+  -a	Remove all applied patches.
+
+  -f	Force remove. The state before the patch(es) were applied will
+  	be restored from backup files.
+
+  -R	Always verify if the patch removes cleanly; don't rely on
+  	timestamp checks.
+
+  -q	Quiet operation.
+
+  -v	Verbose operation.
+
+  --refresh
+  	Automatically refresh every patch before it gets unapplied.
+
+
+quilt previous [patch]
+
+  Print the name of the previous patch before the specified or topmost
+  patch in the series file.
+
+
+quilt push [-afqvm] [--fuzz=N] [--merge[=merge|diff3]] [--leave-rejects] [--color[=always|auto|never]] [--refresh] [num|patch]
+
+  Apply patch(es) from the series file.  Without options, the next patch
+  in the series file is applied.  When a number is specified, apply the
+  specified number of patches.  When a patch name is specified, apply
+  all patches up to and including the specified patch.  Patch names may
+  include the patches/ prefix, which means that filename completion can
+  be used.
+
+  -a	Apply all patches in the series file.
+
+  -q	Quiet operation.
+
+  -f	Force apply, even if the patch has rejects.
+
+  -v	Verbose operation.
+
+  --fuzz=N
+  	Set the maximum fuzz factor (default: 2).
+
+  -m, --merge[=merge|diff3]
+  	Merge the patch file into the original files (see patch(1)).
+
+  --leave-rejects
+  	Leave around the reject files patch produced, even if the patch
+  	is not actually applied.
+
+  --color[=always|auto|never]
+  	Use syntax coloring (auto activates it only if the output is a tty).
+
+  --refresh
+  	Automatically refresh every patch after it was successfully applied.
+
+
+quilt refresh [-p n|-p ab] [-u|-U num|-c|-C num] [-z[new_name]] [-f] [--no-timestamps] [--no-index] [--diffstat] [--sort] [--backup] [--strip-trailing-whitespace] [patch]
+
+  Refreshes the specified patch, or the topmost patch by default.
+  Documentation that comes before the actual patch in the patch file is
+  retained.
+
+  It is possible to refresh patches that are not on top.  If any patches
+  on top of the patch to refresh modify the same files, the script aborts
+  by default.  Patches can still be refreshed with -f.  In that case this
+  script will print a warning for each shadowed file, changes by more
+  recent patches will be ignored, and only changes in files that have not
+  been modified by any more recent patches will end up in the specified
+  patch.
+
+  -p n	Create a -p n style patch (-p0 or -p1 supported).
+
+  -p ab	Create a -p1 style patch, but use a/file and b/file as the
+  	original and new filenames instead of the default
+  	dir.orig/file and dir/file names.
+
+  -u, -U num, -c, -C num
+  	Create a unified diff (-u, -U) with num lines of context. Create
+  	a context diff (-c, -C) with num lines of context. The number of
+  	context lines defaults to 3.
+
+  -z[new_name]
+  	Create a new patch containing the changes instead of refreshing the
+  	topmost patch. If no new name is specified, `-2' is added to the
+  	original patch name, etc. (See the fork command.)
+
+  --no-timestamps
+  	Do not include file timestamps in patch headers.
+
+  --no-index
+  	Do not output Index: lines.
+
+  --diffstat
+  	Add a diffstat section to the patch header, or replace the
+  	existing diffstat section.
+
+  -f	Enforce refreshing of a patch that is not on top.
+
+  --backup
+  	Create a backup copy of the old version of a patch as patch~.
+
+  --sort	Sort files by their name instead of preserving the original order.
+
+  --strip-trailing-whitespace
+  	Strip trailing whitespace at the end of lines.
+
+
+quilt remove [-P patch] {file} ...
+
+  Remove one or more files from the topmost or named patch.  Files that
+  are modified by patches on top of the specified patch cannot be removed.
+
+  -P patch
+  	Remove named files from the named patch.
+
+
+quilt rename [-P patch] new_name
+
+  Rename the topmost or named patch.
+
+  -P patch
+  	Patch to rename.
+
+
+quilt revert [-P patch] {file} ...
+
+  Revert uncommitted changes to the topmost or named patch for the specified
+  file(s): after the revert, 'quilt diff -z' will show no differences for those
+  files. Changes to files that are modified by patches on top of the specified
+  patch cannot be reverted.
+
+  -P patch
+  	Revert changes in the named patch.
+
+
+quilt series [--color[=always|auto|never]] [-v]
+
+  Print the names of all patches in the series file.
+
+  --color[=always|auto|never]
+  	Use syntax coloring (auto activates it only if the output is a tty).
+
+  -v	Verbose, more user friendly output.
+
+
+quilt setup [-d path-prefix] [-v] [--sourcedir dir] [--fuzz=N] [--slow|--fast] {specfile|seriesfile}
+
+  Initializes a source tree from an rpm spec file or a quilt series file.
+
+  -d	Optional path prefix for the resulting source tree.
+
+  --sourcedir
+  	Directory that contains the package sources. Defaults to `.'.
+
+  -v	Verbose debug output.
+
+  --fuzz=N
+  	Set the maximum fuzz factor (needs rpm 4.6 or later).
+
+  --slow	Use the original, slow method to process the spec file. In this mode,
+  	rpmbuild generates a working tree in a temporary directory while all
+  	its actions are recorded, and then everything is replayed from scratch
+  	in the target directory.
+
+  --fast	Use the new, faster method to process the spec file. In this mode,
+  	rpmbuild is told to generate a working tree directly in the target
+  	directory. This is now the default.
+
+
+quilt snapshot [-d]
+
+  Take a snapshot of the current working state.  After taking the snapshot,
+  the tree can be modified in the usual ways, including pushing and
+  popping patches.  A diff against the tree at the moment of the
+  snapshot can be generated with `quilt diff --snapshot'.
+
+  -d	Only remove current snapshot.
+
+
+quilt top
+
+  Print the name of the topmost patch on the current stack of applied
+  patches.
+
+
+quilt unapplied [patch]
+
+  Print a list of patches that are not applied, or all patches that follow
+  the specified patch in the series file.
+
+
+quilt upgrade
+
+  Upgrade the meta-data in a working tree from an old version of quilt to the
+  current version. This command is only needed when the quilt meta-data format
+  has changed, and the working tree still contains old-format meta-data. In that
+  case, quilt will request to run `quilt upgrade'.
+
+
+
+Typical Usages: New patches; Importing patches; Patch management
+======================================================================
+
+Add new patches:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. create a new patch: quilt new {patchname, e.g., sysctl_fix.patch}
+
+2. add/edit file(s): quilt edit filepath
+or:
+2a. add file(s) to patch: quilt add {filepath}
+2b. manual edit file(s) use your $editor
+
+3. update the patch: quilt refresh
+3b. list the patch description: quilt header [patch]
+3c. update the patch description: quilt header -e [patch]
+
+4. list files in the patch: quilt files
+
+5. show current patch contents: quilt diff
+
+6. apply current, ready for next: quilt push
+
+7. remove file(s) from patch: quilt remove {filepath}
+
+Importing patches:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. import a patch: quilt import patchfile
+
+2. apply it: quilt push
+
+3. update the patch: quilt refresh
+3b. list the patch description: quilt header [patch]
+3c. update the patch description: quilt header -e [patch]
+
+4. list files in the patch: quilt files
+
+5. show current patch contents: quilt diff
+
+Import/Apply a series file + patches to a tree:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. cp(1) the patches directory ('series' file + all patch files) to
+the expected patches location (as specified in your .quiltrc file)
+
+2. apply all of series: quilt push -a
+
+Other patch management:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. remove files from a patch: quilt remove {filepath}
+
+2. remove unapplied patch: quilt delete {patchname}
+
+3. list all patch names: quilt series
+
+4. list all applied/unapplied: quilt applied | unapplied
+
+5. list top/previous/next patch name: quilt top | previous | next
+
+6. list patches modifying file: quilt patches {filepath}
+
+7. rename a patch: quilt rename {patchname}
+
+8. duplicate a patch: quilt fork {patchname}
+
+9. prepare or send mails: quilt mail ...
+
+10. search in source files: quilt grep ...
+
+11. create snapshot: quilt snapshot
+
+12. init from RPM spec or series file: quilt setup
+
+13. distribution of patches: quilt diff --combine
+and distribute the combined diff file,
+or distribute the patches/ directory content
+
+
+Helper files/scripts
+====================
+
+backup-files
+A simple utility that creates / restores / removes
+backup files.
+
+dependency-graph
+A utility to compute patch dependencies from the QUILT_PC
+metadata.
+
+edmail
+A utility to manipulate the headers of an Internet mail message.
+
+guards
+Convert a series file with conditional statements into a series
+file as expected; see the guards(1) manual page.
+
+inspect
+A script to create a series file from an rpm spec file (including
+a list of tar files).
+
+patchfns
+utilfns
+Collections of functions.
+
+remove-trailing-ws
+A utility to report trailing whitespace, and remove trailing
+whitespace from files.

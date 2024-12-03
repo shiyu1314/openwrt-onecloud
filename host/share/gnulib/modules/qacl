@@ -1,0 +1,26 @@
+Description:
+Access control lists of files.  (Unportable.)
+This is a placeholder module for backwards compatibility.
+New programs should use either qcopy-acl or qset-acl or both.
+
+Files:
+
+Depends-on:
+qcopy-acl
+qset-acl
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+
+Link:
+$(LIB_ACL)
+$(QCOPY_ACL_LIB)
+
+License:
+GPL
+
+Maintainer:
+Paul Eggert, Jim Meyering

@@ -1,0 +1,86 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt snapshot [-d]\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Take a snapshot of the current working state.  After taking the snapshot,
+the tree can be modified in the usual ways, including pushing and
+popping patches.  A diff against the tree at the moment of the
+snapshot can be generated with \`quilt diff --snapshot'.
+
+-d	Only remove current snapshot.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o dh -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-d)
+		opt_remove=1
+		shift ;;
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -ne 0 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+snap_subdir=.snap
+
+# Clean up from previous snapshot
+rm -rf $QUILT_PC/$snap_subdir
+if [ -n "$opt_remove" ]
+then
+	exit 0
+fi
+
+# Save current working state
+create_db
+mkdir -p $QUILT_PC/$snap_subdir
+for patch in $(applied_patches); do
+	files_in_patch $patch
+done \
+| awk ' # filter out duplicates
+	{ if (seen[$0])
+	      next
+	  seen[$0] = 1
+	}
+	{ print }
+' \
+| $QUILT_DIR/scripts/backup-files -c -s -f - -B "$QUILT_PC/$snap_subdir/"

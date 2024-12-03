@@ -1,0 +1,37 @@
+Description:
+Memory allocation with out-of-memory checking.  Also see xalloc-die.
+
+Files:
+lib/xalloc.h
+lib/xmalloc.c
+m4/xalloc.m4
+
+Depends-on:
+c99
+calloc-gnu
+extern-inline
+ialloc
+idx
+malloc-gnu
+minmax
+realloc-gnu
+reallocarray
+stdckdint
+stdint
+xalloc-die
+
+configure.ac:
+gl_XALLOC
+gl_MODULE_INDICATOR([xalloc])
+
+Makefile.am:
+lib_SOURCES += xmalloc.c
+
+Include:
+"xalloc.h"
+
+License:
+GPL
+
+Maintainer:
+all

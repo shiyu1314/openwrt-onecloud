@@ -1,0 +1,33 @@
+Description:
+mempcpy() function: copy memory area, return pointer after last written byte.
+
+Files:
+lib/mempcpy.c
+m4/mempcpy.m4
+
+Depends-on:
+extensions
+string
+
+configure.ac:
+gl_FUNC_MEMPCPY
+gl_CONDITIONAL([GL_COND_OBJ_MEMPCPY],
+               [test $HAVE_MEMPCPY = 0 || test $REPLACE_MEMPCPY = 1])
+AM_COND_IF([GL_COND_OBJ_MEMPCPY], [
+  gl_PREREQ_MEMPCPY
+])
+gl_STRING_MODULE_INDICATOR([mempcpy])
+
+Makefile.am:
+if GL_COND_OBJ_MEMPCPY
+lib_SOURCES += mempcpy.c
+endif
+
+Include:
+<string.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Simon Josefsson

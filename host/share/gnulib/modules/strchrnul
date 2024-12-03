@@ -1,0 +1,36 @@
+Description:
+strchrnul() function: Find the first occurrence of C in S or the final NUL
+byte.
+
+Files:
+lib/strchrnul.c
+lib/strchrnul.valgrind
+m4/strchrnul.m4
+
+Depends-on:
+string
+extensions
+rawmemchr       [test $HAVE_STRCHRNUL = 0 || test $REPLACE_STRCHRNUL = 1]
+
+configure.ac:
+gl_FUNC_STRCHRNUL
+gl_CONDITIONAL([GL_COND_OBJ_STRCHRNUL],
+               [test $HAVE_STRCHRNUL = 0 || test $REPLACE_STRCHRNUL = 1])
+AM_COND_IF([GL_COND_OBJ_STRCHRNUL], [
+  gl_PREREQ_STRCHRNUL
+])
+gl_STRING_MODULE_INDICATOR([strchrnul])
+
+Makefile.am:
+if GL_COND_OBJ_STRCHRNUL
+lib_SOURCES += strchrnul.c
+endif
+
+Include:
+<string.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Eric Blake, glibc

@@ -1,0 +1,26 @@
+Description:
+A set of macros to make calls to alloc/calloc/realloc safer.
+
+Files:
+lib/safe-alloc.h
+lib/safe-alloc.c
+m4/safe-alloc.m4
+
+Depends-on:
+calloc-gnu
+reallocarray
+
+configure.ac:
+gl_SAFE_ALLOC
+
+Makefile.am:
+lib_SOURCES += safe-alloc.c
+
+Include:
+"safe-alloc.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+David Lutterkort

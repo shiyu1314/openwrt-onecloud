@@ -1,0 +1,29 @@
+Description:
+access() function: test the access rights of a file.
+
+Files:
+lib/access.c
+m4/access.m4
+
+Depends-on:
+unistd
+fcntl
+
+configure.ac:
+gl_FUNC_ACCESS
+gl_CONDITIONAL([GL_COND_OBJ_ACCESS], [test $REPLACE_ACCESS = 1])
+gl_UNISTD_MODULE_INDICATOR([access])
+
+Makefile.am:
+if GL_COND_OBJ_ACCESS
+lib_SOURCES += access.c
+endif
+
+Include:
+<unistd.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

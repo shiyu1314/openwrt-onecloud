@@ -1,0 +1,37 @@
+Description:
+strpbrk() function: search a string for any of a set of characters.
+
+Status:
+obsolete
+
+Notice:
+This module is obsolete.
+
+Files:
+lib/strpbrk.c
+m4/strpbrk.m4
+
+Depends-on:
+string
+
+configure.ac:
+gl_FUNC_STRPBRK
+gl_CONDITIONAL([GL_COND_OBJ_STRPBRK], [test $HAVE_STRPBRK = 0])
+AM_COND_IF([GL_COND_OBJ_STRPBRK], [
+  gl_PREREQ_STRPBRK
+])
+gl_STRING_MODULE_INDICATOR([strpbrk])
+
+Makefile.am:
+if GL_COND_OBJ_STRPBRK
+lib_SOURCES += strpbrk.c
+endif
+
+Include:
+<string.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+glibc

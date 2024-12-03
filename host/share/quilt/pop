@@ -1,0 +1,279 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt pop [-afRqv] [--refresh] [num|patch]\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Remove patch(es) from the stack of applied patches.  Without options,
+the topmost patch is removed.  When a number is specified, remove the
+specified number of patches.  When a patch name is specified, remove
+patches until the specified patch end up on top of the stack.  Patch
+names may include the patches/ prefix, which means that filename
+completion can be used.
+
+-a	Remove all applied patches.
+
+-f	Force remove. The state before the patch(es) were applied will
+	be restored from backup files.
+
+-R	Always verify if the patch removes cleanly; don't rely on
+	timestamp checks.
+
+-q	Quiet operation.
+
+-v	Verbose operation.
+
+--refresh
+	Automatically refresh every patch before it gets unapplied.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+list_patches()
+{
+	local n patches
+	patches=( $(applied_patches) )
+	for ((n=${#patches[@]}-1; n>=0; n--))
+	do
+		if [ -n "$number" ]
+		then
+			(( number-- > 0 )) || break
+		fi
+		[ "${patches[n]}" = "$stop_at_patch" ] && break
+		echo "${patches[n]}"
+	done
+}
+
+files_may_have_changed()
+{
+	local patch=$1 file
+	local patch_file=$(patch_file_name "$patch")
+
+	if [ $? -ne 0 -o ! -e "$patch_file" \
+	     -o ! -e "$QUILT_PC/$patch/.timestamp" \
+	     -o ! "$QUILT_PC/$patch/.timestamp" -nt "$patch_file" ]
+	then
+		return 0
+	fi
+
+	for file in $(files_in_patch "$patch")
+	do
+		[ ! "$QUILT_PC/$patch/.timestamp" -nt "$file" ] && return 0
+	done
+	return 1
+}
+
+# Check if all changes have been folded back into the patch (quilt refresh),
+# and report any pending changes.
+check_for_pending_changes()
+{
+	local patch=$1
+	local patch_file=$(patch_file_name "$patch")
+	local workdir=$(gen_tempfile -d quilt) status=0
+
+	if [ -d "$QUILT_PC/$patch" ]
+	then
+		local prefix=$QUILT_PC/$patch/
+		[ ${prefix:0:1} == / ] || prefix=$PWD/$prefix
+		if ! ( cd $workdir && \
+		       $QUILT_DIR/scripts/backup-files -B "$prefix" -r -k -s - )
+		then
+			printf $"Failed to copy files to temporary directory\n" >&2
+			rm -rf $workdir
+			return 1
+		fi
+	fi
+
+	if [ -s "$patch_file" ]
+	then
+		cat_file "$patch_file" \
+		| patch -d $workdir $QUILT_PATCH_OPTS \
+			$(patch_args "$patch") --no-backup-if-mismatch \
+			-f >/dev/null 2>/dev/null
+	fi
+
+	local file file2 failed
+	for file2 in $(files_in_patch "$patch")
+	do
+		file=$workdir/$file2
+		[ -e "$file"  ] || file=/dev/null
+		[ -e "$file2" ] || file2=/dev/null
+		diff -q "$file" "$file2" > /dev/null || failed=1
+	done
+
+	if [ -n "$failed" ]
+	then
+		printf $"Patch %s does not remove cleanly (refresh it or enforce with -f)\n" \
+		       "$(print_patch "$patch")" >&2
+		status=1
+	fi
+	rm -rf $workdir
+
+	return $status
+}
+
+remove_patch()
+{
+	local patch=$1 status=0
+
+	trap "status=1" SIGINT
+	if [ -z "$opt_force" ] && \
+	   ( [ -n "$opt_remove" ] || files_may_have_changed "$patch" )
+	then
+		check_for_pending_changes "$patch" || status=1
+	fi
+
+	if [ $status -eq 0 ]
+	then
+		rm -f "$QUILT_PC/$patch/.timestamp"
+		if [ -z "$(shopt -s nullglob ; echo "$QUILT_PC/$patch/"*)" ]
+		then
+			printf $"Patch %s appears to be empty, removing\n" \
+			       "$(print_patch "$patch")"
+			rmdir "$QUILT_PC/$patch"
+			status=$?
+		else
+			printf $"Removing patch %s\n" "$(print_patch "$patch")"
+			$QUILT_DIR/scripts/backup-files $silent -r -t -B "$QUILT_PC/$patch/" -
+			status=$?
+		fi
+		remove_from_db "$patch"
+		rm -f "$QUILT_PC/$patch~refresh"
+	fi
+	trap - SIGINT
+	return $status
+}
+
+options=`getopt -o fRqvah --long refresh -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-f)
+		opt_force=1
+		unset opt_remove
+		shift ;;
+	-R)
+		opt_remove=1
+		unset opt_force
+		shift ;;
+	-q)
+		opt_quiet=1
+		shift ;;
+	-v)
+		opt_verbose=1
+		shift ;;
+	-a)
+		opt_all=1
+		shift ;;
+	-h)
+		usage -h ;;
+	--refresh)
+		opt_refresh=1
+		shift ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -gt 1 -o \( -n "$opt_all" -a $# -ne 0 \) ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+if [ -n "$opt_force" -a -n "$opt_refresh" ]
+then
+	printf $"Options %s and %s are mutually exclusive\n" "-f" "--refresh"
+	exit 1
+fi
+
+if [ $# -eq 1 ]
+then
+	if is_numeric "$1"
+	then
+		number=$1
+	else
+		stop_at_patch=$(find_applied_patch "$1") || exit 1
+	fi
+else
+	[ -n "$opt_all" ] || number=1
+fi
+
+[ -n "$opt_quiet" ] && silent=-s
+[ -z "$opt_verbose" ] && silent_unless_verbose=-s
+
+top=$(top_patch)
+if [ -n "$top" -a -e "$QUILT_PC/$top~refresh" -a -z "$opt_force" ]
+then
+	printf $"Patch %s needs to be refreshed first.\n" \
+	       "$(print_patch "$top")" >&2
+	exit 1
+fi
+
+if ! patches=$(list_patches) 2>&1
+then
+	exit 1
+elif [ -z "$patches" ]
+then
+	printf $"No patch removed\n" >&2
+	exit 2
+fi
+
+# We will update the list of applied patches, which in turn will disable the
+# consistency check. Enable it again if needed.
+if [ -z "$opt_all" -a ! "$DB" -nt "$SERIES" ] && ! consistency_check
+then
+	rearm_check=1
+fi
+
+for patch in $patches
+do
+	[ -z "$opt_refresh" ] || quilt_command refresh $QUILT_REFRESH_ARGS
+	if ! remove_patch "$patch"
+	then
+		exit 1
+	fi
+	[ -z "$opt_quiet" ] && echo
+done
+
+patch="$(top_patch)"
+if [ -z "$patch" ]
+then
+	printf $"No patches applied\n"
+else
+	# Ensure that the files in the topmost patch have a link count
+	# of one: This will automatically be the case in the usual
+	# situations, but we don't want to risk file corruption in weird
+	# corner cases such as files added to a patch but not modified.
+	$QUILT_DIR/scripts/backup-files -L -s -B "$QUILT_PC/$patch/" -
+	printf $"Now at patch %s\n" "$(print_patch "$patch")"
+
+	[ -z "$rearm_check" ] || touch "$SERIES"
+fi

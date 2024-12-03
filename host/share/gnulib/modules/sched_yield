@@ -1,0 +1,33 @@
+Description:
+Schedule other threads to run.
+
+Files:
+lib/sched_yield.c
+m4/sched_yield.m4
+m4/threadlib.m4
+
+Depends-on:
+sched
+
+configure.ac:
+gl_FUNC_SCHED_YIELD
+gl_CONDITIONAL([GL_COND_OBJ_SCHED_YIELD],
+               [test $HAVE_SCHED_YIELD = 0 || test $REPLACE_SCHED_YIELD = 1])
+gl_SCHED_MODULE_INDICATOR([sched_yield])
+
+Makefile.am:
+if GL_COND_OBJ_SCHED_YIELD
+lib_SOURCES += sched_yield.c
+endif
+
+Include:
+<sched.h>
+
+Link:
+$(SCHED_YIELD_LIB)
+
+License:
+LGPLv2+
+
+Maintainer:
+all

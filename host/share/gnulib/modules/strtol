@@ -1,0 +1,29 @@
+Description:
+strtol() function: convert string to 'long'.
+
+Files:
+lib/strtol.c
+m4/strtol.m4
+
+Depends-on:
+stdlib
+
+configure.ac:
+gl_FUNC_STRTOL
+gl_CONDITIONAL([GL_COND_OBJ_STRTOL],
+               [test $HAVE_STRTOL = 0 || test $REPLACE_STRTOL = 1])
+gl_STDLIB_MODULE_INDICATOR([strtol])
+
+Makefile.am:
+if GL_COND_OBJ_STRTOL
+lib_SOURCES += strtol.c
+endif
+
+Include:
+<stdlib.h>
+
+License:
+LGPL
+
+Maintainer:
+glibc

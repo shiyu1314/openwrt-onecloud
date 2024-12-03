@@ -1,0 +1,67 @@
+Description:
+Access from source code to variables set by "configure" or "make".
+
+Files:
+m4/configmake.m4
+m4/build-to-host.m4
+
+Depends-on:
+gen-header
+
+configure.ac:
+gl_CONFIGMAKE
+AC_PROG_MKDIR_P
+
+Makefile.am:
+# Listed in the same order as the GNU makefile conventions, and
+# provided by autoconf 2.59c+ or 2.70.
+# The Automake-defined pkg* macros are appended, in the order
+# listed in the Automake 1.10a+ documentation.
+configmake.h: Makefile
+@NMD@	$(AM_V_GEN)$(MKDIR_P) '%reldir%'
+	$(gl_V_at){ echo '/* DO NOT EDIT! GENERATED AUTOMATICALLY! */'; \
+	  echo '#if HAVE_WINSOCK2_H'; \
+	  echo '# include <winsock2.h> /* avoid mingw pollution on DATADIR */'; \
+	  echo '#endif'; \
+	  printf '#define PREFIX %s\n' $(prefix_c_make); \
+	  printf '#define EXEC_PREFIX %s\n' $(exec_prefix_c_make); \
+	  printf '#define BINDIR %s\n' $(bindir_c_make); \
+	  printf '#define SBINDIR %s\n' $(sbindir_c_make); \
+	  printf '#define LIBEXECDIR %s\n' $(libexecdir_c_make); \
+	  printf '#define DATAROOTDIR %s\n' $(datarootdir_c_make); \
+	  printf '#define DATADIR %s\n' $(datadir_c_make); \
+	  printf '#define SYSCONFDIR %s\n' $(sysconfdir_c_make); \
+	  printf '#define SHAREDSTATEDIR %s\n' $(sharedstatedir_c_make); \
+	  printf '#define LOCALSTATEDIR %s\n' $(localstatedir_c_make); \
+	  printf '#define RUNSTATEDIR %s\n' $(runstatedir_c_make); \
+	  printf '#define INCLUDEDIR %s\n' $(includedir_c_make); \
+	  printf '#define OLDINCLUDEDIR %s\n' $(oldincludedir_c_make); \
+	  printf '#define DOCDIR %s\n' $(docdir_c_make); \
+	  printf '#define INFODIR %s\n' $(infodir_c_make); \
+	  printf '#define HTMLDIR %s\n' $(htmldir_c_make); \
+	  printf '#define DVIDIR %s\n' $(dvidir_c_make); \
+	  printf '#define PDFDIR %s\n' $(pdfdir_c_make); \
+	  printf '#define PSDIR %s\n' $(psdir_c_make); \
+	  printf '#define LIBDIR %s\n' $(libdir_c_make); \
+	  printf '#define LISPDIR %s\n' $(lispdir_c_make); \
+	  printf '#define LOCALEDIR %s\n' $(localedir_c_make); \
+	  printf '#define MANDIR %s\n' $(mandir_c_make); \
+	  printf '#define MANEXT %s\n' \"$(manext)\"; \
+	  printf '#define PKGDATADIR %s\n' $(pkgdatadir_c_make); \
+	  printf '#define PKGINCLUDEDIR %s\n' $(pkgincludedir_c_make); \
+	  printf '#define PKGLIBDIR %s\n' $(pkglibdir_c_make); \
+	  printf '#define PKGLIBEXECDIR %s\n' $(pkglibexecdir_c_make); \
+	} | sed '/""/d' > $@-t
+	$(AM_V_at)mv $@-t $@
+
+BUILT_SOURCES += configmake.h
+CLEANFILES += configmake.h configmake.h-t
+
+Include:
+"configmake.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+all

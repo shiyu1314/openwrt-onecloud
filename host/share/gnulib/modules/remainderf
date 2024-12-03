@@ -1,0 +1,42 @@
+Description:
+remainderf() function: floating-point remainder function.
+
+Files:
+lib/remainderf.c
+lib/remainder.c
+m4/remainderf.m4
+m4/mathfunc.m4
+
+Depends-on:
+math
+extensions
+remainder       [test $HAVE_REMAINDERF = 0 || test $REPLACE_REMAINDERF = 1]
+isfinite        [test $HAVE_REMAINDERF = 0 || test $REPLACE_REMAINDERF = 1]
+signbit         [test $HAVE_REMAINDERF = 0 || test $REPLACE_REMAINDERF = 1]
+fabsf           [test $HAVE_REMAINDERF = 0 || test $REPLACE_REMAINDERF = 1]
+fmodf           [test $HAVE_REMAINDERF = 0 || test $REPLACE_REMAINDERF = 1]
+isnanf          [test $HAVE_REMAINDERF = 0 || test $REPLACE_REMAINDERF = 1]
+isinf           [test $HAVE_REMAINDERF = 0 || test $REPLACE_REMAINDERF = 1]
+
+configure.ac:
+gl_FUNC_REMAINDERF
+gl_CONDITIONAL([GL_COND_OBJ_REMAINDERF],
+               [test $HAVE_REMAINDERF = 0 || test $REPLACE_REMAINDERF = 1])
+gl_MATH_MODULE_INDICATOR([remainderf])
+
+Makefile.am:
+if GL_COND_OBJ_REMAINDERF
+lib_SOURCES += remainderf.c
+endif
+
+Include:
+<math.h>
+
+Link:
+$(REMAINDERF_LIBM)
+
+License:
+LGPL
+
+Maintainer:
+all

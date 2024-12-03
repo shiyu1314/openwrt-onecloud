@@ -1,0 +1,12 @@
+Files:
+tests/test-calloc-gnu.c
+tests/macros.h
+
+Depends-on:
+stdint
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-calloc-gnu
+check_PROGRAMS += test-calloc-gnu

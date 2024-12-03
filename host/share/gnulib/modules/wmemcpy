@@ -1,0 +1,29 @@
+Description:
+wmemcpy() function: copy wide character array.
+
+Files:
+lib/wmemcpy.c
+lib/wmemcpy-impl.h
+m4/wmemcpy.m4
+
+Depends-on:
+wchar
+
+configure.ac:
+gl_FUNC_WMEMCPY
+gl_CONDITIONAL([GL_COND_OBJ_WMEMCPY], [test $HAVE_WMEMCPY = 0])
+gl_WCHAR_MODULE_INDICATOR([wmemcpy])
+
+Makefile.am:
+if GL_COND_OBJ_WMEMCPY
+lib_SOURCES += wmemcpy.c
+endif
+
+Include:
+<wchar.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

@@ -1,0 +1,30 @@
+Description:
+mkfifo() function: create named FIFO
+
+Files:
+lib/mkfifo.c
+m4/mkfifo.m4
+
+Depends-on:
+sys_stat
+stat            [test $HAVE_MKFIFO = 0 || test $REPLACE_MKFIFO = 1]
+
+configure.ac:
+gl_FUNC_MKFIFO
+gl_CONDITIONAL([GL_COND_OBJ_MKFIFO],
+               [test $HAVE_MKFIFO = 0 || test $REPLACE_MKFIFO = 1])
+gl_UNISTD_MODULE_INDICATOR([mkfifo])
+
+Makefile.am:
+if GL_COND_OBJ_MKFIFO
+lib_SOURCES += mkfifo.c
+endif
+
+Include:
+<sys/stat.h>
+
+License:
+LGPL
+
+Maintainer:
+Eric Blake

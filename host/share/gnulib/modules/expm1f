@@ -1,0 +1,34 @@
+Description:
+expm1f() function: exponential function minus one.
+
+Files:
+lib/expm1f.c
+m4/expm1f.m4
+
+Depends-on:
+math
+extensions
+expm1           [test $HAVE_EXPM1F = 0 || test $REPLACE_EXPM1F = 1]
+
+configure.ac:
+gl_FUNC_EXPM1F
+gl_CONDITIONAL([GL_COND_OBJ_EXPM1F],
+               [test $HAVE_EXPM1F = 0 || test $REPLACE_EXPM1F = 1])
+gl_MATH_MODULE_INDICATOR([expm1f])
+
+Makefile.am:
+if GL_COND_OBJ_EXPM1F
+lib_SOURCES += expm1f.c
+endif
+
+Include:
+<math.h>
+
+Link:
+$(EXPM1F_LIBM)
+
+License:
+LGPL
+
+Maintainer:
+all

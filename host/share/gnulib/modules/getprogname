@@ -1,0 +1,36 @@
+Description:
+Program name management.
+
+Files:
+lib/getprogname.h
+lib/getprogname.c
+m4/getprogname.m4
+
+Depends-on:
+stdlib
+basename-lgpl   [test $HAVE_GETPROGNAME = 0]
+extensions      [test $HAVE_GETPROGNAME = 0]
+open            [test $HAVE_GETPROGNAME = 0]
+
+configure.ac:
+gl_FUNC_GETPROGNAME
+gl_CONDITIONAL([GL_COND_OBJ_GETPROGNAME],
+               [test $HAVE_GETPROGNAME = 0 || test $REPLACE_GETPROGNAME = 1])
+AM_COND_IF([GL_COND_OBJ_GETPROGNAME], [
+  gl_PREREQ_GETPROGNAME
+])
+gl_STDLIB_MODULE_INDICATOR([getprogname])
+
+Makefile.am:
+if GL_COND_OBJ_GETPROGNAME
+lib_SOURCES += getprogname.c
+endif
+
+Include:
+<stdlib.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+All

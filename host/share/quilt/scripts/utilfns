@@ -1,0 +1,54 @@
+# This file contains the common functions used by patchfns and backup-files.
+# It is meant to be sourced by bash scripts.
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+basename()
+{
+	local path=$1
+	while [ "${path:(-1)}" = "/" ]
+	do
+		path=${path%/}
+	done
+	echo "${path##*/}"
+}
+
+dirname()
+{
+	local path=$1
+	while [ "${path:(-1)}" = "/" ]
+	do
+		path=${path%/}
+	done
+	local basename="${path##*/}"
+	path="${path:0:${#path}-${#basename}}"
+	while [ "${path:(-1)}" = "/" ]
+	do
+		path=${path%/}
+	done
+	if [ -n "$path" ]
+	then
+		echo "$path"
+	else
+		if [ ${1:0:1} = "/" ]
+		then
+			echo "/"
+		else
+			echo "."
+		fi
+	fi
+}
+
+gen_tempfile()
+{
+	if [ "$1" = -d ]
+	then
+		mktemp -d "${2:-${TMPDIR:-/tmp}/quilt.}XXXXXX"
+	else
+		mktemp "${1:-${TMPDIR:-/tmp}/quilt.}XXXXXX"
+	fi
+}

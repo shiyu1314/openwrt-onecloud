@@ -1,0 +1,10 @@
+prefix=/workdir/openwrt/staging_dir/host
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libzstd
+Description: fast lossless compression algorithm library
+URL: https://facebook.github.io/zstd/
+Version: 1.5.5
+Libs: -L${libdir} -lzstd -pthread
+Cflags: -I${includedir} -pthread

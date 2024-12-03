@@ -1,0 +1,11 @@
+Files:
+tests/test-assert.c
+
+Depends-on:
+assert-h-c++-tests
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-assert
+check_PROGRAMS += test-assert

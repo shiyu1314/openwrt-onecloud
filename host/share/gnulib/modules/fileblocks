@@ -1,0 +1,30 @@
+Description:
+Estimate number of blocks of a file, if 'struct stat' doesn't have st_blocks.
+
+Files:
+lib/fileblocks.c
+m4/fileblocks.m4
+
+Depends-on:
+
+configure.ac:
+gl_FILEBLOCKS
+gl_CONDITIONAL([GL_COND_OBJ_FILEBLOCKS],
+               [test $ac_cv_member_struct_stat_st_blocks = no])
+AM_COND_IF([GL_COND_OBJ_FILEBLOCKS], [
+  gl_PREREQ_FILEBLOCKS
+])
+
+Makefile.am:
+if GL_COND_OBJ_FILEBLOCKS
+lib_SOURCES += fileblocks.c
+endif
+
+Include:
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering
+

@@ -1,0 +1,445 @@
+# Copyright (c) 2022 Autoconf Archive Maintainers <autoconf-archive-maintainers@gnu.org>
+#
+# Copying and distribution of this file, with or without modification, are
+# permitted in any medium without royalty provided the copyright notice and this
+# notice are preserved. This file is offered as-is, without any warranty.
+
+2015, 2016 Philip Withnall
+2016 Endless Mobile, Inc.; contributed by Philip Chimento
+2016 Philip Withnall
+2018 Krzesimir Nowak
+2018 Reini Urban
+2022 Ricardo Wurmus
+2023 Reini Urban
+Aaron Griffith
+Adam Chyla
+Adam Chyła
+Akim Demaille
+Akos Maroy
+Alain Barbet
+Alan Jenkins
+Alan W. Irwin
+Alan Woodland
+Alessandro Candini
+Alessandro Massignan
+Alex Henrie
+Alex Pletzer
+Alexander Afanasyev
+Alexander Lakhin
+Alexander Petry
+Alexander Pletzer
+Alexandre Duret-Lutz
+Alexey Kopytov
+Alexey Sokolov
+Allan Caffee
+Anders Kaseorg
+Andreas Oberritter
+Andreas Röver
+Andreas Saebjoernsen
+Andreas Schwab
+Andrew Collier
+Andrew Stoltz
+Andy Buckley
+Andy Kitchen
+Antoine Brodin
+Arto Bendiken
+Bastiaan Veelo
+Bastien Chevreux
+Bastien Roucariès
+Batchyx
+Ben Bergen
+Ben Small
+Ben Stanley
+Benjamin Eikel
+Benjamin Green
+Benjamin Kosnik
+Bernardo Innocenti
+Bert Wesarg
+Bill Blough
+Bogdan Drozdowski
+Bojan Nikolic
+Braden McDaniel
+Brian Aker
+Bruce Korb
+Can Bican
+Caolan McNamara
+Carnë Draug
+Cedric Cellier
+Cheyenne Wills
+Christian Feld
+Christian Haggstrom
+Christian Hergert
+Christian Persch
+Christian Toepp
+Christoph Junghans
+Christophe Fergeau
+Christophe Tournayre
+Christopher Currie
+Christopher Gilbreth
+Chuck Atkins
+Chun-Chung Chen
+Collabora Ltd.
+Corey Farrell
+Cory Fields
+Craig Stimmel
+Cristian Rodriguez
+Dag-Erling Smørgrav
+Dale K. Hawkins
+Damian Pietras
+Dan Horák
+Dan Winship
+Daniel Amelang
+Daniel Black
+Daniel Casimiro
+Daniel Muellner
+Daniel Müllner
+Daniel Richard G.
+Daniel Trebbien
+Dave Benson
+Dave Nicolson
+Dave Swofford
+David Cluytens
+David King
+David Seifert
+Dean Povey
+Dennis Felsing
+Derek Price
+Devin Weaver
+Diab Jerius
+Diego Elio Petteno`
+Dilyan Palauzov
+Dinar Valeev
+Dmitrij D. Czarkoff
+Dmitry Eremin-Solenikov
+Dodji Seketeli
+Don Anderson
+Duncan Simpson
+Dustin J. Mitchell
+Earl
+Egon Willighagen
+Elliott Sales de Andrade
+Emanuele Aina
+Emil Mikulic
+Emmanuele Bassi
+Endless Mobile, Inc.; contributed by Philip Chimento
+Enji Cooper
+Enrico M. Crisostomo
+Eric Bavier
+Eric Gallager
+Eric Wu
+Evgeny Grin
+Evgeny Lensky
+Fabien Coelho
+Fabrice Delliaux
+Felix Chern
+Fernando Mut
+Filippo Giunchedi
+Francesco Salvestrini
+Gabriele Bartolini
+Gabriele Svelto
+Gary Funck
+Geoffrey M Oxberry
+Geoffrey M. Oxberry
+Gerald Point
+Gianfranco Costamagna
+Gilles Espinasse
+Gleen Salmon
+Google Inc.; contributed by Alexey Sokolov
+Gordon Byrnes
+Graeme S. Roy
+Guido Draheim
+Guido U. Draheim
+Harald van Dijk
+Harenome Ranaivoarivony-Razanajato
+Heinrich Schuchardt
+Helmut Grohne
+Henrik Bengtsson
+Henrik Uhrenholt
+Hib Eris
+Horst Knorr
+Ignacy Gawedzki
+Ignacy Gawędzki
+Igor Cota
+Igor Gnatenko
+Ilguiz Latypov
+Ilya Etingof
+Jaap Eldering
+James Cowgill
+James Morris
+Jan Langer
+Jan Palus
+Janne Blomqvist
+Jannick
+Jaroslav Hajek
+Jason Merrill
+Jean-Louis Martineau
+Jens Geyer
+Jens Rehsack
+Jeremiah Willcock
+Jeremie Knuesel
+Jeremy C. Reed
+Jeroen Meijer
+Jerome Benoit
+Jim Meyering
+Jimmy Jazz
+Joel Frederico
+Joel Smith
+John Darrington
+John Peterson
+John Stumpo
+John W. Peterson
+John Zaitseff
+Jonas Witschel
+Jonathan Gray
+Jonathan Rajotte
+Jonathan Rajotte-Julien
+Jonathan Wakely
+Joost van Baal-Ilic
+Joost van Baal-Ilić
+Jorge Bellon
+Josh Soref
+Joshua Judson Rosen
+Julian C. Cummings
+Julian Cummings
+Julian Ospald
+Julian Taylor
+Jörn Heusipp
+Kaelin Colclasure
+Karl Wette
+Karl-Johan Alm
+Karlson2k
+Kaveh Ghazi
+Kevin Cernekee
+Kevin L. Mitchell
+Kevin Locke
+Kip
+Kip Warner
+Kirill A. Korinskiy
+Krzesimir Nowak
+Krzysztof Burghardt
+Kurt von Laven
+Lapo Luchini
+Lars Brinkhoff
+Laszlo Kajan
+Leo Davis
+Leo Singer
+Li-Wen Hsu
+Loic Dachary
+Luc Maisonobe
+Luca Boccassi
+Ludovic Courtes
+Luke Mewburn
+Maarten Bosmans
+Marc Stevens
+Marco Gomes
+Mark Elbrecht
+Mark Pulford
+Mark R. Bannister
+Markus Armbruster
+Markus Elfring
+Marten Svantesson
+Marvin Schmidt
+Mateusz Loskot
+Mats Kindahl
+Matteo Frigo
+Matteo Settenvini
+Matthew D. Langston
+Matthew Mueller
+Matthew William Cox
+Matthieu Schaller
+Max Horn
+Max Satula
+Maximilian Heinzler
+Michael Catanzaro
+Michael Hofmann
+Michael McMaster
+Michael Orlitzky
+Michael Paul Bailey
+Michael Petch
+Michael Shigorin
+Michael Stapelberg
+Michael Terry
+Michael Tindal
+Michael Truog
+Michael Welsh Duggan
+Michel Normand
+Mikael Lepisto
+Mike Frysinger
+Mike Park
+Ming Chen
+Mischa Spiegelmock
+Misty De Meo
+Mitchell Rosen
+Moritz Klammler
+Moritz Sinn
+Murray Cumming
+Nate Bargmann
+Neil Ferguson
+Neil Mayhew
+Nic Ferrier
+Nick Bowler
+Nick Gasson
+Nick Markham
+Nick Papior
+Nick R. Papior
+Nico Madysa
+Noah Slater
+Olaf Lenz
+Olaf Mandel
+Olaf Meeuwissen
+Olivier Mehani
+Olly Betts
+Ondřej Surý
+Oren Ben-Kiki
+Oskar Liljeblad
+Ossama Othman
+Otto Moerbeek
+P. F. Chimento
+Paolo Bonzini
+Paolo Borelli
+Patrick Mauritz
+Pau Espin Pedrol
+Paul Gilmartin
+Paul Norman
+Paul Wise
+Pauli Nieminen
+Pavel Roskin
+Perceval Anichini
+Pete Greenwell
+Peter Adolphs
+Peter Hill
+Peter Johansson
+Peter Kjellerstedt
+Peter Kokot
+Peter Simons
+Petr Menšík
+Philip Allison
+Philip Chimento
+Philip Withnall
+Philipp Thomas
+Pierre Hebert
+Pieter Lexis
+Quang Vu
+Rafael Laboissiere
+Rafael de Lucena Valle
+Rafal Rzepecki
+Rafał Rzepecki
+Ralf Habacker
+Ralf Wildenhues
+Reinhard Prix
+Reinhard Urban
+Reini Urban
+Reuben Thomas
+Rhys Ulerich
+Ricardo Wurmus
+Riccardo Murri
+Richard B Winters
+Richard Henderson
+Richard Winters
+Robert White
+Robert van Engelen
+Roman Rybalko
+Ronald Landheer-Cieslak
+Rouven Spreckels
+Roy Stogner
+Ruben Fonseca
+Rudi Heitbaum
+Ruediger Kuhlmann
+Ruslan Shevchenko
+Russ Allbery
+Ryan McCabe
+SAITO Fuyuki
+Sam James
+Scott Grosch
+Scott Pakin
+Sean Geoghegan
+Sebastian Freundt
+Sebastian Hegler
+Sebastian Huber
+Sebastian Waschik
+Sergio Belkin
+Simon Marchi
+Simon McVittie
+Sjors Provoost
+Smithsonian Astrophysical Observatory
+Soren Andersen
+Sree Harsha Totakura
+Stanislav Brabec
+Stanislav Sedov
+Stefan Weil
+Stefano Rivera
+Stepan Kasal
+Stephan Suerken
+Stephan Sürken
+Stephane Bortzmeyer
+Steve M. Robbins
+Steven Brown
+Steven G. Johnson
+Sveinung Kvilhaugsvik
+Sven Verdoolaege
+T.v.Dein
+Tal Shalif
+Terry Droeger
+The Board of Trustees of the Leland Stanford Junior University
+Thien-Thi Nguyen
+Thierry Reding
+Thomas Jahns
+Thomas Klausner
+Thomas Porschberg
+Thomas Treichl
+Thomas Zimmermann
+Tim Perkins
+Tim Ruffing
+Tim Toolan
+Timothy Brown
+Ting-Wei Lan
+Todd Veldhuizen
+Tom Howard
+Toni Corvera
+Torsten Landschoff
+Tsukasa OI
+Tsukasa Oi
+Tudor Bosman
+Uli Schlachter
+University of Washington
+Utz-Uwe Haus
+Uwe Mayer
+Vaclav Haisman
+Vaclav Slavik
+Vaclav Zeman
+Vadim Zeitlin
+Vasil Dimov
+Vasil Velichkov
+Victor Bogado
+Ville Laurikari
+Vincent Danjean
+Vinson Lee
+WANG Xuerui
+Wang Xuerui
+Warren Young
+Werner Lemberg
+Wes Hardaker
+Will Thompson
+William Price
+William S Fulton
+Wim Lewis
+Wolfgang Stöggl
+Xan Lopez
+Xiyue Deng
+YAMAMOTO Kengo
+Yaakov Selkowitz
+Yusuke Tsutsumi
+Zack Weinberg
+bogdro
+consultit
+cr-marcstevens
+david.e.pi.3.14
+dryman
+fanquake
+gmbonnet
+karypid
+kedzie
+mathar
+raf
+ryanvm
+wferi

@@ -1,0 +1,16 @@
+Files:
+tests/macros.h
+tests/test-intprops.c
+tests/test-stdckdint.c
+
+Depends-on:
+assert-h
+inttypes
+stdbool
+stdckdint-c++-tests
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-stdckdint
+check_PROGRAMS += test-stdckdint

@@ -1,0 +1,35 @@
+Description:
+wcsncpy() function: copy a size-bounded wide string.
+
+Status:
+obsolete
+
+Notice:
+This module is obsolete.
+
+Files:
+lib/wcsncpy.c
+lib/wcsncpy-impl.h
+m4/wcsncpy.m4
+
+Depends-on:
+wchar
+
+configure.ac:
+gl_FUNC_WCSNCPY
+gl_CONDITIONAL([GL_COND_OBJ_WCSNCPY], [test $HAVE_WCSNCPY = 0])
+gl_WCHAR_MODULE_INDICATOR([wcsncpy])
+
+Makefile.am:
+if GL_COND_OBJ_WCSNCPY
+lib_SOURCES += wcsncpy.c
+endif
+
+Include:
+<wchar.h>
+
+License:
+LGPL
+
+Maintainer:
+all

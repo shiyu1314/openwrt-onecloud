@@ -1,0 +1,29 @@
+Description:
+Open a file, reusing a given stream, with error checking.
+
+Files:
+lib/xfreopen.c
+lib/xfreopen.h
+
+Depends-on:
+error
+exitfail
+freopen
+quote
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += xfreopen.c xfreopen.h
+
+Include:
+"xfreopen.h"
+
+Link:
+$(MBRTOWC_LIB)
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering

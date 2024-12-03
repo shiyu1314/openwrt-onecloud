@@ -1,0 +1,20 @@
+Files:
+tests/test-glob.c
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+fcntl-h
+symlink
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-glob
+check_PROGRAMS += test-glob
+test_glob_LDADD = $(LDADD) $(LIBINTL) $(MBRTOWC_LIB)
+MOSTLYCLEANFILES += \
+  test-glob.tglobfile \
+  test-glob.tgloblink1 \
+  test-glob.tgloblink2 \
+  test-glob.tgloblink3

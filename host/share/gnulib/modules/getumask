@@ -1,0 +1,41 @@
+Description:
+getumask() function: retrieve the umask of the process (multithread-safe)
+
+Files:
+lib/getumask.c
+m4/getumask.m4
+
+Depends-on:
+sys_stat
+extensions
+c99             [test $HAVE_GETUMASK = 0]
+unistd          [test $HAVE_GETUMASK = 0]
+clean-temp      [test $HAVE_GETUMASK = 0]
+tempname        [test $HAVE_GETUMASK = 0]
+
+configure.ac:
+gl_FUNC_GETUMASK
+gl_CONDITIONAL([GL_COND_OBJ_GETUMASK], [test $HAVE_GETUMASK = 0])
+AM_COND_IF([GL_COND_OBJ_GETUMASK], [
+  gl_PREREQ_GETUMASK
+])
+gl_SYS_STAT_MODULE_INDICATOR([getumask])
+
+Makefile.am:
+if GL_COND_OBJ_GETUMASK
+lib_SOURCES += getumask.c
+endif
+
+Include:
+<sys/stat.h>
+
+Link:
+$(GETRANDOM_LIB)
+$(CLOCK_TIME_LIB)
+$(LIBTHREAD)
+
+License:
+GPL
+
+Maintainer:
+all

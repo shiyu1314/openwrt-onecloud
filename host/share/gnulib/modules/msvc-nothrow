@@ -1,0 +1,35 @@
+Description:
+wrappers that don't throw invalid parameter notifications with MSVC runtime
+libraries
+
+Files:
+lib/msvc-nothrow.h
+lib/msvc-nothrow.c
+m4/msvc-nothrow.m4
+
+Depends-on:
+msvc-inval
+
+configure.ac:
+AC_REQUIRE([gl_MSVC_NOTHROW])
+gl_CONDITIONAL([GL_COND_OBJ_MSVC_NOTHROW],
+               [test $HAVE_MSVC_INVALID_PARAMETER_HANDLER = 1])
+gl_MODULE_INDICATOR([msvc-nothrow])
+
+Makefile.am:
+if GL_COND_OBJ_MSVC_NOTHROW
+lib_SOURCES += msvc-nothrow.c
+endif
+
+Include:
+#if GNULIB_MSVC_NOTHROW
+# include "msvc-nothrow.h"
+#else
+# include <io.h>
+#endif
+
+License:
+LGPLv2+
+
+Maintainer:
+all

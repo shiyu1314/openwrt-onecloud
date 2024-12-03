@@ -1,0 +1,34 @@
+Description:
+Return file system space usage info.
+
+Files:
+lib/fsusage.h
+lib/fsusage.c
+m4/fsusage.m4
+
+Depends-on:
+c99
+largefile
+stdbool
+stdint
+
+configure.ac:
+gl_FSUSAGE
+gl_CONDITIONAL([GL_COND_OBJ_FSUSAGE], [test $gl_cv_fs_space = yes])
+AM_COND_IF([GL_COND_OBJ_FSUSAGE], [
+  gl_PREREQ_FSUSAGE_EXTRA
+])
+
+Makefile.am:
+if GL_COND_OBJ_FSUSAGE
+lib_SOURCES += fsusage.c
+endif
+
+Include:
+"fsusage.h"
+
+License:
+LGPL
+
+Maintainer:
+Jim Meyering

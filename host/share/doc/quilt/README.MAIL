@@ -1,0 +1,82 @@
+QUILT MAIL COMMAND
+==================
+
+The mail command starts up the system editor ($EDITOR, or vi if $EDITOR
+is undefined) with an template in Internet Message Format (RFC 2822).
+This template is used to generate an introduction, as well as one
+message for each patch in the selected range of the series file.  The
+template is used as follows: The headers are used in each message
+generated, and modified as required.  The template body is used only for
+the introduction.
+
+In the template, the headers can be modified, additional headers added,
+and unneeeded headers can be removed.  The template header also contains
+a special Subject-Prefix header which defines a prefix for each subject
+header.  The @num@ and @total@ macros in the Subject-Prefix header are
+replaced with the patch number and the total number of patches,
+respectively. The patch number @num@ is zero-padded to the same width
+that @total@ has.
+
+Each message is assigned a unique Message-Id header, and all messages
+other than the introduction are made to refer to the introduction (using
+a References header) for proper message threading in mail clients.  The
+message timestamps in Date headers in each message is incremented by one
+second per message, starting with the timestamp of the introduction.
+
+If a ~/.signature file exists, this file is appended to each message
+generated.
+
+Recipients and headers can be added, and existing headers can be
+replaced, individually in each message based on the headers in the
+introduction.  Quilt does not enforce a specific patch file format. The
+mail command has a built-in heuristic for extracting subjects from
+patches, though:
+
+    * if the patch starts with something that looks like a mail
+      header, and there is a Subject header, use this as the subject,
+      or else
+
+    * if the patch has DESC a line followed by an EDESC line, use
+      the text in between as the subject, or else
+
+    * if the first paragraph is short enough to serve as a subject
+      (150 characters or less), use the first paragraph as the
+      subject.
+
+All bracketed fields and Fwd:, Fw:, Re:, Aw: are stripped from subject
+headers as well.
+
+If no subject can be extracted from a patch, or there are duplicate
+subjects, the mail command will print an error message and abort.
+
+In case a patch header contains a line starting with `Cc:', `Acked-by:',
+or `Signed-off-by:', the email address specified is added to the
+CC header for this patch. If a patch header contains a line starting
+with `To:', the email address specified is added to To header for this
+patch.
+
+If the user specified in `To:', `Cc:', `Acked-by:', or `Signed-off-by:'
+equals the current user's name ($LOGNAME or $(whoami) if LOGNAME is
+undefined), this does not add a recipient.
+
+Each recipient will occur in the resulting message only once. Duplicates
+are filtered out. This happens as the headers are read, so the relative
+order of the To, Cc, and Bcc headers should not be changed.
+
+Recipients are checked for RFC 2822 conformance (at least that is the
+intention; actually the checks are not perfect). This means that special
+characters must be quoted, and 8-bit characters must be encoded. In
+practice it probably makes little sense to use anything fancy right now;
+this area still needs some work.  Character set recognition and proper
+qualifying is also still missing.
+
+The heuristic can be overridden by defining a quilt_mail_patch_filter
+function in ~/.quiltrc or /etc/quilt.quiltrc.  This function is passed
+the patch name as argument (without the $QUILT_PATCHES prefix).  It
+shall read the patch from standard input, and write a RFC 2822 message
+header and the patch to standard output. Headers of the form
+``Recipient-$X: ...'' denote recipients to be added to the $X header
+(for example, ``Recipient-Cc: agruen@suse.de'').  Headers of the form
+``Replace-$X: ...'' specify that header $X is to be replaced by this
+header (for eaxmple, ``Replace-Subject: Patch description''). All other
+headers are appended to the existing headers.

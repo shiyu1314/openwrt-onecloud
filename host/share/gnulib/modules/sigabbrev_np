@@ -1,0 +1,29 @@
+Description:
+sigabbrev_np() function: abbreviated name of signals.
+
+Files:
+lib/sigabbrev_np.c
+m4/sigabbrev_np.m4
+
+Depends-on:
+extensions
+string
+
+configure.ac:
+gl_FUNC_SIGABBREV_NP
+gl_CONDITIONAL([GL_COND_OBJ_SIGABBREV_NP], [test $HAVE_SIGABBREV_NP = 0])
+gl_STRING_MODULE_INDICATOR([sigabbrev_np])
+
+Makefile.am:
+if GL_COND_OBJ_SIGABBREV_NP
+lib_SOURCES += sigabbrev_np.c
+endif
+
+Include:
+<string.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

@@ -1,0 +1,941 @@
+#! /usr/bin/env perl
+# -*- perl -*-
+# Generated from bin/autoreconf.in; do not edit by hand.
+
+eval 'case $# in 0) exec /usr/bin/env perl -S "$0";; *) exec /usr/bin/env perl -S "$0" "$@";; esac'
+    if 0;
+
+# autoreconf - install the GNU Build System in a directory tree
+# Copyright (C) 1994, 1999-2017, 2020-2021 Free Software Foundation,
+# Inc.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Written by David J. MacKenzie.
+# Extended and rewritten in Perl by Akim Demaille.
+
+use 5.006;
+use strict;
+use warnings FATAL => 'all';
+
+$^W = 1;
+
+my $buildauxdir;
+BEGIN
+{
+  my $pkgdatadir = $ENV{'autom4te_perllibdir'} ||
+	($ENV{'STAGING_DIR_HOST'} ? $ENV{'STAGING_DIR_HOST'} . '/share/autoconf' : '/workdir/openwrt/staging_dir/host/share/autoconf');
+  unshift @INC, $pkgdatadir;
+
+  $buildauxdir = $ENV{'autom4te_buildauxdir'} || $pkgdatadir . '/build-aux';
+
+  # Override SHELL.  On DJGPP SHELL may not be set to a shell
+  # that can handle redirection and quote arguments correctly,
+  # e.g.: COMMAND.COM.  For DJGPP always use the shell that configure
+  # has detected.
+  $ENV{'SHELL'} = '/usr/bin/env bash' if ($^O eq 'dos');
+}
+
+# Do not use Cwd::chdir, since it might hang.
+use Cwd qw (cwd);
+use File::Copy qw (copy);
+use File::Temp qw (tempfile);
+
+use Autom4te::ChannelDefs;
+use Autom4te::Channels;
+use Autom4te::Configure_ac;
+use Autom4te::FileUtils;
+use Autom4te::General;
+use Autom4te::XFile;
+
+## ----------- ##
+## Variables.  ##
+## ----------- ##
+
+# $HELP
+# -----
+$help = "Usage: $0 [OPTION]... [DIRECTORY]...
+
+Run 'autoconf' and, when needed, 'aclocal', 'autoheader', 'automake',
+'autopoint' (formerly 'gettextize'), 'libtoolize', 'intltoolize', and
+'gtkdocize' to regenerate the GNU Build System files in specified
+DIRECTORIES and their subdirectories (defaulting to '.').
+
+By default, it only remakes those files that are older than their
+sources.  If you install new versions of the GNU Build System,
+you can make 'autoreconf' remake all of the files by giving it the
+'--force' option.
+
+Operation modes:
+  -h, --help               print this help, then exit
+  -V, --version            print version number, then exit
+  -v, --verbose            verbosely report processing
+  -d, --debug              don't remove temporary files
+  -f, --force              consider all generated and standard files obsolete
+  -i, --install            copy missing standard auxiliary files
+      --no-recursive       don't rebuild sub-packages
+  -s, --symlink            with -i, install symbolic links instead of copies
+  -m, --make               when applicable, re-run ./configure && make
+  -W, --warnings=CATEGORY  report the warnings falling in CATEGORY [syntax]
+
+" . Autom4te::ChannelDefs::usage . "
+
+The environment variable 'WARNINGS' is honored.  Some subtools might
+support other warning types, using 'all' is encouraged.
+
+Library directories:
+  -B, --prepend-include=DIR  prepend directory DIR to search path
+  -I, --include=DIR          append directory DIR to search path
+
+The environment variables AUTOCONF, ACLOCAL, AUTOHEADER, AUTOM4TE,
+AUTOMAKE, AUTOPOINT, GTKDOCIZE, INTLTOOLIZE, LIBTOOLIZE, M4, and MAKE
+are honored.
+
+Report bugs to <bug-autoconf\@gnu.org>.
+GNU Autoconf home page: <https://www.gnu.org/software/autoconf/>.
+General help using GNU software: <https://www.gnu.org/gethelp/>.
+";
+
+# $VERSION
+# --------
+$version = "autoreconf (GNU Autoconf) 2.71
+Copyright (C) 2021 Free Software Foundation, Inc.
+License GPLv3+/Autoconf: GNU GPL version 3 or later
+<https://gnu.org/licenses/gpl.html>, <https://gnu.org/licenses/exceptions.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by David J. MacKenzie and Akim Demaille.
+";
+
+# Lib files.
+my $autoconf    = $ENV{'AUTOCONF'}    || ($ENV{'STAGING_DIR_HOST'} ? $ENV{'STAGING_DIR_HOST'} . '/bin/autoconf' : '/workdir/openwrt/staging_dir/host/bin/autoconf');
+my $autoheader  = $ENV{'AUTOHEADER'}  || ($ENV{'STAGING_DIR_HOST'} ? $ENV{'STAGING_DIR_HOST'} . '/bin/autoheader' : '/workdir/openwrt/staging_dir/host/bin/autoheader');
+my $autom4te    = $ENV{'AUTOM4TE'}    || ($ENV{'STAGING_DIR_HOST'} ? $ENV{'STAGING_DIR_HOST'} . '/bin/autom4te' : '/workdir/openwrt/staging_dir/host/bin/autom4te');
+my $automake    = $ENV{'AUTOMAKE'}    || 'automake';
+my $aclocal     = $ENV{'ACLOCAL'}     || 'aclocal';
+my $libtoolize  = $ENV{'LIBTOOLIZE'}  || 'libtoolize';
+my $intltoolize = $ENV{'INTLTOOLIZE'} || 'intltoolize';
+my $gtkdocize   = $ENV{'GTKDOCIZE'}   || 'gtkdocize';
+my $autopoint   = $ENV{'AUTOPOINT'}   || 'autopoint';
+my $make        = $ENV{'MAKE'}        || 'make';
+
+# --install -- as --add-missing in other tools.
+my $install = 0;
+# symlink -- when --install, use symlinks instead.
+my $symlink = 0;
+
+my @prepend_include;
+my @include;
+
+# Rerun './configure && make'?
+my $run_make = 0;
+
+# Recurse into subpackages
+my $recursive = 1;
+
+## ---------- ##
+## Routines.  ##
+## ---------- ##
+
+
+# parse_args ()
+# -------------
+# Process any command line arguments.
+sub parse_args ()
+{
+  my $srcdir;
+
+  # List of command line warning requests.
+  my @warning;
+
+  getopt ("W|warnings=s"         => \@warning,
+	  'I|include=s'          => \@include,
+	  'B|prepend-include=s'	 => \@prepend_include,
+	  'i|install'            => \$install,
+	  's|symlink'            => \$symlink,
+	  'm|make'               => \$run_make,
+	  'recursive!'           => \$recursive);
+
+  # Split the warnings as a list of elements instead of a list of
+  # lists.
+  @warning = map { split /,/ } @warning;
+  parse_WARNINGS;
+  parse_warnings @warning;
+
+  # Even if the user specified a configure.ac, trim to get the
+  # directory, and look for configure.ac again.  Because (i) the code
+  # is simpler, and (ii) we are still able to diagnose simultaneous
+  # presence of configure.ac and configure.in.
+  @ARGV = map { /configure\.(ac|in)$/ ? dirname ($_) : $_ } @ARGV;
+  push @ARGV, '.' unless @ARGV;
+
+  if ($verbose && $debug)
+    {
+      for my $prog ($autoconf, $autoheader,
+		    $automake, $aclocal,
+		    $autopoint,
+		    $libtoolize,
+		    $intltoolize,
+		    $gtkdocize)
+	{
+	  xsystem ("$prog --version | sed 1q >&2");
+	  print STDERR "\n";
+	}
+    }
+
+  # Dispatch autoreconf's option to the tools.
+  # --include;
+  $aclocal    .= join (' -I ', '', map { shell_quote ($_) } @include);
+  $autoconf   .= join (' --include=', '', map { shell_quote ($_) } @include);
+  $autoconf   .= join (' --prepend-include=', '', map { shell_quote ($_) } @prepend_include);
+  $autoheader .= join (' --include=', '', map { shell_quote ($_) } @include);
+  $autoheader .= join (' --prepend-include=', '', map { shell_quote ($_) } @prepend_include);
+
+  # --install and --symlink;
+  if ($install)
+    {
+      $automake    .= ' --add-missing';
+      $automake    .= ' --copy' unless $symlink;
+      $libtoolize  .= ' --copy' unless $symlink;
+      $intltoolize .= ' --copy' unless $symlink;
+      $gtkdocize   .= ' --copy' unless $symlink;
+    }
+  # --force;
+  if ($force)
+    {
+      $aclocal     .= ' --force';
+      $autoconf    .= ' --force';
+      $autoheader  .= ' --force';
+      $automake    .= ' --force-missing';
+      $autopoint   .= ' --force';
+      $libtoolize  .= ' --force';
+      $intltoolize .= ' --force';
+    }
+  else
+    {
+      $automake .= ' --no-force';
+    }
+  # --verbose --verbose or --debug;
+  if ($verbose > 1 || $debug)
+    {
+      $autoconf   .= ' --verbose';
+      $autoheader .= ' --verbose';
+      $automake   .= ' --verbose';
+      $aclocal    .= ' --verbose';
+    }
+  if ($debug)
+    {
+      $autoconf   .= ' --debug';
+      $autoheader .= ' --debug';
+      $libtoolize .= ' --debug';
+    }
+
+  # Pass down warnings via the WARNINGS environment variable, instead
+  # of via --warnings, so that unrecognized warning categories are
+  # silently ignored.  We already issued diagnostics about warning
+  # categories *we* don't recognize; older subsidiary tools may not
+  # know all of them, and may treat unrecognized warning categories on
+  # the command line as a fatal error when -Werror is in effect.
+  $ENV{WARNINGS} = merge_WARNINGS @warning;
+  verb "export WARNINGS=$ENV{WARNINGS}";
+}
+
+
+## ----------------------- ##
+## Handling of aux files.  ##
+## ----------------------- ##
+
+# find_missing_aux_files
+# ----------------------
+# Look in $aux_dir (or, if that is empty, ., .., and ../..) for all of the
+# files in @$aux_files; return a list of those that do not exist.
+sub find_missing_aux_files
+{
+  my ($aux_files, $aux_dir) = @_;
+  my @aux_dirs;
+  if ($aux_dir)
+    {
+      push @aux_dirs, $aux_dir;
+    }
+  else
+    {
+      @aux_dirs = qw(. .. ../..);
+    }
+
+  # If we find all the aux files in _some_ directory in @aux_dirs, we're
+  # good.  But if we don't find all of them in any directory in @aux_dirs,
+  # return the set of missing files from the _first_ directory in @aux_dirs;
+  # this will be less confusing in the common case where AC_CONFIG_AUX_DIR
+  # wasn't used and the parent directories don't provide any aux files.
+  my @missing_aux_files;
+  my @first_missing_aux_files;
+
+  for my $dir (@aux_dirs)
+    {
+      @missing_aux_files = ();
+      for my $file (@{$aux_files})
+        {
+          push @missing_aux_files, $file
+            unless -e "${dir}/${file}";
+        }
+
+      return () if !@missing_aux_files;
+
+      @first_missing_aux_files = @missing_aux_files
+        unless @first_missing_aux_files;
+    }
+
+  return @first_missing_aux_files;
+}
+
+# can_install_aux_files
+# ---------------------
+# Report whether all of the files listed in @_ exist in $buildauxdir,
+# which means we could install them.
+sub can_install_aux_files
+{
+  local $_;
+  for (@_)
+    {
+      return 0 unless -f "${buildauxdir}/$_";
+    }
+  return 1;
+}
+
+# extract_time_stamp ($fname)
+# ---------------------------
+# Extract a timestamp line from $fname.
+# This is hardwired to know what to look for in the files we currently install.
+sub extract_time_stamp
+{
+  my $fname = shift;
+  open my $fh, '<', $fname
+    or fatal "opening $fname: $!";
+  while (my $l = <$fh>)
+    {
+      if ($l =~ /^(?:scriptversion|timestamp)='?(\d\d\d\d-\d\d-\d\d(?:\.\d\d)?)/)
+        {
+          return $1;
+        }
+    }
+  # Old versions of install-sh did not have a timestamp line.
+  return '1970-01-01';
+}
+
+# our_aux_file_is_newer ($dest, $src)
+# -----------------------------------
+# True if our copy of an aux file ($src) has a newer 'timestamp' line
+# than the matching line in $dest.
+sub our_aux_file_is_newer
+{
+  my ($dest, $src) = @_;
+  my $dstamp = extract_time_stamp ($dest);
+  my $sstamp = extract_time_stamp ($src);
+  return $sstamp gt $dstamp;
+}
+
+# try_install_aux_files
+# ---------------------
+# Install each of the aux files listed in @$auxfiles, that we are able
+# to install, into $destdir.
+# Remove the files we were able to install from @$auxfiles.
+sub try_install_aux_files
+{
+  my ($auxfiles, $destdir) = @_;
+  my @unable;
+  for my $f (@$auxfiles)
+    {
+      my $src = "${buildauxdir}/$f";
+      if (-f $src)
+        {
+          install_aux_file ($destdir, $f, $src);
+        }
+      else
+        {
+          push @unable, $f;
+        }
+    }
+  @$auxfiles = @unable;
+}
+
+# install_aux_file
+# ----------------
+# Install the file $src as $destdir/$f, honoring --symlink and --force.
+sub install_aux_file
+{
+  my ($destdir, $f, $src) = @_;
+  my $dest = "${destdir}/$f";
+  if (-e $dest && ! our_aux_file_is_newer ($dest, $src))
+    {
+      return;
+    }
+
+  if ($symlink)
+    {
+      if ($force || ! -l $dest || readlink $dest != $src)
+        {
+          if (-e $dest)
+            {
+              unlink $dest
+                or fatal "rm -f $dest: $!";
+            }
+          verb "linking $dest to $src";
+          symlink $src, $dest
+            or fatal "ln -s $src $dest: $!";
+        }
+    }
+  else
+    {
+      if (-e $dest && ! -f $dest)
+        {
+          unlink $dest
+            or fatal "rm -f $dest: $!";
+        }
+      my ($temp, $tempname) = tempfile (UNLINK => 0, DIR => $destdir);
+      copy ($src, $tempname)
+        or fatal "copying $src to $tempname: $!";
+      make_executable ($tempname) if -x $src;
+      update_file ($tempname, $dest, $force);
+    }
+}
+
+# make_executable
+# ---------------
+# Make the file $f be executable by all users it is currently readable by.
+sub make_executable
+{
+  my $f = shift;
+  my $perm = (stat $f)[2] & 07777;
+  $perm |= 0100 if ($perm & 0400);
+  $perm |= 0010 if ($perm & 0040);
+  $perm |= 0001 if ($perm & 0004);
+  chmod $perm, $f
+    or fatal "chmod $f: $!";
+}
+
+
+## -------------------------- ##
+## Per-directory operations.  ##
+## -------------------------- ##
+
+# &autoreconf_current_directory
+# -----------------------------
+sub autoreconf_current_directory ($)
+{
+  my ($directory) = @_;
+  my $configure_ac = find_configure_ac;
+
+  # ---------------------- #
+  # Is it using Autoconf?  #
+  # ---------------------- #
+
+  my $uses_autoconf;
+  my $uses_gettext;
+  if (-f $configure_ac)
+    {
+      my $configure_ac_file = new Autom4te::XFile ("$configure_ac", "<");
+      while ($_ = $configure_ac_file->getline)
+	{
+	  s/#.*//;
+	  s/dnl.*//;
+	  $uses_autoconf = 1 if /AC_INIT/;
+	  # See below for why we look for gettext here.
+	  $uses_gettext = 1  if /^AM_GNU_GETTEXT_(?:REQUIRE_)?VERSION/;
+	}
+      if (!$uses_autoconf)
+        {
+          error "$configure_ac: AC_INIT not found; not an autoconf script?";
+          return;
+        }
+    }
+  else
+    {
+      verb "neither configure.ac nor configure.in present in $directory";
+      return;
+    }
+
+
+  # ------------------- #
+  # Running autopoint.  #
+  # ------------------- #
+
+  # Gettext is a bit of a problem: its macros are not necessarily
+  # visible to aclocal, so if we start with a completely stripped down
+  # package (think of a fresh CVS checkout), running 'aclocal' first
+  # will fail: the Gettext macros are missing.
+  #
+  # Therefore, we can't use the traces to decide if we use Gettext or
+  # not.  I guess that once Gettext move to 2.5x we will be able to,
+  # but in the meanwhile forget it.
+  #
+  # We can only grep for AM_GNU_GETTEXT_(REQUIRE_)?VERSION in configure.ac.
+  # You might think this approach is naive, and indeed it is, as it prevents
+  # one to embed AM_GNU_GETTEXT_(REQUIRE_)?VERSION in another *.m4, but
+  # anyway we don't limit the generality, since... that's what autopoint does.
+  # Actually, it is even more restrictive, as it greps for
+  # '^AM_GNU_GETTEXT_(REQUIRE_)?VERSION('.  We did this above, while
+  # scanning configure.ac.
+  if (!$uses_gettext)
+    {
+      verb "$configure_ac: not using Gettext";
+    }
+  elsif (!$install)
+    {
+      verb "$configure_ac: not running autopoint: --install not given";
+    }
+  else
+    {
+      xsystem_hint ("autopoint is needed because this package uses Gettext",
+                    $autopoint);
+    }
+
+
+  # ----------------- #
+  # Running aclocal.  #
+  # ----------------- #
+
+  # Run it first: it might discover new macros to add, e.g.,
+  # AC_PROG_LIBTOOL, which we will trace later to see if Libtool is
+  # used.
+  #
+  # Always run it.  Tracking its sources for up-to-dateness is too
+  # complex and too error prone.  The best we can do is avoiding
+  # nuking the timestamp.
+  my $uses_aclocal = 1;
+
+  # Nevertheless, if aclocal.m4 exists and is not made by aclocal,
+  # don't run aclocal.
+
+  if (-f 'aclocal.m4')
+    {
+      my $aclocal_m4 = new Autom4te::XFile 'aclocal.m4';
+      $_ = $aclocal_m4->getline;
+      $uses_aclocal = 0
+	unless defined ($_) && /generated.*by aclocal/;
+    }
+
+  # If there are flags for aclocal in Makefile.am, use them.
+  my $aclocal_flags = '';
+  if ($uses_aclocal && -f 'Makefile.am')
+    {
+      my $makefile = new Autom4te::XFile 'Makefile.am';
+      while ($_ = $makefile->getline)
+	{
+	  if (/^ACLOCAL_[A-Z_]*FLAGS\s*=\s*(.*)/)
+	    {
+	      $aclocal_flags = $1;
+	      last;
+	    }
+	}
+    }
+
+  if (!$uses_aclocal)
+    {
+      verb "$configure_ac: not using aclocal";
+    }
+  else
+    {
+      # Some file systems have sub-second timestamps, and if so we may
+      # run into trouble later, after we rerun autoconf and set the
+      # timestamps of input files to be no greater than aclocal.m4,
+      # because the time-stamp-setting operation (utime) has a
+      # resolution of only 1 second.  Work around the problem by
+      # ensuring that there is at least a one-second window before the
+      # timestamp of aclocal.m4t in which no file timestamps can
+      # fall.
+      sleep 1;
+
+      xsystem ("$aclocal $aclocal_flags");
+    }
+
+  # We might have to rerun aclocal if Libtool (or others) imports new
+  # macros.
+  my $rerun_aclocal = 0;
+
+
+
+  # ------------------------------- #
+  # See what tools will be needed.  #
+  # ------------------------------- #
+
+  # Perform a single trace reading to avoid --force forcing a rerun
+  # between two --trace, that's useless.  If there is no AC_INIT, then
+  # it's not an Autoconf script; ignore it.
+  # Suppress all warnings from this invocation; they may be spurious
+  # due to out-of-date files, and in any case they'll duplicate warnings
+  # from the final autoconf invocation.
+  my $aux_dir;
+  my @aux_files;
+  my $uses_gettext_via_traces;
+  my $uses_libtool;
+  my $uses_intltool;
+  my $uses_gtkdoc;
+  my $uses_libltdl;
+  my $uses_autoheader;
+  my $uses_automake;
+  my @subdir;
+  my $traces;
+  verb "$configure_ac: tracing";
+  {
+    local $ENV{WARNINGS} = 'none';
+    $traces = new Autom4te::XFile
+      ("$autoconf"
+       . join (' ',
+               map { ' --trace=' . $_ . ':\$n::\${::}%' }
+               # If you change this list, update the
+               # 'Autoreconf-preselections' section of autom4te.in.
+               'AC_CONFIG_AUX_DIR',
+               'AC_CONFIG_HEADERS',
+               'AC_CONFIG_SUBDIRS',
+               'AC_INIT',
+               'AC_REQUIRE_AUX_FILE',
+               'AC_PROG_LIBTOOL',
+               'AM_PROG_LIBTOOL',
+               'LT_INIT',
+               'LT_CONFIG_LTDL_DIR',
+               'AM_GNU_GETTEXT',
+               'AM_INIT_AUTOMAKE',
+               'GTK_DOC_CHECK',
+               'IT_PROG_INTLTOOL',
+       )
+       . ' |');
+  }
+  while ($_ = $traces->getline)
+    {
+      chomp;
+      my ($macro, @args) = split (/::/);
+      $aux_dir = $args[0]           if $macro eq "AC_CONFIG_AUX_DIR";
+      push @aux_files, $args[0]     if $macro eq "AC_REQUIRE_AUX_FILE";
+      $uses_autoconf = 1            if $macro eq "AC_INIT";
+      $uses_gettext_via_traces = 1  if $macro eq "AM_GNU_GETTEXT";
+      $uses_libtool = 1             if $macro eq "AC_PROG_LIBTOOL"
+                                       || $macro eq "AM_PROG_LIBTOOL"
+                                       || $macro eq "LT_INIT";
+      $uses_libltdl = 1             if $macro eq "LT_CONFIG_LTDL_DIR";
+      $uses_autoheader = 1          if $macro eq "AC_CONFIG_HEADERS";
+      $uses_automake = 1            if $macro eq "AM_INIT_AUTOMAKE";
+      $uses_intltool = 1            if $macro eq "IT_PROG_INTLTOOL";
+      $uses_gtkdoc = 1              if $macro eq "GTK_DOC_CHECK";
+      push @subdir, split (' ', $args[0] || '')
+                                    if $macro eq "AC_CONFIG_SUBDIRS"
+                                       && $recursive;
+    }
+  $traces->close;
+
+  # The subdirs are *optional*, they may not exist.
+  foreach (@subdir)
+    {
+      if (-d)
+	{
+	  verb "$configure_ac: adding subdirectory $_ to autoreconf";
+	  autoreconf ($_);
+	}
+      else
+	{
+	  verb "$configure_ac: subdirectory $_ not present";
+	}
+    }
+
+  # Gettext consistency checks.
+  # Some projects intentionally don't call AM_GNU_GETTEXT_(REQUIRE_)VERSION
+  # because they have all of the gettext infrastructure checked into version
+  # control and they want us to _not_ run autopoint.  Therefore, these
+  # diagnostics are only warnings.
+  msg('syntax', $configure_ac,
+      "AM_GNU_GETTEXT is used, but not AM_GNU_GETTEXT_VERSION"
+      . " or AM_GNU_GETTEXT_REQUIRE_VERSION")
+    if $uses_gettext_via_traces && ! $uses_gettext;
+  msg('syntax', $configure_ac,
+      "AM_GNU_GETTEXT_VERSION or AM_GNU_GETTEXT_REQUIRE_VERSION is used,"
+      . " but not AM_GNU_GETTEXT")
+    if $uses_gettext && ! $uses_gettext_via_traces;
+
+
+  # ---------------------------- #
+  # Setting up the source tree.  #
+  # ---------------------------- #
+
+  # libtoolize, automake --add-missing etc. will drop files in the
+  # $AUX_DIR.  But these tools fail to install these files if the
+  # directory itself does not exist, which valid: just imagine a CVS
+  # repository with hand written code only (there is not even a need
+  # for a Makefile.am!).
+
+  if ($install && defined $aux_dir && ! -d $aux_dir)
+    {
+      verb "$configure_ac: creating directory $aux_dir";
+      mkdir $aux_dir, 0755
+	or error "cannot create $aux_dir: $!";
+    }
+
+
+  # -------------------- #
+  # Running libtoolize.  #
+  # -------------------- #
+
+  if (!$uses_libtool)
+    {
+      verb "$configure_ac: not using Libtool";
+    }
+  elsif ($install)
+    {
+      if ($uses_libltdl)
+	{
+	  $libtoolize .= " --ltdl";
+	}
+      xsystem_hint ("libtoolize is needed because this package uses Libtool",
+		    $libtoolize);
+      $rerun_aclocal = 1;
+    }
+  else
+    {
+      verb "$configure_ac: not running libtoolize: --install not given";
+    }
+
+
+  # --------------------- #
+  # Running intltoolize.  #
+  # --------------------- #
+
+  if (!$uses_intltool)
+    {
+      verb "$configure_ac: not using Intltool";
+    }
+  elsif ($install)
+    {
+      xsystem_hint ("intltoolize is needed because this package uses Intltool",
+                    $intltoolize);
+    }
+  else
+    {
+      verb "$configure_ac: not running intltool: --install not given";
+    }
+
+
+  # ------------------- #
+  # Running gtkdocize.  #
+  # ------------------- #
+
+  if (!$uses_gtkdoc)
+    {
+      verb "$configure_ac: not using Gtkdoc";
+    }
+  elsif ($install)
+    {
+      xsystem_hint ("gtkdocize is needed because this package uses Gtkdoc",
+		    $gtkdocize);
+    }
+  else
+    {
+      verb "$configure_ac: not running gtkdocize: --install not given";
+    }
+
+
+  # ------------------- #
+  # Rerunning aclocal.  #
+  # ------------------- #
+
+  # If we re-installed Libtool or Gettext, the macros might have changed.
+  # Automake also needs an up-to-date aclocal.m4.
+  if ($rerun_aclocal)
+    {
+      if (!$uses_aclocal)
+	{
+	  verb "$configure_ac: not using aclocal";
+	}
+      else
+	{
+	  xsystem ("$aclocal $aclocal_flags");
+	}
+    }
+
+
+  # ------------------ #
+  # Running autoconf.  #
+  # ------------------ #
+
+  # Don't try to be smarter than 'autoconf', which does its own up to
+  # date checks.
+  #
+  # We prefer running autoconf before autoheader, because (i) the
+  # latter runs the former, and (ii) autoconf is stricter than
+  # autoheader.  So all in all, autoconf should give better error
+  # messages.
+  xsystem ($autoconf);
+
+
+  # -------------------- #
+  # Running autoheader.  #
+  # -------------------- #
+
+  # We now consider that if AC_CONFIG_HEADERS is used, then autoheader
+  # is used too.
+  #
+  # Just as for autoconf, up to date ness is performed by the tool
+  # itself.
+  #
+  # Run it before automake, since the latter checks the presence of
+  # config.h.in when it sees an AC_CONFIG_HEADERS.
+  if (!$uses_autoheader)
+    {
+      verb "$configure_ac: not using Autoheader";
+    }
+  else
+    {
+      xsystem ($autoheader);
+    }
+
+
+  # ------------------ #
+  # Running automake.  #
+  # ------------------ #
+
+  if (!$uses_automake)
+    {
+      verb "$configure_ac: not using Automake";
+    }
+  else
+    {
+      # We should always run automake, and let it decide whether it shall
+      # update the file or not.  In fact, the effect of '$force' is already
+      # included in '$automake' via '--no-force'.
+      xsystem ($automake);
+    }
+
+  # ---------------------------------------------------- #
+  # Installing aux files and checking for missing ones.  #
+  # ---------------------------------------------------- #
+  try_install_aux_files (\@aux_files, $aux_dir || '.')
+    if $install && $force;
+
+  my @missing_aux_files = find_missing_aux_files (\@aux_files, $aux_dir);
+  if (@missing_aux_files)
+    {
+      try_install_aux_files (\@missing_aux_files, $aux_dir || '.')
+        if $install && !$force;
+
+      for (0 .. $#missing_aux_files)
+        {
+          my $f = $missing_aux_files[$_];
+          if ($_ == $#missing_aux_files)
+            {
+              # Offer some advice if --install wasn't given and has a
+              # chance of helping.
+              my $trailer = "";
+              $trailer = "\n  try running autoreconf --install"
+                if (!$install
+                    && ($uses_automake
+                        || $uses_libtool
+                        || $uses_intltool
+                        || $uses_gtkdoc
+                        || can_install_aux_files @missing_aux_files));
+
+              error $configure_ac, "required file '$f' not found$trailer";
+            }
+          else
+            {
+              error $configure_ac, "required file '$f' not found";
+            }
+        }
+    }
+
+  # -------------- #
+  # Running make.  #
+  # -------------- #
+
+  if ($run_make)
+    {
+      if (!-f "config.status")
+	{
+	  verb "no config.status: cannot re-make";
+	}
+      else
+	{
+	  xsystem ("./config.status --recheck");
+	  xsystem ("./config.status");
+	  if (!-f "Makefile")
+	    {
+	      verb "no Makefile: cannot re-make";
+	    }
+	  else
+	    {
+	      xsystem ("$make");
+	    }
+	}
+    }
+}
+
+
+# &autoreconf ($DIRECTORY)
+# ------------------------
+# Reconf the $DIRECTORY.
+sub autoreconf ($)
+{
+  my ($directory) = @_;
+  my $cwd = cwd;
+
+  # The format for this message is not free: taken from Emacs, itself
+  # using GNU Make's format.
+  verb "Entering directory '$directory'";
+  chdir $directory
+    or error "cannot chdir to $directory: $!";
+
+  autoreconf_current_directory ($directory);
+
+  # The format is not free: taken from Emacs, itself using GNU Make's
+  # format.
+  verb "Leaving directory '$directory'";
+  chdir $cwd
+    or error "cannot chdir to $cwd: $!";
+}
+
+
+## ------ ##
+## Main.  ##
+## ------ ##
+
+# When debugging, it is convenient that all the related temporary
+# files be at the same place.
+mktmpdir ('ar');
+$ENV{'TMPDIR'} = $tmp;
+parse_args;
+
+# Autoreconf all the given configure.ac.  Unless '--no-recursive' is passed,
+# AC_CONFIG_SUBDIRS will be traversed in &autoreconf_current_directory.
+$ENV{'AUTOM4TE'} = $autom4te;
+for my $directory (@ARGV)
+  {
+    require_configure_ac ($directory);
+    autoreconf ($directory);
+  }
+
+exit $exit_code;
+
+### Setup "GNU" style for perl-mode and cperl-mode.
+## Local Variables:
+## perl-indent-level: 2
+## perl-continued-statement-offset: 2
+## perl-continued-brace-offset: 0
+## perl-brace-offset: 0
+## perl-brace-imaginary-offset: 0
+## perl-label-offset: -2
+## cperl-indent-level: 2
+## cperl-brace-offset: 0
+## cperl-continued-brace-offset: 0
+## cperl-label-offset: -2
+## cperl-extra-newline-before-brace: t
+## cperl-merge-trailing-else: nil
+## cperl-continued-statement-offset: 2
+## End:

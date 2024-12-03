@@ -1,0 +1,14 @@
+Files:
+tests/test-md5-stream.c
+tests/test-digest.h
+tests/macros.h
+
+Depends-on:
+c99
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-md5-stream
+check_PROGRAMS += test-md5-stream
+test_md5_stream_LDADD = $(LDADD) @LIB_CRYPTO@

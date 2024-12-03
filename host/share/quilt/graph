@@ -1,0 +1,128 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt graph [--all] [--reduce] [--lines[=num]] [--edge-labels=files] [-T ps] [patch]\n"
+
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Generate a dot(1) directed graph showing the dependencies between
+applied patches. A patch depends on another patch if both touch the same
+file or, with the --lines option, if their modifications overlap. Unless
+otherwise specified, the graph includes all patches that the topmost
+patch depends on.
+When a patch name is specified, instead of the topmost patch, create a
+graph for the specified patch. The graph will include all other patches
+that this patch depends on, as well as all patches that depend on this
+patch.
+
+--all	Generate a graph including all applied patches and their
+	dependencies. (Unapplied patches are not included.)
+
+--reduce
+	Eliminate transitive edges from the graph.
+
+--lines[=num]
+	Compute dependencies by looking at the lines the patches modify.
+	Unless a different num is specified, two lines of context are
+	included.
+
+--edge-labels=files
+	Label graph edges with the file names that the adjacent patches
+	modify.
+
+-T ps	Directly produce a PostScript output file.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o T:h --long all,reduce,lines::,edge-labels: -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-T)	if [ "$2" != ps ]; then
+			usage
+		fi
+		opt_format=ps
+		shift 2 ;;
+
+	--all)
+		opt_all=1
+		shift ;;
+
+	--reduce)
+		opt_reduce=1
+		shift ;;
+
+	--lines)
+		opt_lines=${2:-2}
+		shift 2 ;;
+
+	--edge-labels)
+		if [ "$2" != files ]
+		then
+			usage
+		fi
+		opt_edge_labels=$2
+		shift 2 ;;
+
+	-h)
+		usage -h ;;
+
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -gt 1 -o \( $# -ne 0 -a -n "$opt_all" \) ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+[ "$opt_format" = "ps" ] && check_external_tool dot graphviz -T
+[ -n "$opt_reduce" ] && check_external_tool tred graphviz --reduce
+
+if [ -z "$opt_all" ]
+then
+	patch=$(find_applied_patch "$1") || exit 1
+fi
+
+options=
+[ -n "$patch" ] && options="--select-patch $patch"
+[ -n "$opt_reduce" ] && options="$options --reduce"
+[ "$opt_edge_labels" = files ] && options="$options --edge-files"
+[ -n "$opt_lines" ] && options="$options --lines=$opt_lines"
+
+pipe=
+[ -n "$opt_format" ] && pipe="| dot -T$opt_format"
+
+export QUILT_PC
+applied_patches \
+| eval $QUILT_DIR/scripts/dependency-graph $options - $pipe

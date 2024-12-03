@@ -1,0 +1,26 @@
+@node timespec_getres
+@section @code{timespec_getres}
+@findex timespec_getres
+
+ISO C23 specification:@* @url{http://www.open-std.org/jtc1/sc22/wg14/www/docs/n3047.pdf} section 7.29.2.7
+
+Gnulib module: timespec_getres
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+glibc 2.33, macOS 12, FreeBSD 13.0, NetBSD 9.2, OpenBSD 7.0, Minix 3.3.0, AIX 7.1, HP-UX 11.31, IRIX 6.5, Solaris 11.3, Cygwin 2.9, mingw, MSVC 14, Android 9.0.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+On some platforms, this function returns a value other than the clock
+resolution of @code{timespec_get}, i.e., the minimum distance between
+differing timestamps.  For example, on GNU/Linux it typically returns
+1 nanosecond regardless of the actual clock resolution.
+@end itemize
+
+The Gnulib module @code{gettime-res} is a partial substitute; it implements
+the @code{TIME_UTC} functionality of @code{timespec_getres}.

@@ -1,0 +1,26 @@
+Description:
+Compute SHA1 checksum.
+
+Files:
+lib/sha1-stream.c
+
+Depends-on:
+crypto/af_alg
+crypto/sha1-buffer
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += sha1-stream.c
+
+Include:
+"sha1.h"
+
+Link:
+$(LIB_CRYPTO)
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering

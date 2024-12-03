@@ -1,0 +1,34 @@
+Description:
+POSIX compatible write() function: write data to a file descriptor
+
+Files:
+lib/write.c
+m4/write.m4
+
+Depends-on:
+unistd
+raise           [test $REPLACE_WRITE = 1]
+msvc-inval      [test $REPLACE_WRITE = 1]
+msvc-nothrow    [test $REPLACE_WRITE = 1]
+
+configure.ac:
+gl_FUNC_WRITE
+gl_CONDITIONAL([GL_COND_OBJ_WRITE], [test $REPLACE_WRITE = 1])
+AM_COND_IF([GL_COND_OBJ_WRITE], [
+  gl_PREREQ_WRITE
+])
+gl_UNISTD_MODULE_INDICATOR([write])
+
+Makefile.am:
+if GL_COND_OBJ_WRITE
+lib_SOURCES += write.c
+endif
+
+Include:
+<unistd.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

@@ -1,0 +1,303 @@
+#!/usr/bin/env perl
+
+use warnings;
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+#
+# Guards:
+#
+# +xxx   include if xxx is defined
+# -xxx   exclude if xxx is defined
+# +!xxx  include if xxx is not defined
+# -!xxx  exclude if xxx is not defined
+#
+
+use FileHandle;
+use Getopt::Long;
+use strict;
+
+# Prototypes
+sub files_in($$);
+sub parse($$);
+sub help();
+
+sub slashme($) {
+    my ($dir) = @_;
+    $dir =~ s#([^/])$#$&/#; # append a slash if necessary
+    if ($dir eq './') {
+	return '';
+    } else {
+	return $dir;
+    }
+}
+
+# Generate a list of files in a directory
+#
+sub files_in($$) {
+    my ($dir, $path) = @_;
+    my $dh = new FileHandle;
+    my (@files, $file);
+
+    # @<file> syntax
+    if ($path =~ s/^@//) {
+	my $fh;
+	open($fh, '<', $path) or die "$path: $!\n";
+	@files = <$fh>;
+	close($fh);
+	chomp(@files);
+	s:^$dir:: for @files;
+	return @files;
+    }
+
+    $path = slashme($path);
+    opendir $dh, length("$dir$path") ? "$dir$path" : '.'
+	or die "$dir$path: $!\n";
+    while ($file = readdir($dh)) {
+	next if $file =~ /^(\.|\.\.|\.#.*|CVS|.*~)$/;
+	if (-d "$dir$path$file") {
+		@files = (@files, files_in($dir, "$path$file/"));
+	} else {
+		#print "[$path$file]\n";
+		push @files, "$path$file";
+	}
+    }
+    closedir $dh;
+    return @files;
+}
+
+# Parse a configuration file
+# Callback called with ($patch, @guards) arguments
+#
+sub parse($$) {
+    my ($fh, $callback) = @_;
+
+    my $line = "";
+
+    while (<$fh>) {
+	chomp;
+	s/(^|\s+)#.*//;
+	if (s/\\$/ /) {
+		$line .= $_;
+		next;
+	}
+	$line .= $_;
+	my @guards = ();
+	foreach my $token (split /[\s\t\n]+/, $line) {
+	    next if $token eq "";
+	    if ($token =~ /^[-+]/) {
+		push @guards, $token;
+	    } else {
+		#print "[" . join(",", @guards) . "] $token\n";
+		&$callback($token, @guards);
+	    }
+	}
+	$line = "";
+    }
+}
+
+# Command line options
+#
+my ($dir, $config, $default, $check, $list, $invert_match, $with_guards) =
+   (  '',     '-',        1,      0,     0,             0,            0);
+my @path;
+
+# Help text
+#
+sub help() {
+    print "$0 - select from a list of files guarded by conditions\n";
+    print "SYNOPSIS: $0 [--prefix=dir] [--path=dir1:dir2:...]\n" .
+	"	[--default=0|1] [--check|--list] [--invert-match]\n" .
+	"	[--with-guards] [--config=file] symbol ...\n\n" .
+	"	Defaults: --default=$default\n" .
+	"	Use --path=\@<file> to read the list of entries from <file>\n";
+    exit 0;
+}
+
+# Parse command line options
+#
+Getopt::Long::Configure ("bundling");
+eval {
+    unless (GetOptions (
+	'd|prefix=s' => \$dir,
+	'c|config=s' => \$config,
+	'C|check' => \$check,
+	'l|list' => \$list,
+	'w|with-guards' => \$with_guards,
+	'p|path=s' => \@path,
+	'D|default=i' => \$default,
+	'v|invert-match' => \$invert_match,
+	'h|help' => sub { help(); exit 0; })) {
+	help();
+	exit 1;
+    }
+};
+if ($@) {
+    print "$@";
+    help();
+    exit 1;
+}
+
+@path = ('.')
+    unless (@path);
+@path = split(/:/, join(':', @path));
+
+my $fh = ($config eq '-') ? \*STDIN : new FileHandle($config)
+    or die "$config: $!\n";
+
+$dir = slashme($dir);
+
+if ($check) {
+    # Check for duplicate files, or for files that are not referenced by
+    # the specification.
+
+    my $problems = 0;
+    my @files;
+
+    foreach (@path) {
+	@files = (@files, files_in($dir, $_));
+    }
+    my %files = map { $_ => 0 } @files;
+
+    parse($fh, sub {
+	my ($patch, @guards) = @_;
+	if (exists $files{$patch}) {
+	    $files{$patch}++;
+	} else {
+	    if ($config eq '-') {
+		print "Not found: $dir$patch\n";
+	    } else {
+		print "In $config but not found: $dir$patch\n";
+	    }
+	    $problems++;
+	}});
+
+    $fh->close();
+
+    my ($file, $ref);
+    while (($file, $ref) = each %files) {
+	next if $ref == 1;
+
+	if ($ref == 0) {
+	    if ($config eq '-') {
+		print "Unused: $file\n";
+	    } else {
+		print "Not in $config: $file\n";
+	    }
+	    $problems++;
+	}
+	if ($ref > 1) {
+	    print "Warning: multiple uses";
+	    print " in $config" if $config ne '-';
+	    print ": $file\n";
+	    # This is not an error if the entries are mutually exclusive...
+	}
+    }
+    exit $problems ? 1 : 0;
+
+} elsif ($list) {
+    parse($fh, sub {
+	my ($patch, @guards) = @_;
+	print join(' ', @guards), ' '
+		if (@guards && $with_guards);
+	print "$dir$patch\n";
+	});
+} else {
+    # Generate a list of patches to apply.
+
+    my %symbols = map { $_ => 1 } @ARGV;
+
+    parse($fh, sub {
+	my ($patch, @guards) = @_;
+
+	my $selected;
+	if (@guards) {
+	    # If the first guard is -xxx, the patch is included by default;
+	    # if it is +xxx, the patch is excluded by default.
+	    $selected = ($guards[0] =~ /^-/);
+
+	    foreach (@guards) {
+		/^([-+])(!?)(.*)?/
+		    or die "Bad guard '$_'\n";
+
+		# Check if the guard matches
+		if (($2 eq '!' && !exists $symbols{$3}) ||
+		    ($2 eq ''  && ( $3 eq '' || exists $symbols{$3}))) {
+		    # Include or exclude
+		    $selected = ($1 eq '+');
+		}
+	    }
+	} else {
+	    # If there are no guards, use the specified default result.
+	    $selected = $default;
+	}
+
+	print "$dir$patch\n"
+	    if $selected ^ $invert_match;
+	});
+
+    $fh->close();
+
+    exit 0;
+}
+
+__END__
+
+=head1 NAME
+
+guards - select from a list of files guarded by conditions
+
+=head1 SYNOPSIS
+
+F<guards> [--prefix=F<dir>] [--path=F<dir1:dir2:...>] [--default=<0|1>]
+[--check|--list] [--invert-match] [--with-guards] [--config=<file>]
+I<symbol> ...
+
+=head1 DESCRIPTION
+
+The script reads a configuration file that may contain so-called guards, file
+names, and comments, and writes those file names that satisfy all guards to
+standard output. The script takes a list of symbols as its arguments. Each line
+in the configuration file is processed separately. Lines may start with a
+number of guards. The following guards are defined:
+
+=over
+
++I<xxx> Include the file(s) on this line if the symbol I<xxx> is defined.
+
+-I<xxx> Exclude the file(s) on this line if the symbol I<xxx> is defined.
+
++!I<xxx> Include the file(s) on this line if the symbol I<xxx> is not defined.
+
+-!I<xxx> Exclude the file(s) on this line if the symbol I<xxx> is not defined.
+
+- Exclude this file. Used to avoid spurious I<--check> messages.
+
+=back
+
+The guards are processed left to right. The last guard that matches determines
+if the file is included. If no guard is specified, the I<--default>
+setting determines if the file is included.
+
+If no configuration file is specified, the script reads from standard input.
+
+The I<--check> option is used to compare the specification file against the
+file system. If files are referenced in the specification that do not exist, or
+if files are not enlisted in the specification file warnings are printed. The
+I<--path> option can be used to specify which directory or directories to scan.
+Multiple directories are separated by a colon (C<:>) character. The
+I<--prefix> option specifies the location of the files. Alternatively, the
+I<--path=@E<lt>fileE<gt>> syntax can be used to specify a file from which the
+file names will be read.
+
+Use I<--list> to list all files independent of any rules. Use I<--invert-match>
+to list only the excluded patches. Use I<--with-guards> to also include all
+inclusion and exclusion rules.
+
+=head1 AUTHOR
+
+Andreas Gruenbacher <agruen@suse.de>, SUSE Labs

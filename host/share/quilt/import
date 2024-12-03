@@ -1,0 +1,255 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+# One of the few commands which does not need a series file
+skip_series_check=1
+
+usage()
+{
+	printf $"Usage: quilt import [-p num] [-R] [-P patch] [-f] [-d {o|a|n}] patchfile ...\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Import external patches.  The patches will be inserted following the
+current top patch, and must be pushed after import to apply them.
+
+-p num
+	Number of directory levels to strip when applying (default=1)
+
+-R
+	Apply patch in reverse.
+
+-P patch
+	Patch filename to use inside quilt. This option can only be
+	used when importing a single patch.
+
+-f	Overwrite/update existing patches.
+
+-d {o|a|n}
+	When overwriting in existing patch, keep the old (o), all (a), or
+	new (n) patch header. If both patches include headers, this option
+	must be specified. This option is only effective when -f is used.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+find_patch_file()
+{
+	local name="$1"
+
+	if [ ${name:0:1} = / ]
+	then
+		# Patch has absolute path
+		if [ -r "$name" ]
+		then
+			echo "$name"
+			return
+		fi
+	else
+		# Patch has a relative path
+		if [ -r "$SUBDIR$name" ]
+		then
+			echo "$SUBDIR$name"
+			return
+		fi
+	fi
+
+	printf $"Patch %s does not exist\n" "$name" >&2
+	return 1
+}
+
+merge_patches()
+{
+	local old="$1" new="$2"
+	local old_desc=$(gen_tempfile) new_desc=$(gen_tempfile)
+
+	cat_file "$old" | patch_header | strip_diffstat > $old_desc
+	cat_file "$new" | patch_header | strip_diffstat > $new_desc
+
+	if [ -z "$opt_desc" ]
+	then
+		[ -s $old_desc ] || opt_desc=n
+		[ -z "$opt_desc" -a ! -s $new_desc ] && opt_desc=o
+
+		if [ -z "$opt_desc" ]
+		then
+			local diff=$(diff -u $old_desc $new_desc \
+				     | sed -e '1,2d')
+			if [ -n "$diff" ]
+			then
+				printf $"Patch headers differ:\n" >&2
+				echo "$diff" >&2
+				printf \
+$"Please use -d {o|a|n} to specify which patch header(s) to keep.\n" >&2
+				rm -f $old_desc $new_desc
+				return 1
+			fi
+		fi
+	fi
+
+	[ "$opt_desc" = n ] || cat "$old_desc"
+	[ "$opt_desc" = a ] && echo '---'
+	if [ "$opt_desc" = o ]
+	then
+		cat_file "$new" | patch_body
+	else
+		cat_file "$new"
+	fi
+	rm -f $old_desc $new_desc
+}
+
+die()
+{
+	local status=$1
+	[ "$merged_patch_file" != "$patch_file" ] && rm -f "$merged_patch_file"
+	exit $status
+}
+
+options=`getopt -o P:d:fp:Rh -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-P)
+		opt_patch=$2
+		shift 2 ;;
+	-p)
+		opt_strip=$2
+		shift 2 ;;
+	-R)
+		opt_reverse=1
+		shift ;;
+	-d)
+		case "$2" in
+			o|n|a) opt_desc=$2 ;;
+			*) usage ;;
+		esac
+		shift 2 ;;
+	-f)
+		opt_force=1
+		shift ;;
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -gt 1 -a -n "$opt_patch" ]
+then
+	printf $"Option \`-P' can only be used when importing a single patch\n" >&2
+	exit 1
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+[ -n "$opt_patch" ] && opt_patch=${opt_patch#$QUILT_PATCHES/}
+[ -n "$opt_strip" ] && patch_args="-p$opt_strip"
+if [ -n "$opt_reverse" ]
+then
+	if [ -n "$patch_args" ]
+	then
+		patch_args="$patch_args -R"
+	else
+		patch_args="-R"
+	fi
+fi
+
+before=$(patch_after "$(top_patch)")
+for orig_patch_file in "$@"
+do
+	if [ -n "$opt_patch" ]
+	then
+		patch=$opt_patch
+	else
+		patch=${orig_patch_file##*/}
+	fi
+
+	patch_file=$(find_patch_file "$orig_patch_file") || exit 1
+	merged_patch_file="$patch_file"
+
+	if is_applied $patch
+	then
+		printf $"Patch %s is applied\n" "$(print_patch $patch)" >&2
+		exit 1
+	fi
+
+	dest=$(patch_file_name $patch)
+	if patch_in_series "$patch"
+	then
+		if [ "$patch_file" = "$dest" ]
+		then
+			printf $"Patch %s already exists in series.\n" \
+			       "$(print_patch $patch)" >&2
+			exit 1
+		fi
+		if [ -z "$opt_force" ]
+		then
+			printf $"Patch %s exists. Replace with -f.\n" \
+			       "$(print_patch $patch)" >&2
+			exit 1
+		fi
+		if [ "$opt_desc" != n ]
+		then
+			merged_patch_file=$(gen_tempfile)
+			merge_patches "$dest" "$patch_file" \
+				      > $merged_patch_file \
+				|| die 1
+		fi
+		printf $"Replacing patch %s with new version\n" \
+		       "$(print_patch $patch)" >&2
+	elif [ -e "$dest" ]
+	then
+		printf $"Importing patch %s\n" "$(print_patch $patch)"
+	else
+		printf $"Importing patch %s (stored as %s)\n" \
+		       "$orig_patch_file" \
+		       "$(print_patch $patch)"
+
+		mkdir -p "${dest%/*}"
+	fi
+
+	if [ "$merged_patch_file" != "$dest" ] && \
+	   (( [ "$merged_patch_file" != "$patch_file" ] && \
+	      ! cat_to_new_file "$dest" < "$merged_patch_file" ) || \
+	    ( [ "$merged_patch_file" = "$patch_file" ] && \
+	      ! cp "$merged_patch_file" "$dest" ))
+	then
+		printf $"Failed to import patch %s\n" "$(print_patch $patch)" >&2
+		die 1
+	fi
+
+	[ "$merged_patch_file" != "$patch_file" ] && rm -f "$merged_patch_file"
+
+	if ! patch_in_series $patch &&
+	   ! insert_in_series $patch "$patch_args" "$before"
+	then
+		printf $"Failed to insert patch %s into file series\n" \
+		       "$(print_patch $patch)" >&2
+		exit 1
+	fi
+
+	rm -rf $QUILT_PC/$patch
+done

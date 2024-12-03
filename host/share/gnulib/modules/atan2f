@@ -1,0 +1,33 @@
+Description:
+atan2f() function: angle of a point in the plane.
+
+Files:
+lib/atan2f.c
+m4/atan2f.m4
+
+Depends-on:
+math
+extensions
+atan2           [test $HAVE_ATAN2F = 0]
+
+configure.ac:
+gl_FUNC_ATAN2F
+gl_CONDITIONAL([GL_COND_OBJ_ATAN2F], [test $HAVE_ATAN2F = 0])
+gl_MATH_MODULE_INDICATOR([atan2f])
+
+Makefile.am:
+if GL_COND_OBJ_ATAN2F
+lib_SOURCES += atan2f.c
+endif
+
+Include:
+<math.h>
+
+Link:
+$(ATAN2F_LIBM)
+
+License:
+LGPL
+
+Maintainer:
+all

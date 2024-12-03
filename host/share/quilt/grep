@@ -1,0 +1,126 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt grep [-h|options] {pattern}\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Grep through the source files, recursively, skipping patches and quilt
+meta-information. If no filename argument is given, the whole source
+tree is searched. Please see the grep(1) manual page for options.
+
+-h	Print this help. The grep -h option can be passed after a
+	double-dash (--). Search expressions that start with a dash
+	can be passed after a second double-dash (-- --).
+"
+
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+get_options()
+{
+	getopt -o EFGPe:f:iwxzsvVm:bHnhqoaId:D:RrlLcB:ZA:C:Uu		      \
+		--long extended-regexp,fixed-strings,basic-regexp,perl-regexp \
+		--long regexp:,file:,ignore-case,word-regexp	      \
+		--long line-regexp,null-data,no-messages,invert-match,version \
+		--long help,mmap,max-count:,byte-offset,line-number	      \
+		--long line-buffered,with-filename,no-filename,label:    \
+		--long only-matching,quiet,silent,binary-files:,text,	      \
+		--long directories:,devices:,recursive,include:,exclude:      \
+		--long exclude-from:,files-without-match,files-with-matches   \
+		--long count,null,before-context:,after-context:,context:     \
+		--long color::,colour::,binary,unix-byte-offsets	      \
+		-- "$@"
+}
+
+shift_myargs()
+{
+	set -- "${myargs[@]}"
+	shift
+	myargs=( "$@" )
+}
+
+shift_args()
+{
+	while true
+	do
+		case "${myargs[0]}" in
+		--)
+			shift_myargs
+			return ;;
+		-h)
+			opt_h=1 ;;
+		-e|-f|--regexp|--file)
+			has_pattern=1
+			args=( "${args[@]}" "${myargs[0]}" )
+			shift_myargs ;;
+		-m|-d|-D|-B|-A|-C|\
+		--max-count|--label|--binary-files|\
+		--directories|--devices|--include|--exclude|--exclude-from|\
+		--before-context|--after-context|--context|--color|--colour)
+			args=( "${args[@]}" "${myargs[0]}" )
+			shift_myargs ;;
+		esac
+		args=( "${args[@]}" "${myargs[0]}" )
+		shift_myargs
+	done
+}
+
+options=$(get_options "$@")
+[ $? -ne 0 ] && usage
+eval set -- "$options"
+myargs=( "$@" )
+
+args=()
+opt_h=
+has_pattern=
+shift_args
+[ -n "$opt_h" ] && usage -h
+case "${myargs[0]}" in
+	-*)
+	options=$(get_options "${myargs[@]}")
+	[ $? -ne 0 ] && usage
+	eval set -- "$options"
+	myargs=( "$@" )
+	shift_args ;;
+esac
+
+if [ -z "$has_pattern" ]
+then
+	[ ${#myargs[@]} -eq 0 ] && usage
+	args=( "${args[@]}" -- "${myargs[0]}" )
+	shift_myargs
+fi
+
+# Print the filename for each match, unless -h is given. Otherwise, xargs
+# may pass a single filename to grep and cause it to omit the file name.
+[ -z "$opt_h" ] && opt_H=-H
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+find "${myargs[@]:-.}" \( \
+	-path "./$QUILT_PATCHES/*" -o \
+	-path "./$QUILT_PC/*" \) -prune -o \
+	-type f -print0 \
+| xargs -0 grep $opt_H "${args[@]}" \
+| if [ ${#myargs[@]} -eq 0 ]; then
+	sed -e 's,^./,,'
+else
+	cat
+fi

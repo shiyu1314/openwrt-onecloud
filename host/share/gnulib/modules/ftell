@@ -1,0 +1,30 @@
+Description:
+ftell() function: Retrieve the position of a FILE stream.
+
+Files:
+lib/ftell.c
+m4/ftell.m4
+
+Depends-on:
+stdio
+errno
+ftello          [test $REPLACE_FTELL = 1]
+
+configure.ac:
+gl_FUNC_FTELL
+gl_CONDITIONAL([GL_COND_OBJ_FTELL], [test $REPLACE_FTELL = 1])
+gl_STDIO_MODULE_INDICATOR([ftell])
+
+Makefile.am:
+if GL_COND_OBJ_FTELL
+lib_SOURCES += ftell.c
+endif
+
+Include:
+<stdio.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

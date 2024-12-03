@@ -1,0 +1,29 @@
+Description:
+freadable() function: Determine whether a FILE stream supports reading.
+
+Files:
+lib/freadable.h
+lib/freadable.c
+lib/stdio-impl.h
+m4/freadable.m4
+
+Depends-on:
+stdbool
+
+configure.ac:
+gl_FUNC_FREADABLE
+gl_CONDITIONAL([GL_COND_OBJ_FREADABLE], [test $ac_cv_func___freadable = no])
+
+Makefile.am:
+if GL_COND_OBJ_FREADABLE
+lib_SOURCES += freadable.c
+endif
+
+Include:
+"freadable.h"
+
+License:
+LGPL
+
+Maintainer:
+Eric Blake

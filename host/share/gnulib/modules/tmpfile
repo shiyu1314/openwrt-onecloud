@@ -1,0 +1,40 @@
+Description:
+tmpfile() function: create a temporary file.
+
+Files:
+lib/tmpfile.c
+m4/tmpfile.m4
+
+Depends-on:
+stdio
+largefile
+pathmax         [test $REPLACE_TMPFILE = 1]
+stdbool         [test $REPLACE_TMPFILE = 1]
+tempname        [test $REPLACE_TMPFILE = 1]
+tmpdir          [test $REPLACE_TMPFILE = 1]
+
+configure.ac:
+gl_FUNC_TMPFILE
+gl_CONDITIONAL([GL_COND_OBJ_TMPFILE], [test $REPLACE_TMPFILE = 1])
+AM_COND_IF([GL_COND_OBJ_TMPFILE], [
+  gl_PREREQ_TMPFILE
+])
+gl_STDIO_MODULE_INDICATOR([tmpfile])
+
+Makefile.am:
+if GL_COND_OBJ_TMPFILE
+lib_SOURCES += tmpfile.c
+endif
+
+Include:
+<stdio.h>
+
+Link:
+$(GETRANDOM_LIB)
+$(CLOCK_TIME_LIB)
+
+License:
+LGPL
+
+Maintainer:
+Ben Pfaff

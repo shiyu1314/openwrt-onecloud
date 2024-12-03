@@ -1,0 +1,362 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt refresh [-p n|-p ab] [-u|-U num|-c|-C num] [-z[new_name]] [-f] [--no-timestamps] [--no-index] [--diffstat] [--sort] [--backup] [--strip-trailing-whitespace] [patch]\n"
+
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Refreshes the specified patch, or the topmost patch by default.
+Documentation that comes before the actual patch in the patch file is
+retained.
+
+It is possible to refresh patches that are not on top.  If any patches
+on top of the patch to refresh modify the same files, the script aborts
+by default.  Patches can still be refreshed with -f.  In that case this
+script will print a warning for each shadowed file, changes by more
+recent patches will be ignored, and only changes in files that have not
+been modified by any more recent patches will end up in the specified
+patch.
+
+-p n	Create a -p n style patch (-p0 or -p1 supported).
+
+-p ab	Create a -p1 style patch, but use a/file and b/file as the
+	original and new filenames instead of the default
+	dir.orig/file and dir/file names.
+
+-u, -U num, -c, -C num
+	Create a unified diff (-u, -U) with num lines of context. Create
+	a context diff (-c, -C) with num lines of context. The number of
+	context lines defaults to 3.
+
+-z[new_name]
+	Create a new patch containing the changes instead of refreshing the
+	topmost patch. If no new name is specified, \`-2' is added to the
+	original patch name, etc. (See the fork command.)
+
+--no-timestamps
+	Do not include file timestamps in patch headers.
+
+--no-index
+	Do not output Index: lines.
+
+--diffstat
+	Add a diffstat section to the patch header, or replace the
+	existing diffstat section.
+
+-f	Enforce refreshing of a patch that is not on top.
+
+--backup
+	Create a backup copy of the old version of a patch as patch~.
+
+--sort	Sort files by their name instead of preserving the original order.
+
+--strip-trailing-whitespace
+	Strip trailing whitespace at the end of lines.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+die()
+{
+	local status=$1
+	[ -n "$tmp_patch" ] && rm -f $tmp_patch
+	[ -n "$tmp_result" ] && rm -f $tmp_result
+	[ -n "$workdir" ] && rm -rf "$workdir"
+	exit $status
+}
+
+options=`getopt -o p:uU:cC:fz::h --long no-timestamps,diffstat,backup,sort \
+				 --long no-index \
+				 --long strip-trailing-whitespace -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+opt_format=-u
+while true
+do
+	case "$1" in
+	-p)
+		opt_strip_level=$2
+		shift 2 ;;
+	-f)
+		opt_force=1
+		shift ;;
+	-u|-c)
+		opt_format=$1
+		shift ;;
+	-U|-C)
+		opt_format="$1 $2"
+		shift 2 ;;
+	-z)
+		opt_fork=1
+		opt_new_name=$2
+		shift 2 ;;
+	-h)
+		usage -h ;;
+	--no-timestamps)
+		QUILT_NO_DIFF_TIMESTAMPS=1
+		shift ;;
+	--no-index)
+		QUILT_NO_DIFF_INDEX=1
+		shift ;;
+	--diffstat)
+		opt_diffstat=1
+		shift ;;
+	--backup)
+		QUILT_BACKUP=1
+		shift ;;
+	--sort)
+		opt_sort=1
+		shift ;;
+	--strip-trailing-whitespace)
+		opt_strip_whitespace=1
+		shift ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -gt 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+QUILT_DIFF_OPTS="$QUILT_DIFF_OPTS $opt_format"
+
+patch=$(find_applied_patch "$1") || exit 1
+
+# Properly handle spaces in file names
+saved_IFS=$IFS
+IFS=$'\n'
+
+if [ -z "$opt_sort" ]
+then
+	files=( $(files_in_patch_ordered $patch) )
+else
+	files=( $(files_in_patch $patch | sort) )
+fi
+
+IFS=$saved_IFS
+
+if [ -n "$opt_fork" -a $# -ne 0 ]
+then
+	printf $"Can only refresh the topmost patch with -z currently\n" >&2
+	exit 1
+fi
+
+if [ -n "$opt_fork" ]; then
+	old_patch=$patch
+	old_patch_args=$(patch_args "$old_patch")
+	if [ -n "$opt_new_name" ]
+	then
+		patch=$opt_new_name
+	else
+		patch=$(next_filename "$patch")
+	fi
+	if [ -e "$(patch_file_name "$patch")" ]; then
+		printf $"Patch %s exists already\n" "$(print_patch "$patch")" >&2
+		exit 1
+	fi
+fi
+
+if [ -z "$opt_strip_level" ]
+then
+	opt_strip_level=$(patch_strip_level "$patch")
+fi
+case "$opt_strip_level" in
+0 | 1)
+	num_strip_level=$opt_strip_level
+	;;
+ab)
+	num_strip_level=1
+	;;
+*)
+	printf $"Cannot refresh patches with -p%s, please specify -p0, -p1, or -pab instead\n" \
+	       "$opt_strip_level" >&2
+	exit 1
+	;;
+esac
+
+trap "die 1" SIGTERM
+
+if [ -n "$opt_fork" ]; then
+	workdir=$(gen_tempfile -d "$PWD/quilt")
+	apply_patch_temporarily "$workdir" "$old_patch" || exit 1
+fi
+
+tmp_patch=$(gen_tempfile)
+
+for file in "${files[@]}"
+do
+	if [ -n "$opt_fork" ]; then
+		old_file=$workdir/$file
+		new_file=$file
+	else
+		old_file=$(backup_file_name "$patch" "$file")
+		next_patch=$(next_patch_for_file "$patch" "$file")
+		if [ -z "$next_patch" ]
+		then
+			new_file=$file
+		else
+			new_file=$(backup_file_name "$next_patch" "$file")
+			files_were_shadowed=1
+		fi
+	fi
+	if ! diff_file "$file" "$old_file" "$new_file"
+	then
+		die 1
+	fi
+
+	if [ -n "$files_were_shadowed" -a -z "$opt_force" ]
+	then
+		printf $"More recent patches modify files in patch %s. Enforce refresh with -f.\n" "$(print_patch "$patch")" >&2
+		die 1
+	fi
+
+	if [ -n "$files_were_shadowed" -a -n "$opt_strip_whitespace" ]
+	then
+		printf $"Cannot use --strip-trailing-whitespace on a patch that has shadowed files.\n" >&2
+	fi
+done >> $tmp_patch
+
+if [ -n "$opt_fork" -a ! -s $tmp_patch ]
+then
+	printf $"Nothing in patch %s\n" "$(print_patch "$patch")" >&2
+	die 1
+fi
+
+# Check for trailing whitespace
+if [ -z "$opt_strip_whitespace" ]
+then
+	$QUILT_DIR/scripts/remove-trailing-ws -n -p$num_strip_level \
+	< $tmp_patch
+else
+	tmp_patch2=$(gen_tempfile)
+	if $QUILT_DIR/scripts/remove-trailing-ws -p$num_strip_level \
+				       < $tmp_patch > $tmp_patch2
+	then
+		rm -f $tmp_patch
+		tmp_patch=$tmp_patch2
+	fi
+fi
+# FIXME: no stripping of non-topmost patch !!!
+
+patch_file=$(patch_file_name "$patch")
+
+trap "" SIGINT
+
+tmp_result=$(gen_tempfile) || die 1
+
+prev_patch_file=$patch_file
+[ -e "$prev_patch_file" ] || prev_patch_file=/dev/null
+
+if [ -n "$opt_diffstat" ]
+then
+	cat_file "$prev_patch_file" | patch_header \
+	| awk '
+	    function print_diffstat(arr, i) {
+	      if (system("diffstat '"$QUILT_DIFFSTAT_OPTS \
+				     -p$num_strip_level \
+				     $tmp_patch | sed -e s:^:"'" prefix ":"))
+		exit 1
+	    }
+			{ prefix=""
+			  if (index($0, "#") == 1)
+			    prefix="#"
+			}
+	    /^#? .* \|  *[1-9][0-9]* /	{ eat = eat $0 "\n"
+			  next }
+	    /^#? .* files? changed(, .* insertions?\(\+\))?(, .* deletions?\(-\))?/ \
+			{ print_diffstat()
+			  diffstat_printed=1
+			  eat = ""
+			  next }
+			{ print eat $0
+			  eat = "" }
+	    END		{ printf "%s", eat
+			  if (!diffstat_printed) {
+			    print "---"
+			    print_diffstat()
+			    print prefix
+			  }
+			}
+	    ' > $tmp_result
+else
+	cat_file "$prev_patch_file" | patch_header \
+	> $tmp_result
+fi
+
+cat $tmp_patch >> $tmp_result
+
+mkdir -p $(dirname "$patch_file")
+
+if [ -e "$patch_file" ] && \
+   diff -q "$patch_file" $tmp_result > /dev/null
+then
+	printf $"Patch %s is unchanged\n" "$(print_patch "$patch")"
+elif cat_to_new_file "$patch_file" $QUILT_BACKUP < $tmp_result
+then
+	if [ -n "$opt_fork" ]
+	then
+		if ! insert_in_series "$patch" "$old_patch_args"
+		then
+			printf $"Failed to insert patch %s into file series\n" \
+			       "$(print_patch "$patch")" >&2
+			rm -f "$patch_file"
+			exit 1
+		fi
+		if ! rm -rf "$QUILT_PC/$patch" || \
+		   ! mv "$workdir" "$QUILT_PC/$patch" || \
+		   ! echo "$patch" >> $QUILT_PC/applied-patches
+		then
+			printf $"Failed to create patch %s\n" \
+			       "$(print_patch "$patch")" >&2
+			exit 1
+		fi
+		printf $"Fork of patch %s created as %s\n" \
+			"$(print_patch "$old_patch")" \
+			"$(print_patch "$patch")"
+	else
+		if [ -s $tmp_patch ]
+		then
+			printf $"Refreshed patch %s\n" "$(print_patch "$patch")"
+		else
+			printf $"Nothing in patch %s\n" "$(print_patch "$patch")"
+		fi
+	fi
+	touch "$QUILT_PC/$patch/.timestamp"
+else
+	die 1
+fi
+
+rm -f "$QUILT_PC/$patch~refresh"
+if ! change_db_strip_level -p$num_strip_level "$patch"
+then
+	die 1
+fi
+die 0

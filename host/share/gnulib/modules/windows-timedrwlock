@@ -1,0 +1,32 @@
+Description:
+Timed read-write locks (native Windows implementation).
+
+Files:
+lib/windows-timedrwlock.h
+lib/windows-timedrwlock.c
+lib/windows-initguard.h
+
+Depends-on:
+errno
+stdbool
+time-h
+gettimeofday
+
+configure.ac:
+AC_REQUIRE([AC_CANONICAL_HOST])
+gl_CONDITIONAL([GL_COND_OBJ_WINDOWS_TIMEDRWLOCK],
+               [case "$host_os" in mingw*) true;; *) false;; esac])
+
+Makefile.am:
+if GL_COND_OBJ_WINDOWS_TIMEDRWLOCK
+lib_SOURCES += windows-timedrwlock.c
+endif
+
+Include:
+"windows-timedrwlock.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+all

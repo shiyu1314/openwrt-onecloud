@@ -1,0 +1,36 @@
+Description:
+rawmemchr() function: Find the first occurrence of C in S.
+
+Files:
+lib/rawmemchr.c
+lib/rawmemchr.valgrind
+m4/rawmemchr.m4
+
+Depends-on:
+alignasof
+assert-h
+extensions
+stdint
+string
+
+configure.ac:
+gl_FUNC_RAWMEMCHR
+gl_CONDITIONAL([GL_COND_OBJ_RAWMEMCHR], [test $HAVE_RAWMEMCHR = 0])
+AM_COND_IF([GL_COND_OBJ_RAWMEMCHR], [
+  gl_PREREQ_RAWMEMCHR
+])
+gl_STRING_MODULE_INDICATOR([rawmemchr])
+
+Makefile.am:
+if GL_COND_OBJ_RAWMEMCHR
+lib_SOURCES += rawmemchr.c
+endif
+
+Include:
+<string.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Eric Blake, glibc

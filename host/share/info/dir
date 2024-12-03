@@ -1,0 +1,78 @@
+This is the file .../info/dir, which contains the
+topmost node of the Info hierarchy, called (dir)Top.
+The first time you invoke Info you start off looking at this node.
+
+File: dir,	Node: Top	This is the top of the INFO tree
+
+  This (the Directory node) gives a menu of major topics.
+  Typing "q" exits, "H" lists all Info commands, "d" returns here,
+  "h" gives a primer for first-timers,
+  "mEmacs<Return>" visits the Emacs manual, etc.
+
+  In Emacs, you can click mouse button 2 on a menu item or cross reference
+  to select it.
+
+* Menu:
+
+Archiving
+* Cpio: (cpio).                 Copy-in-copy-out archiver to tape or disk.
+* Tar: (tar).                   Making tape (or disk) archives.
+
+Basics
+* Finding files: (find).        Operating on files matching certain criteria.
+
+GNU libraries
+* gmp: (gmp).                   GNU Multiple Precision Arithmetic Library.
+
+GNU organization
+* Maintaining Findutils: (find-maint).
+                                Maintaining GNU findutils
+* Standards: (standards).       GNU coding standards.
+
+GNU Packages
+* mpc: (mpc)Multiple Precision Complex Library.
+
+Individual utilities
+* aclocal-invocation: (automake)aclocal Invocation.
+                                                Generating aclocal.m4.
+* autoconf-invocation: (autoconf)autoconf Invocation.
+                                                How to create configuration 
+                                                  scripts
+* autoheader: (autoconf)autoheader Invocation.  How to create configuration 
+                                                  templates
+* autom4te: (autoconf)autom4te Invocation.      The Autoconf executables 
+                                                  backbone
+* automake-invocation: (automake)automake Invocation.
+                                                Generating Makefile.in.
+* autoreconf: (autoconf)autoreconf Invocation.  Remaking multiple 
+                                                  ‘configure’ scripts
+* autoscan: (autoconf)autoscan Invocation.      Semi-automatic 
+                                                  ‘configure.ac’ writing
+* autoupdate: (autoconf)autoupdate Invocation.  Automatic update of 
+                                                  ‘configure.ac’
+* config.status: (autoconf)config.status Invocation.
+                                                Recreating configurations.
+* configure: (autoconf)configure Invocation.    Configuring a package.
+* find: (find)Invoking find.                    Finding and acting on files.
+* ifnames: (autoconf)ifnames Invocation.        Listing conditionals in source.
+* libtool-invocation: (libtool)Invoking libtool.
+                                                Running the 'libtool' script.
+* libtoolize: (libtool)Invoking libtoolize.     Adding libtool support.
+* locate: (find)Invoking locate.                Finding files in a database.
+* tar: (tar)tar invocation.                     Invoking GNU 'tar'.
+* testsuite: (autoconf)testsuite Invocation.    Running an Autotest test suite.
+* updatedb: (find)Invoking updatedb.            Building the locate database.
+* xargs: (find)Invoking xargs.                  Operating on many files.
+
+Software development
+* Autoconf: (autoconf).         Create source code configuration scripts.
+* Autoconf Archive: (autoconf-archive).
+                                A collection of re-usable Autoconf macros.
+* Automake: (automake).         Making GNU standards-compliant Makefiles.
+* Automake-history: (automake-history).
+                                History of Automake development.
+* Libtool: (libtool).           Generic shared library support script.
+* bison: (bison).               GNU parser generator (Yacc replacement).
+
+Text creation and manipulation
+* M4: (m4).                     A powerful macro processor.

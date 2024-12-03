@@ -1,0 +1,137 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt fold [-R] [-q] [-f] [-p strip-level]\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Integrate the patch read from standard input into the topmost patch:
+After making sure that all files modified are part of the topmost
+patch, the patch is applied with the specified strip level (which
+defaults to 1).
+
+-R	Apply patch in reverse.
+
+-q	Quiet operation.
+
+-f	Force apply, even if the patch has rejects. Unless in quiet mode,
+	apply the patch interactively: the patch utility may ask questions.
+
+-p strip-level
+	The number of pathname components to strip from file names
+	when applying patchfile.
+"
+
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o Rp:qfh -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-R)
+		opt_reverse=1
+		shift ;;
+	-f)
+		opt_force=1
+		shift ;;
+	-p)
+		opt_strip_level=$2
+		shift 2 ;;
+	-q)
+		opt_quiet=1
+		shift ;;
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -ne 0 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+: ${opt_strip_level:=1}
+[ -n "$opt_quiet" ] && patch_args="$patch_args -s"
+[ -z "$opt_force" -o -n "$opt_quiet" ] && patch_args="$patch_args -f"
+[ -n "$opt_reverse" ] && patch_args="$patch_args -R"
+
+top=$(find_top_patch) || exit 1
+
+trap "failed=1" SIGINT
+
+workdir=$(gen_tempfile -d "$PWD")
+patch -d ${SUBDIR:-.} $QUILT_PATCH_OPTS -p$opt_strip_level \
+      --backup --prefix="$workdir/$SUBDIR" $patch_args \
+|| failed=1
+
+[ -n "$opt_force" ] && failed=
+
+saved_IFS=$IFS
+IFS=$'\n'
+if [ -z "$failed" ]
+then
+	# Copy additional files from workdir to the backup directory
+	# For this patch
+	for file in $(find "$workdir" -type f -a ! -path "$workdir/.timestamp")
+	do
+		file="${file:${#workdir}+1}"
+		backup_file="$(backup_file_name $top "$file")"
+		if ! [ -e "$backup_file" ]
+		then
+			if ! mkdir -p "$(dirname "$backup_file")" ||
+			   ! ln "$workdir/$file" "$backup_file"
+			then
+				failed=1
+				break
+			fi
+		fi
+	done
+fi
+if [ -n "$failed" ]
+then
+	# Restore all files to the state from before applying the patch
+	for file in $(find "$workdir" -type f -a ! -path "$workdir/.timestamp")
+	do
+		file="${file:${#workdir}+1}"
+		if ! mv -f "$workdir/$file" "$file"
+		then
+			printf $"File %s may be corrupted\n" "$file" >&2
+		fi
+	done
+	rm -rf "$workdir"
+	exit 1
+fi
+IFS=$saved_IFS
+
+rm -rf "$workdir"
+exit 0

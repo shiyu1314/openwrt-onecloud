@@ -1,0 +1,20 @@
+Description:
+A nullptr that is like C23.
+
+Files:
+m4/nullptr.m4
+
+Depends-on:
+
+configure.ac:
+gl_NULLPTR
+
+Makefile.am:
+
+Include:
+
+License:
+LGPLv2+
+
+Maintainer:
+all

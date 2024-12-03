@@ -1,0 +1,33 @@
+Description:
+strtok_r() function: split string into tokens, thread safe.
+
+Files:
+lib/strtok_r.c
+m4/strtok_r.m4
+
+Depends-on:
+string
+strpbrk         [test $HAVE_STRTOK_R = 0 || test $REPLACE_STRTOK_R = 1]
+
+configure.ac:
+gl_FUNC_STRTOK_R
+gl_CONDITIONAL([GL_COND_OBJ_STRTOK_R],
+               [test $HAVE_STRTOK_R = 0 || test $REPLACE_STRTOK_R = 1])
+AM_COND_IF([GL_COND_OBJ_STRTOK_R], [
+  gl_PREREQ_STRTOK_R
+])
+gl_STRING_MODULE_INDICATOR([strtok_r])
+
+Makefile.am:
+if GL_COND_OBJ_STRTOK_R
+lib_SOURCES += strtok_r.c
+endif
+
+Include:
+<string.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all, glibc

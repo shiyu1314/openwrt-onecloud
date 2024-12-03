@@ -1,0 +1,48 @@
+Description:
+fchmodat() function: Change access permissions of a file at a directory.
+
+Files:
+lib/fchmodat.c
+lib/at-func.c
+m4/fchmodat.m4
+
+Depends-on:
+sys_stat
+extensions
+errno           [test $HAVE_FCHMODAT = 0 || test $REPLACE_FCHMODAT = 1]
+fcntl-h         [test $HAVE_FCHMODAT = 0 || test $REPLACE_FCHMODAT = 1]
+unistd          [test $HAVE_FCHMODAT = 0 || test $REPLACE_FCHMODAT = 1]
+intprops        [test $HAVE_FCHMODAT = 0 || test $REPLACE_FCHMODAT = 1]
+c99             [test $REPLACE_FCHMODAT = 1]
+at-internal     [test $HAVE_FCHMODAT = 0]
+chmod           [test $HAVE_FCHMODAT = 0]
+extern-inline   [test $HAVE_FCHMODAT = 0]
+fchdir          [test $HAVE_FCHMODAT = 0]
+filename        [test $HAVE_FCHMODAT = 0]
+lchmod          [test $HAVE_FCHMODAT = 0]
+openat-die      [test $HAVE_FCHMODAT = 0]
+openat-h        [test $HAVE_FCHMODAT = 0]
+save-cwd        [test $HAVE_FCHMODAT = 0]
+
+configure.ac:
+gl_FUNC_FCHMODAT
+gl_CONDITIONAL([GL_COND_OBJ_FCHMODAT],
+               [test $HAVE_FCHMODAT = 0 || test $REPLACE_FCHMODAT = 1])
+AM_COND_IF([GL_COND_OBJ_FCHMODAT], [
+  gl_PREREQ_FCHMODAT
+])
+gl_SYS_STAT_MODULE_INDICATOR([fchmodat])
+
+Makefile.am:
+if GL_COND_OBJ_FCHMODAT
+lib_SOURCES += fchmodat.c
+endif
+
+Include:
+<sys/stat.h>
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering, Eric Blake, Paul Eggert

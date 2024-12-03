@@ -1,0 +1,136 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt delete [-r] [--backup] [patch|-n]\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Remove the specified or topmost patch from the series file.  If the
+patch is applied, quilt will attempt to remove it first. (Only the
+topmost patch can be removed right now.)
+
+-n	Delete the next patch after topmost, rather than the specified
+	or topmost patch.
+
+-r	Remove the deleted patch file from the patches directory as well.
+
+--backup
+	Rename the patch file to patch~ rather than deleting it.
+	Ignored if not used with \`-r'.
+"
+
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o nrh --long backup -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-n)
+		opt_next=1
+		shift ;;
+	-r)
+		opt_remove=1
+		shift ;;
+	-h)
+		usage -h ;;
+	--backup)
+		QUILT_BACKUP=1
+		shift ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -gt 1 -o \( -n "$opt_next" -a $# -gt 0 \) ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+if [ -n "$1" ]; then
+	patch=$(find_patch "$1") || exit 1
+else
+	patch=$(top_patch)
+fi
+if [ -n "$opt_next" ]
+then
+	if ! patch=$(patch_after "$patch")
+	then
+		printf $"No next patch\n" >&2
+		exit 1
+	fi
+fi
+if [ -z "$patch" ]
+then
+	# find_top_patch will display the proper error message for us
+	find_top_patch > /dev/null
+	exit 1
+fi
+if is_applied "$patch"; then
+	if [ "$patch" != "$(top_patch)" ]
+	then
+		printf $"Patch %s is currently applied\n" \
+		       "$(print_patch "$patch")" >&2
+		exit 1
+	fi
+	if ! quilt_command pop -fq
+	then
+		exit 1
+	fi
+fi
+
+if remove_from_series "$patch"
+then
+	printf $"Removed patch %s\n" "$(print_patch "$patch")"
+else
+	printf $"Failed to remove patch %s\n" "$(print_patch "$patch")" >&2
+	exit 1
+fi
+
+patch_file=$(patch_file_name "$patch")
+if [ "$opt_remove" -a -e "$patch_file" ]
+then
+	if [ "$QUILT_BACKUP" ]
+	then
+		if ! mv -f "$patch_file" "$patch_file~"
+		then
+			printf $"Failed to backup patch file %s\n" \
+				"$patch_file" >&2
+			exit 1
+		fi
+	else
+		if ! rm -f "$patch_file"
+		then
+			printf $"Failed to remove patch file %s\n" \
+				"$patch_file" >&2
+			exit 1
+		fi
+	fi
+fi

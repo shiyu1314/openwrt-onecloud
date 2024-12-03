@@ -1,0 +1,34 @@
+Description:
+strerror_override() function: provide strings for gnulib-specific errno values
+
+Files:
+lib/strerror-override.h
+lib/strerror-override.c
+m4/sys_socket_h.m4
+m4/strerror.m4
+
+Depends-on:
+errno
+
+configure.ac:
+AC_REQUIRE([gl_HEADER_ERRNO_H])
+AC_REQUIRE([gl_FUNC_STRERROR_0])
+gl_CONDITIONAL([GL_COND_OBJ_STRERROR_OVERRIDE],
+               [test -n "$ERRNO_H" || test $REPLACE_STRERROR_0 = 1])
+AM_COND_IF([GL_COND_OBJ_STRERROR_OVERRIDE], [
+  gl_PREREQ_SYS_H_WINSOCK2
+])
+
+Makefile.am:
+if GL_COND_OBJ_STRERROR_OVERRIDE
+lib_SOURCES += strerror-override.c
+endif
+
+Include:
+"strerror-override.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+all

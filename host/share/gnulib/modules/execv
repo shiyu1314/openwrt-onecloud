@@ -1,0 +1,30 @@
+Description:
+execv() function: Execute a program, replacing the current process.
+
+Files:
+lib/execv.c
+m4/execv.m4
+
+Depends-on:
+unistd
+environ         [test $REPLACE_EXECV = 1]
+execve          [test $REPLACE_EXECV = 1]
+
+configure.ac:
+gl_FUNC_EXECV
+gl_CONDITIONAL([GL_COND_OBJ_EXECV], [test $REPLACE_EXECV = 1])
+gl_UNISTD_MODULE_INDICATOR([execv])
+
+Makefile.am:
+if GL_COND_OBJ_EXECV
+lib_SOURCES += execv.c
+endif
+
+Include:
+<unistd.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

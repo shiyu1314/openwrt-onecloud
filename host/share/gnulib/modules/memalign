@@ -1,0 +1,28 @@
+Description:
+Allocate memory with indefinite extent and specified alignment.
+
+Files:
+lib/memalign.c
+m4/memalign.m4
+
+Depends-on:
+malloc-h
+
+configure.ac:
+gl_FUNC_MEMALIGN
+gl_CONDITIONAL([GL_COND_OBJ_MEMALIGN], [test $REPLACE_MEMALIGN = 1])
+gl_MALLOC_MODULE_INDICATOR([memalign])
+
+Makefile.am:
+if GL_COND_OBJ_MEMALIGN
+lib_SOURCES += memalign.c
+endif
+
+Include:
+#include <malloc.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

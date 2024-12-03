@@ -1,0 +1,32 @@
+Description:
+posix_spawn_file_actions_addfchdir() function: augment a child process actions
+specification.
+
+Files:
+lib/spawn_faction_addfchdir.c
+lib/spawn_int.h
+m4/posix_spawn_faction_addfchdir.m4
+
+Depends-on:
+spawn
+posix_spawn_file_actions_init [test $HAVE_POSIX_SPAWN = 0 || test $REPLACE_POSIX_SPAWN = 1 || test $HAVE_POSIX_SPAWN_FILE_ACTIONS_ADDFCHDIR = 0 || test $REPLACE_POSIX_SPAWN_FILE_ACTIONS_ADDFCHDIR = 1]
+
+configure.ac:
+gl_FUNC_POSIX_SPAWN_FILE_ACTIONS_ADDFCHDIR
+gl_CONDITIONAL([GL_COND_OBJ_SPAWN_FACTION_ADDFCHDIR],
+               [test $HAVE_POSIX_SPAWN = 0 || test $REPLACE_POSIX_SPAWN = 1 || test $HAVE_POSIX_SPAWN_FILE_ACTIONS_ADDFCHDIR = 0 || test $REPLACE_POSIX_SPAWN_FILE_ACTIONS_ADDFCHDIR = 1])
+gl_SPAWN_MODULE_INDICATOR([posix_spawn_file_actions_addfchdir])
+
+Makefile.am:
+if GL_COND_OBJ_SPAWN_FACTION_ADDFCHDIR
+lib_SOURCES += spawn_faction_addfchdir.c
+endif
+
+Include:
+<spawn.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

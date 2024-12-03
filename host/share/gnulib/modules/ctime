@@ -1,0 +1,32 @@
+Description:
+ctime() function: convert time to string.
+
+Notice:
+The function 'ctime' is deprecated.
+New code should use 'localtime_r' and 'strftime' (or even 'sprintf') instead.
+
+Files:
+lib/ctime.c
+m4/ctime.m4
+
+Depends-on:
+time-h
+
+configure.ac:
+gl_FUNC_CTIME
+gl_CONDITIONAL([GL_COND_OBJ_CTIME], [test $REPLACE_CTIME = 1])
+gl_TIME_MODULE_INDICATOR([ctime])
+
+Makefile.am:
+if GL_COND_OBJ_CTIME
+lib_SOURCES += ctime.c
+endif
+
+Include:
+<time.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

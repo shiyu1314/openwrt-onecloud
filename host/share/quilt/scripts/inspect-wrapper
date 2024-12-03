@@ -1,0 +1,343 @@
+#! /usr/bin/env bash
+
+# find original data file by md5sum
+original_file()
+{
+	local md5sum=$1
+
+	if ! [ -e $tmpdir/md5sums ]
+	then
+		echo >&4
+		create_md5sums "$RPM_SOURCE_DIR" $tmpdir/md5sums
+		echo -n "### rpmbuild: " >&4
+	fi
+
+	while read md5sum_ file_
+	do
+		if [ "$md5sum" = "$md5sum_" ]
+		then
+			echo ${file_#\*}
+			return 0
+		fi
+	done < $tmpdir/md5sums
+
+	# Try harder
+	if ! [ -e $tmpdir/more-md5sums ]
+	then
+		( cd $RPM_BUILD_DIR
+		find . -type f \
+		| sed -e 's:^.\/::' \
+		| xargs md5sum \
+		) > $tmpdir/more-md5sums
+	fi
+
+	while read md5sum_ file_
+	do
+		if [ "$md5sum" = "$md5sum_" ]
+		then
+			echo $QUILT_SETUP_PREFIX${file_#\*}
+			return 0
+		fi
+	done < $tmpdir/more-md5sums
+
+	# Return md5sum and error if we can't match the file
+	echo $md5sum
+	return 1
+}
+
+# Extract a command line option with or without argument
+cmdline_option()
+{
+	local letter=$1 no_arg=$2
+	shift
+
+	while [ $# -ne 0 ]
+	do
+		if [ "${1:0:2}" = -$letter ]
+		then
+			if [ -z "$no_arg" ]
+			then
+				[ "$1" = -$letter ] && set -- "$1$2"
+			fi
+			echo $1
+			break
+		fi
+		shift
+	done
+}
+
+# Extract the -p option from the command line
+strip_option()
+{
+	set -- $(cmdline_option p "$@")
+	[ "$1" != -p1 ] && echo $1
+}
+
+# Extract the -R option from the command line
+reverse_option()
+{
+	set -- $(cmdline_option R no_arg "$@")
+	echo $1
+}
+
+patch_opt_d()
+{
+	local subdir=$(cmdline_option d "$@")
+	[ -z "$subdir" ] || echo "${subdir:2}"
+
+}
+
+patch_input_file()
+{
+	while [ $# -gt 0 ]
+	do
+		case "$1" in
+		-i|--input)
+			if [ $# -ge 2 ]
+			then
+				echo "$2"
+				return
+			fi
+			;;
+		-i*)
+			echo "${1#-i}"
+			return
+			;;
+		--input=*)
+			echo "${1#--input=}"
+			return
+			;;
+		esac
+		shift
+	done
+	return 1
+}
+
+tar_input_file()
+{
+	case "$1" in
+	# Modern option format
+	-*)
+		while [ $# -gt 0 ]
+		do
+			case "$1" in
+			# Extract the file name (long option)
+			--file)
+				echo "$2"
+				return
+				;;
+			--file=*)
+				echo "${1#--file=}"
+				return
+				;;
+			# Skip other long options
+			--*)
+				shift
+				;;
+			# Extract the file name (short option)
+			-*f)
+				echo "$2"
+				return
+				;;
+			-f*)
+				echo "${1#-f}"
+				return
+				;;
+			# Skip other short options and parameters
+			*)
+				shift
+				;;
+			esac
+		done
+		;;
+	# Legacy option format (must always come first)
+	*C*f*)
+		echo "$3"
+		return
+		;;
+	*f*)
+		echo "$2"
+		return
+		;;
+	?*)
+		# Eat legacy options and try again
+		until [ $# -eq 0 -o "${1:0:1}" = "-" ]
+		do
+			shift
+		done
+		tar_input_file "$@"
+		return
+		;;
+	esac
+	return 1
+}
+
+unzip_input_file()
+{
+	while [ $# -gt 0 ]
+	do
+		case "$1" in
+		-*)
+			shift
+			;;
+		*)
+			echo "$1"
+			return
+			;;
+		esac
+	done
+	return 1
+}
+
+_7z_input_file()
+{
+	while [ $# -gt 0 ]
+	do
+		case "$1" in
+		-*|e|x)
+			shift
+			;;
+		*)
+			echo "$1"
+			return
+			;;
+		esac
+	done
+	return 1
+}
+
+tar_opt_C()
+{
+	case "$1" in
+	*C*f*)
+		echo "$2"
+		return ;;
+	esac
+}
+
+pwd_to_dir()
+{
+	local subdir=$1 dir
+
+	if [ -n "$subdir" ]
+	then
+		dir=$(cd "$subdir" && echo $PWD)
+	else
+		dir=$PWD
+	fi
+	dir=${dir/$RPM_BUILD_DIR}
+	dir=${dir##/}
+	dir=${dir// /\\ }
+
+	echo "$dir"
+}
+
+# Who were we called as?
+command=${0##*/}
+
+PATH=${PATH#*:}
+# If we are called too early, pass through without processing
+[ -n "$RPM_BUILD_DIR" ] || exec $command "$@"
+
+tmpdir=${RPM_BUILD_DIR%/*}
+case $command in
+patch)
+	echo -n p >&4
+	inputfile=$(patch_input_file "$@")
+	;;
+tar)
+	echo -n t >&4
+	[ -n "$QUILT_SETUP_FAST" ] && exec tar "$@"
+	inputfile=$(tar_input_file "$@")
+	# For tar, file - means read from stdin
+	[ "$inputfile" = "-" ] && inputfile=
+	;;
+unzip)
+	echo -n Z >&4
+	[ -n "$QUILT_SETUP_FAST" ] && exec unzip "$@"
+	inputfile=$(unzip_input_file "$@")
+	;;
+7z)
+	echo -n 7 >&4
+	[ -n "$QUILT_SETUP_FAST" ] && exec 7z "$@"
+	inputfile=$(_7z_input_file "$@")
+	;;
+esac
+
+# If the file was not passed as a parameter, try to identify stdin
+if [ -n "$QUILT_SETUP_FAST" -a -z "$inputfile" ]
+then
+	inputfile=$(readlink /proc/self/fd/0)
+	if [ "${inputfile:0:1}" = / -a -f "$inputfile" ]
+	then
+		# procfs resolved the symlinks, so do the same, otherwise the
+		# path prefix won't match
+		RPM_SOURCE_DIR=$(cd -P "$RPM_SOURCE_DIR" && echo "$PWD")/
+	else
+		# Didn't work, so fall back to the slow method
+		inputfile=
+	fi
+fi
+
+if [ -n "$inputfile" ]
+then
+	if [ "${inputfile:0:1}" = / ]
+	then
+		unpackfile=${inputfile/$RPM_SOURCE_DIR}
+	else
+		unpackfile=$QUILT_SETUP_PREFIX$(dir_to_dir "$RPM_BUILD_DIR" "$inputfile")
+	fi
+else
+	if [ -n "$QUILT_SETUP_FAST" ]
+	then
+		# In fast mode we can read from stdin directly, we won't let
+		# patch apply the patch anyway
+		md5sum=$(md5sum)
+	else
+		# put data from stdin into tmpfile
+		cat > $tmpdir/data
+		md5sum=$(md5sum < $tmpdir/data)
+	fi
+
+	unpackfile=$(original_file $md5sum)
+	if [ $? -ne 0 ]
+	then
+		# Report problem to the caller
+		echo -n "?" >&4
+		printf "Warning: no match for file with md5sum %s\n" \
+		       $unpackfile >&2
+		unpackfile="#$unpackfile"
+	fi
+fi
+
+case $command in
+patch)
+	subdir=$(patch_opt_d "$@")
+	dir=$(pwd_to_dir $subdir)
+	echo "patch ${dir:-.} $unpackfile" \
+	     $(strip_option "$@") $(reverse_option "$@") >&3
+	;;
+tar)
+	subdir=$(tar_opt_C "$@")
+	dir=$(pwd_to_dir $subdir)
+	echo "tar ${dir:-.} $unpackfile" >&3
+	;;
+unzip)
+	dir=$(pwd_to_dir)
+	echo "unzip ${dir:-.} $unpackfile" >&3
+	;;
+7z)
+	dir=$(pwd_to_dir)
+	echo "7z ${dir:-.} $unpackfile" >&3
+	;;
+esac
+
+# In fast mode, we don't actually apply patches
+[ -n "$QUILT_SETUP_FAST" ] && exit 0
+
+if [ -n "$inputfile" ]
+then
+	exec $command "$@"
+else
+	exec $command "$@" < $tmpdir/data
+fi
