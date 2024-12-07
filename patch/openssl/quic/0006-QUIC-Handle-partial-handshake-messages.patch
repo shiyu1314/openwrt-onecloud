@@ -1,0 +1,67 @@
+From 0c9c5b370c5d5d7d0adf8defacd68aa0455f2cbf Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Thu, 15 Aug 2019 13:26:32 -0400
+Subject: [PATCH 06/43] QUIC: Handle partial handshake messages
+
+---
+ ssl/ssl_local.h |  1 +
+ ssl/ssl_quic.c  | 28 ++++++++++++++++++++++------
+ 2 files changed, 23 insertions(+), 6 deletions(-)
+
+--- a/ssl/ssl_local.h
++++ b/ssl/ssl_local.h
+@@ -1225,6 +1225,7 @@ typedef struct cert_pkey_st CERT_PKEY;
+ struct quic_data_st {
+     struct quic_data_st *next;
+     OSSL_ENCRYPTION_LEVEL level;
++    size_t offset;
+     size_t length;
+ };
+ typedef struct quic_data_st QUIC_DATA;
+--- a/ssl/ssl_quic.c
++++ b/ssl/ssl_quic.c
+@@ -114,15 +114,26 @@ int SSL_provide_quic_data(SSL *ssl, OSSL
+         QUIC_DATA *qd;
+         const uint8_t *p = data + 1;
+ 
++        /* Check for an incomplete block */
++        qd = ssl->quic_input_data_tail;
++        if (qd != NULL) {
++            l = qd->length - qd->offset;
++            if (l != 0) {
++                /* we still need to copy `l` bytes into the last data block */
++                if (l > len)
++                    l = len;
++                memcpy((char*)(qd+1) + qd->offset, data, l);
++                qd->offset += l;
++                len -= l;
++                data += l;
++                continue;
++            }
++        }
++
+         n2l3(p, l);
+         l += SSL3_HM_HEADER_LENGTH;
+ 
+-        if (l > len) {
+-            SSLerr(SSL_F_SSL_PROVIDE_QUIC_DATA, SSL_R_BAD_DATA_LENGTH);
+-            return 0;
+-        }
+-
+-        qd = OPENSSL_malloc(sizeof(QUIC_DATA) + l);
++        qd = OPENSSL_zalloc(sizeof(QUIC_DATA) + l);
+         if (qd == NULL) {
+             SSLerr(SSL_F_SSL_PROVIDE_QUIC_DATA, ERR_R_INTERNAL_ERROR);
+             return 0;
+@@ -131,6 +142,11 @@ int SSL_provide_quic_data(SSL *ssl, OSSL
+         qd->next = NULL;
+         qd->length = l;
+         qd->level = level;
++        /* partial data received? */
++        if (l > len)
++            l = len;
++        qd->offset = l;
++
+         memcpy((void*)(qd + 1), data, l);
+         if (ssl->quic_input_data_tail != NULL)
+             ssl->quic_input_data_tail->next = qd;
