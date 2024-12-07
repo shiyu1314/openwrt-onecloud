@@ -7,7 +7,7 @@ Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 26628564
 Filename: alist_3.40.0-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 26537346
-SHA256sum: b2861c6b568e4da21bbc556d9dc600504a4cb11d8e9748e8f5e7d294651fd448
+SHA256sum: f2112759d50bf3a1292b1ee5df3da172a1f5e6239056bedf082c964b64a5cb1f
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -27,10 +27,10 @@ Version: 1-12
 Depends: libc, luci-app-samba4, wsdd2
 Section: opt
 Architecture: all
-Installed-Size: 1175
+Installed-Size: 1174
 Filename: autosamba_1-12_all.ipk
 Size: 1901
-SHA256sum: f13472d5a20d40b1f4b4fde24508055ef0124915ea8e33750da4a59cec707f0d
+SHA256sum: a0ee60ceab86dbc9f505d7c2ccad3689f5d96bda61335f94439f161fcbe3f9d3
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
@@ -1542,27 +1542,27 @@ SHA256sum: 8560f134453d82867a3eb7491dfb0080ffa39f5d6a9a8e66869bfde976d2df80
 Description:  V2ray geo/ip data unpack tools
 
 Package: v2ray-geoip
-Version: 2024-12-06-1
+Version: 2024-12-07-1
 Depends: libc
 License: CC-BY-SA-4.0
 Section: net
 Architecture: all
 Installed-Size: 64477
-Filename: v2ray-geoip_2024-12-06-1_all.ipk
-Size: 62504
-SHA256sum: 323d10241db18a54f8341456c2baa4feb88908227ba4fecf03738895ca34397c
+Filename: v2ray-geoip_2024-12-07-1_all.ipk
+Size: 62505
+SHA256sum: ad962524c045ecd219b1ef54f1ff6047ba0adfdc917a4583b65a522387a481db
 Description:  GeoIP List for V2Ray
 
 Package: v2ray-geosite
-Version: 2024-12-06-1
+Version: 2024-12-07-1
 Depends: libc
 License: GPL-3.0
 Section: net
 Architecture: all
-Installed-Size: 2191990
-Filename: v2ray-geosite_2024-12-06-1_all.ipk
-Size: 2192666
-SHA256sum: d6a544ec42f59dccd111ac1ebee712705ffd694f396d214c1725271a96ba0c61
+Installed-Size: 2188489
+Filename: v2ray-geosite_2024-12-07-1_all.ipk
+Size: 2189010
+SHA256sum: c4544104efc071745fbe14a76684ce18406096712913ef4abe688dc2842a7705
 Description:  Geosite List for V2Ray
 
 Package: zlib
