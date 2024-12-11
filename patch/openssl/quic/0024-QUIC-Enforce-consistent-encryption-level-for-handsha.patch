@@ -1,0 +1,51 @@
+From 6e4c15e6bd52743d79956d3d149c70e021f47d11 Mon Sep 17 00:00:00 2001
+From: Benjamin Kaduk <bkaduk@akamai.com>
+Date: Tue, 1 Sep 2020 15:10:41 -0700
+Subject: [PATCH 24/43] QUIC: Enforce consistent encryption level for handshake
+ messages
+
+The QUIC-TLS spec requires that TLS handshake messages do not cross
+encryption level boundaries, but we were not previously enforcing this.
+---
+ ssl/ssl_local.h |  1 +
+ ssl/ssl_quic.c  | 12 +++++++++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
+
+--- a/ssl/ssl_local.h
++++ b/ssl/ssl_local.h
+@@ -1720,6 +1720,7 @@ struct ssl_st {
+ #ifndef OPENSSL_NO_QUIC
+     OSSL_ENCRYPTION_LEVEL quic_read_level;
+     OSSL_ENCRYPTION_LEVEL quic_write_level;
++    OSSL_ENCRYPTION_LEVEL quic_latest_level_received;
+     BUF_MEM *quic_buf;          /* buffer incoming handshake messages */
+     QUIC_DATA *quic_input_data_head;
+     QUIC_DATA *quic_input_data_tail;
+--- a/ssl/ssl_quic.c
++++ b/ssl/ssl_quic.c
+@@ -100,7 +100,8 @@ int SSL_provide_quic_data(SSL *ssl, OSSL
+ 
+     /* Level can be different than the current read, but not less */
+     if (level < ssl->quic_read_level
+-            || (ssl->quic_input_data_tail != NULL && level < ssl->quic_input_data_tail->level)) {
++            || (ssl->quic_input_data_tail != NULL && level < ssl->quic_input_data_tail->level)
++            || level < ssl->quic_latest_level_received) {
+         SSLerr(SSL_F_SSL_PROVIDE_QUIC_DATA, SSL_R_WRONG_ENCRYPTION_LEVEL_RECEIVED);
+         return 0;
+     }
+@@ -122,6 +123,15 @@ int SSL_provide_quic_data(SSL *ssl, OSSL
+         buf = NULL;
+     }
+ 
++    /* A TLS message must not cross an encryption level boundary */
++    if (ssl->quic_buf->length != ssl->quic_next_record_start
++            && level != ssl->quic_latest_level_received) {
++        SSLerr(SSL_F_SSL_PROVIDE_QUIC_DATA,
++               SSL_R_WRONG_ENCRYPTION_LEVEL_RECEIVED);
++        return 0;
++    }
++    ssl->quic_latest_level_received = level;
++
+     offset = ssl->quic_buf->length;
+     if (!BUF_MEM_grow(ssl->quic_buf, offset + len)) {
+         SSLerr(SSL_F_SSL_PROVIDE_QUIC_DATA, ERR_R_INTERNAL_ERROR);

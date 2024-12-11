@@ -1,0 +1,6 @@
+# 重定向53端口
+
+#nft add rule inet fw4 dstnat tcp dport 53 counter redirect to :53
+#nft add rule inet fw4 dstnat udp dport 53 counter redirect to :53
+#nft add rule inet fw4 dstnat tcp dport 853 counter redirect to :53
+#nft add rule inet fw4 dstnat udp dport 853 counter redirect to :53
