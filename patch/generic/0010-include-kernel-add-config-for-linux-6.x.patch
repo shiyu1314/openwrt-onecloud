@@ -1,0 +1,10 @@
+--- a/include/kernel-defaults.mk
++++ b/include/kernel-defaults.mk
+@@ -99,6 +99,7 @@ define Kernel/SetNoInitramfs
+ 	grep -v INITRAMFS $(LINUX_DIR)/.config.old > $(LINUX_DIR)/.config.set
+ 	echo 'CONFIG_INITRAMFS_SOURCE=""' >> $(LINUX_DIR)/.config.set
+ 	echo '# CONFIG_INITRAMFS_FORCE is not set' >> $(LINUX_DIR)/.config.set
++	echo "# CONFIG_INITRAMFS_PRESERVE_MTIME is not set" >> $(LINUX_DIR)/.config.set
+ endef
+ 
+ define Kernel/Configure/Default

@@ -1,0 +1,41 @@
+From 86793f1d5a316687aea683127d7d5a3a09b0c692 Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Fri, 19 Feb 2021 10:12:15 -0500
+Subject: [PATCH 28/43] QUIC: remove SSL_R_BAD_DATA_LENGTH (unused)
+
+---
+ crypto/err/openssl.txt   | 1 -
+ include/openssl/sslerr.h | 1 -
+ ssl/ssl_err.c            | 1 -
+ 3 files changed, 3 deletions(-)
+
+--- a/crypto/err/openssl.txt
++++ b/crypto/err/openssl.txt
+@@ -1251,7 +1251,6 @@ SSL_R_AT_LEAST_TLS_1_2_NEEDED_IN_SUITEB_
+ SSL_R_BAD_CHANGE_CIPHER_SPEC:103:bad change cipher spec
+ SSL_R_BAD_CIPHER:186:bad cipher
+ SSL_R_BAD_DATA:390:bad data
+-SSL_R_BAD_DATA_LENGTH:802:bad data length
+ SSL_R_BAD_DATA_RETURNED_BY_CALLBACK:106:bad data returned by callback
+ SSL_R_BAD_DECOMPRESSION:107:bad decompression
+ SSL_R_BAD_DH_VALUE:102:bad dh value
+--- a/include/openssl/sslerr.h
++++ b/include/openssl/sslerr.h
+@@ -28,7 +28,6 @@
+ # define SSL_R_BAD_CHANGE_CIPHER_SPEC                     103
+ # define SSL_R_BAD_CIPHER                                 186
+ # define SSL_R_BAD_DATA                                   390
+-# define SSL_R_BAD_DATA_LENGTH                            802
+ # define SSL_R_BAD_DATA_RETURNED_BY_CALLBACK              106
+ # define SSL_R_BAD_DECOMPRESSION                          107
+ # define SSL_R_BAD_DH_VALUE                               102
+--- a/ssl/ssl_err.c
++++ b/ssl/ssl_err.c
+@@ -27,7 +27,6 @@ static const ERR_STRING_DATA SSL_str_rea
+     "bad change cipher spec"},
+     {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_BAD_CIPHER), "bad cipher"},
+     {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_BAD_DATA), "bad data"},
+-    {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_BAD_DATA_LENGTH), "bad data length"},
+     {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_BAD_DATA_RETURNED_BY_CALLBACK),
+     "bad data returned by callback"},
+     {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_BAD_DECOMPRESSION), "bad decompression"},

@@ -1,0 +1,23 @@
+From 01bc5c3a5aa160c2e9bba9c0c45a94eb5702772d Mon Sep 17 00:00:00 2001
+From: Tatsuhiro Tsujikawa <404610+tatsuhiro-t@users.noreply.github.com>
+Date: Fri, 12 Mar 2021 00:39:20 +0900
+Subject: [PATCH 32/43] QUIC: Make SSL_provide_quic_data accept 0 length data
+
+This commit makes SSL_provide_quic_data accept 0 length data, which
+matches BoringSSL behavior.
+---
+ ssl/ssl_quic.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+--- a/ssl/ssl_quic.c
++++ b/ssl/ssl_quic.c
+@@ -143,6 +143,9 @@ int SSL_provide_quic_data(SSL *ssl, OSSL
+         return 0;
+     }
+ 
++    if (len == 0)
++        return 1;
++
+     if (ssl->quic_buf == NULL) {
+         BUF_MEM *buf;
+         if ((buf = BUF_MEM_new()) == NULL) {
