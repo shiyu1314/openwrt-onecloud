@@ -3,32 +3,32 @@ Version: 1.13.3
 Depends: libc, luci-base, mihomo
 Section: luci
 Architecture: all
-Installed-Size: 7031
+Installed-Size: 7033
 Filename: luci-app-mihomo_1.13.3_all.ipk
-Size: 7874
-SHA256sum: 3f548f50d614074d7e331a07afae437fe20a775ddb93910dfab1bd5772681e70
+Size: 7873
+SHA256sum: 9553057044078942fd7e77427fc7519007c56141e92e4bff5c38ae0a85fbea7c
 Description:  LuCI Support for mihomo
 
 Package: luci-i18n-mihomo-zh-cn
-Version: git-24.346.22794-8c472a5
+Version: git-24.347.21809-4c8f55d
 Depends: libc, luci-app-mihomo
 Section: luci
 Architecture: all
-Installed-Size: 3140
-Filename: luci-i18n-mihomo-zh-cn_git-24.346.22794-8c472a5_all.ipk
-Size: 3864
-SHA256sum: 1d347a7da702e4c76e496c0cccd537eb3546df971c521c45cad4bf2b6c553b59
+Installed-Size: 3142
+Filename: luci-i18n-mihomo-zh-cn_git-24.347.21809-4c8f55d_all.ipk
+Size: 3879
+SHA256sum: f2b645dcf8352df1a95a7bf903214f9dee0704de3e2b52d4c2d7e4d613e485c9
 Description:  Translation for luci-app-mihomo - 简体中文 (Chinese Simplified)
 
 Package: mihomo
-Version: 2024-12-06-d6b496d3-1
+Version: 2024-12-11-5d9d8f4d-1
 Depends: libc, ca-bundle, curl, yq, firewall4, ip-full, kmod-inet-diag, kmod-nft-tproxy, kmod-tun
 License: MIT
 Section: net
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 10273015
-Filename: mihomo_2024-12-06-d6b496d3-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 10255729
-SHA256sum: 1b05bd49cad4a73e1cdd380300ff632e4ec7f50bacfd243fc1c73ba807d8c75e
+Installed-Size: 10497033
+Filename: mihomo_2024-12-11-5d9d8f4d-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 10480084
+SHA256sum: 0846e0a3671b13179e68faf277418108bb7d399f98e106a7f6834515dcab0fd5
 Description:  A rule based proxy in Go.
 

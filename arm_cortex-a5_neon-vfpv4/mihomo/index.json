@@ -1,1 +1,1 @@
-{"architecture": "arm_cortex-a5_neon-vfpv4", "packages":{"luci-app-mihomo": "1.13.3", "luci-i18n-mihomo-zh-cn": "git-24.346.22794-8c472a5", "mihomo": "2024-12-06-d6b496d3-1"}}
+{"architecture": "arm_cortex-a5_neon-vfpv4", "packages":{"luci-app-mihomo": "1.13.3", "luci-i18n-mihomo-zh-cn": "git-24.347.21809-4c8f55d", "mihomo": "2024-12-11-5d9d8f4d-1"}}
