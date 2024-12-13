@@ -137,10 +137,10 @@ SourceDateEpoch: 1733898995
 CPE-ID: cpe:/a:linuxfoundation:containerd
 Maintainer: Gerard Ryan <G.M0N3Y.2503@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 36783527
+Installed-Size: 36783442
 Filename: containerd_1.7.22-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 36481723
-SHA256sum: f6e7098f83459ab13a5a161e79e4f9a40ad27fb1259fb2d85a97ef6c4a2c6bb4
+Size: 36481489
+SHA256sum: 6e17a39bc460480bacdd2ec0e888190c8d44484198d76cfe21c71456ce2598b5
 Description:  An industry-standard container runtime with an emphasis on simplicity, robustness and portability
 
 Package: coreutils-stty
@@ -229,8 +229,8 @@ Maintainer: Gerard Ryan <G.M0N3Y.2503@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 9104146
 Filename: docker_27.3.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 9087022
-SHA256sum: 5b5d259680ac2a20996c10aa3013a9eb96fc7dbd370315a667860e7bfae54404
+Size: 9086941
+SHA256sum: fce5e25058bbd122ac12fb99d44ffc2bfef40c8e95e208d2f0d72392e708d92e
 Description:  The CLI used in the Docker CE and Docker EE products.
 
 Package: dockerd
@@ -245,10 +245,10 @@ Require-User: docker:docker
 SourceDateEpoch: 1733898995
 Maintainer: Gerard Ryan <G.M0N3Y.2503@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 20821290
+Installed-Size: 20821288
 Filename: dockerd_27.3.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 20780213
-SHA256sum: e4126bbeec71b0dfc6602fb0097d510eae1eadfa833df4f6974f842a14941baf
+Size: 20780122
+SHA256sum: b277ceb8047f8499ab6a543a54c08d53eb56b97e451a645c0064479932d1bf01
 Description:  The Docker CE Engine.
 
 Package: fuse-utils
@@ -833,10 +833,10 @@ SourceDateEpoch: 1733898995
 CPE-ID: cpe:/a:linuxfoundation:runc
 Maintainer: Gerard Ryan <G.M0N3Y.2503@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 3584430
+Installed-Size: 3584431
 Filename: runc_1.1.14-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 3555435
-SHA256sum: a257aec465e145f5eec9890b733d46f889516d843d0a732177003a9ad6d2920c
+Size: 3555327
+SHA256sum: ad1af281102708d3d412a0bc421cbe4cee0a7eb683b39202e792a186795310b7
 Description:  runc is a CLI tool for spawning and running containers according to the OCI specification.
 
 Package: samba4-libs
@@ -850,10 +850,10 @@ Section: net
 SourceDateEpoch: 1733898995
 CPE-ID: cpe:/a:samba:samba
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 9118748
+Installed-Size: 9118775
 Filename: samba4-libs_4.18.8-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 9020208
-SHA256sum: 39b372dd5444a051b7b7439977aa8a78218af35dd2d32c857ad53a446e53bdb3
+Size: 9020233
+SHA256sum: 85b6cfc17a79731a262dba77f20f34776a541bbc2a0a6fc0cd2400d49996847b
 Description:  Samba 4.18.8 libs
 
 Package: samba4-server
@@ -870,8 +870,8 @@ CPE-ID: cpe:/a:samba:samba
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 247032
 Filename: samba4-server_4.18.8-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 247139
-SHA256sum: 8d3db829886ad472086994f9903efd9ef76c5b4e3e3ab48a3ee3d5bc64e03954
+Size: 247165
+SHA256sum: a312033141c5b97d0bec1c4be60784f2a26dd7399ceffd05073851451dde6917
 Description:  installs: smbd (nmbd) smbpasswd pdbedit testparm (nmblookup) (smbcacls sharesec)
  (samba samba-tool ntlm_auth samba-gpupdate samba_dnsupdate samba_kcc samba_spnupdate samba_upgradedns samba_downgrade_db)
  
@@ -1040,7 +1040,7 @@ Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 3903181
 Filename: yq_4.44.3-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 3897544
-SHA256sum: 37b2bedf4bbed5f7c09518a37351a4c834c6e2f1ac458970c0e1832d05621cd2
+Size: 3897547
+SHA256sum: 3c54d9e589f61afd1b21ced3d898cdd1c480ee1d9a60a1f7c64e7194b97be46f
 Description:  The aim of the project is to be the jq or sed of yaml files.
 
