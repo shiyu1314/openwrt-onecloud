@@ -1,0 +1,78 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+: ${EDITOR:=vi}
+
+usage()
+{
+	printf $"Usage: quilt edit file ...\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Edit the specified file(s) in \$EDITOR (%s) after adding it (them) to
+the topmost patch.
+" "$EDITOR"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o h -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -eq 0 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+quilt_command add "$@"
+status=$?
+if [ $status -ne 0 -a $status -ne 2 ]
+then
+	exit $status
+fi
+LANG=$ORIGINAL_LANG $EDITOR "${@/#/$SUBDIR}"
+status=$?
+
+patch=$(top_patch)
+for file in "$@"
+do
+	if [ ! -e "$SUBDIR$file" -a ! -s "$QUILT_PC/$patch/$file" ]
+	then
+		quilt_command remove "$file"
+		status=1
+	fi
+done
+
+exit $status

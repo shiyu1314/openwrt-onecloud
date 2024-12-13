@@ -1,0 +1,21 @@
+Description:
+Determine alignment of types.
+
+Files:
+lib/alignof.h
+
+Depends-on:
+alignasof
+
+configure.ac:
+
+Makefile.am:
+
+Include:
+"alignof.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+all

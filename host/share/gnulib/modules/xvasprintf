@@ -1,0 +1,35 @@
+Description:
+vasprintf and asprintf with out-of-memory checking.  Also see xalloc-die.
+
+Files:
+lib/xvasprintf.h
+lib/xvasprintf.c
+lib/xasprintf.c
+lib/xalloc.h
+m4/xvasprintf.m4
+
+Depends-on:
+stdio
+vasprintf
+xalloc
+xalloc-die
+xsize
+stdarg
+errno
+
+configure.ac:
+gl_XVASPRINTF
+m4_ifdef([AM_XGETTEXT_OPTION],
+  [AM_][XGETTEXT_OPTION([--flag=xasprintf:1:c-format])])
+
+Makefile.am:
+lib_SOURCES += xvasprintf.h xvasprintf.c xasprintf.c
+
+Include:
+"xvasprintf.h"
+
+License:
+GPL
+
+Maintainer:
+Oskar Liljeblad

@@ -1,0 +1,69 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt unapplied [patch]\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Print a list of patches that are not applied, or all patches that follow
+the specified patch in the series file.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o h -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -gt 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+if [ $# -eq 1 ]
+then
+	start=$(find_patch_in_series "$1") || exit 1
+	patch=$(patch_after "$start")
+
+	[ -n "$start" -a -z "$patch" ] && exit
+else
+	patch=$(find_unapplied_patch) || exit 1
+fi
+
+setup_pager
+
+printf "$(patch_format)\n" "$patch" $(patches_after "$patch")

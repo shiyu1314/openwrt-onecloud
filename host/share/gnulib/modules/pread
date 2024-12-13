@@ -1,0 +1,33 @@
+Description:
+pread() function: read without changing file offset
+
+Files:
+lib/pread.c
+m4/pread.m4
+
+Depends-on:
+unistd
+extensions
+largefile
+lseek           [test $HAVE_PREAD = 0 || test $REPLACE_PREAD = 1]
+read            [test $HAVE_PREAD = 0 || test $REPLACE_PREAD = 1]
+
+configure.ac:
+gl_FUNC_PREAD
+gl_CONDITIONAL([GL_COND_OBJ_PREAD],
+               [test $HAVE_PREAD = 0 || test $REPLACE_PREAD = 1])
+gl_UNISTD_MODULE_INDICATOR([pread])
+
+Makefile.am:
+if GL_COND_OBJ_PREAD
+lib_SOURCES += pread.c
+endif
+
+Include:
+<unistd.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering

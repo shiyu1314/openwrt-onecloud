@@ -1,0 +1,42 @@
+Description:
+expl() function: exponential function with long double argument.
+
+Files:
+lib/expl.c
+lib/expl-table.c
+m4/expl.m4
+
+Depends-on:
+math
+extensions
+exp             [{ test $HAVE_EXPL = 0 || test $REPLACE_EXPL = 1; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 1]
+float           [{ test $HAVE_EXPL = 0 || test $REPLACE_EXPL = 1; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 0]
+isnanl          [{ test $HAVE_EXPL = 0 || test $REPLACE_EXPL = 1; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 0]
+roundl          [{ test $HAVE_EXPL = 0 || test $REPLACE_EXPL = 1; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 0]
+ldexpl          [{ test $HAVE_EXPL = 0 || test $REPLACE_EXPL = 1; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 0]
+
+configure.ac:
+gl_FUNC_EXPL
+gl_CONDITIONAL([GL_COND_OBJ_EXPL],
+               [test $HAVE_EXPL = 0 || test $REPLACE_EXPL = 1])
+AM_COND_IF([GL_COND_OBJ_EXPL], [
+  AC_LIBOBJ([expl-table])
+])
+gl_MATH_MODULE_INDICATOR([expl])
+
+Makefile.am:
+if GL_COND_OBJ_EXPL
+lib_SOURCES += expl.c
+endif
+
+Include:
+<math.h>
+
+Link:
+$(EXPL_LIBM)
+
+License:
+LGPL
+
+Maintainer:
+all

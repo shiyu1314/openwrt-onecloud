@@ -1,0 +1,103 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt rename [-P patch] new_name\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Rename the topmost or named patch.
+
+-P patch
+	Patch to rename.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+move_file()
+{
+	local old=$1 new=$2 newdir=$(dirname "$2")
+
+	[ -d "$newdir" ] || mkdir -p "$newdir" || return 1
+	mv "$old" "$new" || return 1
+	rmdir -p "$(dirname "$old")" 2> /dev/null
+
+	return 0
+}
+
+options=`getopt -o P:h -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-P)
+		opt_patch=$2
+		shift 2 ;;
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -ne 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+patch=$(find_patch_in_series "$opt_patch") || exit 1
+
+new_patch=${1#$QUILT_PATCHES/}
+
+if patch_in_series "$new_patch" || \
+   [ -d "$QUILT_PC/$new_patch" ] || \
+   [ -e "$(patch_file_name "$new_patch")" ]
+then
+	printf $"Patch %s exists already, please choose a different name\n" \
+	       "$(print_patch "$new_patch")" >&2
+	exit 1
+fi
+
+if ( is_applied "$patch" && \
+     ( ! rename_in_db "$patch" "$new_patch" || \
+       ! move_file "$QUILT_PC/$patch" \
+		   "$QUILT_PC/$new_patch" ) ) || \
+   ! rename_in_series "$patch" "$new_patch" || \
+   ( [ -e "$(patch_file_name "$patch")" ] && \
+     ! move_file "$(patch_file_name "$patch")" \
+		 "$(patch_file_name "$new_patch")" )
+then
+	printf $"Renaming of patch %s to %s failed\n" \
+	       "$(print_patch "$patch")" \
+	       "$(print_patch "$new_patch")" >&2
+	exit 1
+fi
+
+printf $"Patch %s renamed to %s\n" \
+       "$(print_patch "$patch")" \
+       "$(print_patch "$new_patch")"

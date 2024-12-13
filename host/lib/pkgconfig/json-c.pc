@@ -1,0 +1,12 @@
+prefix=/workdir/openwrt/staging_dir/host
+exec_prefix=/workdir/openwrt/staging_dir/host
+libdir=/workdir/openwrt/staging_dir/host/lib
+includedir=/workdir/openwrt/staging_dir/host/include
+
+Name: json-c
+Description: A JSON implementation in C
+Version: 0.16
+Requires:
+Libs.private: 
+Libs: -L${libdir} -ljson-c
+Cflags: -I${includedir} -I${includedir}/json-c

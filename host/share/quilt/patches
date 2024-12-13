@@ -1,0 +1,157 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+declare -a opt_files=()
+
+usage()
+{
+	printf $"Usage: quilt patches [-v] [--color[=always|auto|never]] {file} [files...]\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Print the list of patches that modify any of the specified files. (Uses a
+heuristic to determine which files are modified by unapplied patches.
+Note that this heuristic is much slower than scanning applied patches.)
+
+-v	Verbose, more user friendly output.
+
+--color[=always|auto|never]
+	Use syntax coloring (auto activates it only if the output is a tty).
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+# Uses global variable opt_files
+scan_applied()
+{
+	local color=$1 prefix=$2
+	shift 2
+	local patch file
+
+	for patch in "$@"
+	do
+		for file in "${opt_files[@]}"
+		do
+			if file_in_patch "$file" $patch
+			then
+				echo "$color$prefix$(print_patch $patch)$color_clear"
+				break
+			fi
+		done
+	done
+}
+
+# Uses global variable opt_files
+scan_unapplied()
+{
+	local color=$1 prefix=$2
+	shift 2
+	local patch file
+	local -a files_bre
+
+	# Quote each file name only once
+	for file in "${opt_files[@]}"
+	do
+		files_bre[${#files_bre[@]}]=$(quote_bre "$file")
+	done
+
+	# "Or" all files in a single pattern
+	file=\\\($(array_join \\\| "${files_bre[@]}")\\\)
+
+	for patch in "$@"
+	do
+		if filenames_in_patch "$patch" \
+		   | grep -q "^$file\$"
+		then
+			echo "$color$prefix$(print_patch $patch)$color_clear"
+		fi
+	done
+}
+
+options=`getopt -o vh --long color:: -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-v)
+		opt_verbose=1
+		shift ;;
+	--color)
+		case "$2" in
+		"" | always)
+			opt_color=1 ;;
+		auto | tty)
+			opt_color=
+			[ -t 1 ] && opt_color=1 ;;
+		never)
+			opt_color= ;;
+		*)
+			usage ;;
+		esac
+		shift 2 ;;
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -lt 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+while [ $# -ge 1 ]
+do
+	opt_files[${#opt_files[@]}]="$SUBDIR$1"
+	shift
+done
+
+top=$(top_patch)
+
+if [ -n "$opt_verbose" ]
+then
+	applied="+ "
+	current="= "
+	unapplied="  "
+else
+	applied=""
+	current=""
+	unapplied=""
+fi
+
+[ -n "$opt_color" ] && setup_colors
+
+setup_pager
+
+scan_applied "$color_series_app" "$applied" \
+	$(patches_before $top)
+[ -n "$top" ] && \
+	scan_applied "$color_series_top" "$current" \
+		$top
+scan_unapplied "$color_series_una" "$unapplied" \
+	$(patches_after $top)

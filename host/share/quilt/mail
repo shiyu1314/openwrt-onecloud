@@ -1,0 +1,693 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+: ${EDITOR:=vi}
+
+usage()
+{
+	printf $"Usage: quilt mail {--mbox file|--send} [-m text] [-M file] [--prefix prefix] [--sender ...] [--from ...] [--to ...] [--cc ...] [--bcc ...] [--subject ...] [--reply-to message] [--charset ...] [--signature file] [first_patch [last_patch]]\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Create mail messages from a specified range of patches, or all patches in
+the series file, and either store them in a mailbox file, or send them
+immediately. The editor is opened with a template for the introduction.
+Please see %s for details.
+When specifying a range of patches, a first patch name of \`-' denotes the
+first, and a last patch name of \`-' denotes the last patch in the series.
+
+-m text
+	Text to use as the text in the introduction. When this option is
+	used, the editor will not be invoked, and the patches will be
+	processed immediately.
+
+-M file
+	Like the -m option, but read the introduction from file.
+
+--prefix prefix
+	Use an alternate prefix in the bracketed part of the subjects
+	generated. Defaults to \`patch'.
+
+--mbox file
+	Store all messages in the specified file in mbox format. The mbox
+	can later be sent using formail, for example.
+
+--send
+	Send the messages directly.
+
+--sender
+	The envelope sender address to use. The address must be of the form
+	\`user@domain.name'. No display name is allowed.
+
+--from, --subject
+	The values for the From and Subject headers to use. If no --from
+	option is given, the value of the --sender option is used.
+
+--to, --cc, --bcc
+	Append a recipient to the To, Cc, or Bcc header.
+
+--charset
+	Specify a particular message encoding on systems which don't use
+	UTF-8 or ISO-8859-15. This character encoding must match the one
+	used in the patches.
+
+--signature file
+	Append the specified signature to messages (defaults to ~/.signature
+	if found; use \`-' for no signature).
+
+--reply-to message
+	Add the appropriate headers to reply to the specified message.
+" "/workdir/openwrt/staging_dir/host/share/doc/quilt/README.MAIL"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+msgid()
+{
+	local timestamp=$(date --utc "+%Y%m%d%H%M%S.%N")
+	echo "$timestamp@${opt_sender_address#*@}"
+}
+
+# Extract RFC 2822 compliant header values, including Long Header Fields,
+# from messages
+
+extract_header_value()
+{
+      local header=$1
+
+      # Long Header Fields may span multiple lines, in which case CRLF
+      # is followed by space or tab (RFC 2822)
+      sed -ne "/^${header}/I,/^[^[:blank:]]/ { /^${header}/I { s/^${header}//I; p; n; }; /^[^[:blank:]]/q; /^$/q; p; }"
+}
+
+# See RFC 2822 Internet Message Format for how the In-Reply-To and
+# References headers are generated...
+
+in_reply_to_header()
+{
+	local message=$1 message_id
+
+	message_id=$(extract_header_value Message-ID: < "$message")
+	message_id=${message_id# }
+	[ -n "$message_id" ] && echo "In-Reply-To: $message_id"
+}
+
+references_header()
+{
+	local message=$1 message_id references in_reply_to
+
+	message_id=$(extract_header_value Message-ID: < "$message")
+	message_id=${message_id# }
+
+	references=$(extract_header_value References: < "$message")
+	references=${references# }
+	if [ -z "$references" ]
+	then
+		in_reply_to=$(extract_header_value In-Reply-To: < "$message")
+		in_reply_to=${in_reply_to# }
+		if [ -n "$in_reply_to" ]
+		then
+			case "$in_reply_to" in
+			*@*@*)
+				;;
+			*)	references=$in_reply_to
+				;;
+			esac
+		fi
+	fi
+	if [ -z "$references" ]
+	then
+		references=$message_id
+	elif [ -n "$message_id" ]
+	then
+		references="$references"$'\n '"$message_id"
+	fi
+	[ -n "$references" ] && echo "References: $references"
+}
+
+process_mail()
+{
+	local tmpfile=$(gen_tempfile)
+
+	cat > $tmpfile
+
+	set -- $($QUILT_DIR/scripts/edmail --charset $opt_charset \
+				  --extract-recipients To \
+				  --extract-recipients Cc \
+				  --extract-recipients Bcc \
+				  < $tmpfile)
+	if [ -n "$opt_send" ]
+	then
+		echo ${QUILT_SENDMAIL:-sendmail} \
+			${QUILT_SENDMAIL_ARGS--f "$opt_sender"} "$@"
+		$QUILT_DIR/scripts/edmail --charset $opt_charset \
+				 --remove-header Bcc < $tmpfile \
+		| ${QUILT_SENDMAIL:-sendmail} \
+			${QUILT_SENDMAIL_ARGS--f "$opt_sender"} "$@"
+	else
+		local from_date=$(LC_ALL=POSIX date "+%a %b %e %H:%M:%S %Y")
+		echo "From $opt_sender_address $from_date"
+		sed -e 's/^From />From /' $tmpfile
+		echo
+	fi
+	rm -f $tmpfile
+}
+
+join_lines()
+{
+	awk '
+		BEGIN { RS="\n\n" }
+		{ gsub(/[ \t\n]+/, " ")
+		  sub(/ $/, "")
+		  sub(/^ /, "")
+		  print }
+	'
+}
+
+options=`getopt -o m:M:h \
+		--long from:,to:,cc:,bcc:,subject: \
+		--long send,mbox:,charset:,sender: \
+		--long prefix:,reply-to:,signature: -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+opt_prefix=patch
+if [ -r $HOME/.signature ]
+then
+	opt_signature="$(< $HOME/.signature)"
+fi
+
+while true
+do
+	case "$1" in
+	-m)
+		if [ -n "$opt_message" ]
+		then
+			echo $"Introduction message already specified" >&2
+			exit 1
+		fi
+		opt_message=$2
+		shift 2 ;;
+	-M)
+		if [ -n "$opt_message" ]
+		then
+			echo $"Introduction message already specified" >&2
+			exit 1
+		fi
+		opt_message=$(< "$2")
+		shift 2 ;;
+	--sender)
+		opt_sender=$2
+		shift 2 ;;
+	--from)
+		opt_from=$2
+		shift 2 ;;
+	--to)
+		opt_to[${#opt_to[@]}]=$2
+		shift 2 ;;
+	--cc)
+		opt_cc[${#opt_cc[@]}]=$2
+		shift 2 ;;
+	--bcc)
+		opt_bcc[${#opt_bcc[@]}]=$2
+		shift 2 ;;
+	--subject)
+		opt_subject=$2
+		shift 2 ;;
+	--prefix)
+		opt_prefix=$2
+		shift 2 ;;
+	--send)
+		opt_send=1
+		shift ;;
+	--mbox)
+		opt_mbox=$2
+		shift 2 ;;
+	--charset)
+		opt_charset=$2
+		shift 2 ;;
+	--reply-to)
+		opt_reply_to=$2
+		shift 2 ;;
+	--signature)
+		if [ "$2" = - ]
+		then
+			opt_signature=
+		else
+			opt_signature=$(< "$2")
+		fi
+		shift 2 ;;
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -gt 2 -o \( -z "$opt_send" -a -z "$opt_mbox" \) ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+if [ $# -ge 1 ]
+then
+	if [ "$1" = - ]
+	then
+		first_patch="$(find_first_patch)" || exit 1
+	else
+		first_patch="$(find_patch "$1")" || exit 1
+	fi
+
+	if [ $# -ge 2 ]
+	then
+		if [ "$2" = - ]
+		then
+			last_patch="$(find_last_patch)" || exit 1
+		else
+			last_patch="$(find_patch "$2")" || exit 1
+		fi
+	else
+		last_patch=$first_patch
+	fi
+fi
+
+if [ -z "$opt_sender" ]
+then
+	if [ -e /etc/mailname ]
+	then
+		hostname=$(< /etc/mailname)
+	else
+		hostname=$(hostname -f 2>/dev/null)
+	fi
+
+	if [ "$hostname" = "${hostname/.}" ]
+	then
+		hostname=$(hostname)
+	fi
+	opt_sender="${LOGNAME:-$(whoami)}@$hostname"
+	case "$opt_sender" in
+	*@*.*)	;;
+	*)
+		echo $"\
+Could not determine the envelope sender address. Please use --sender." >&2
+		exit 1
+		;;
+	esac
+fi
+opt_sender_address=$(echo "$opt_sender" | sed -re 's:.*<([^<>]+)>.*:\1:')
+
+if [ -z "$opt_charset" ]
+then
+	case "${LC_ALL:-$ORIGINAL_LANG}" in
+	*.UTF-8)
+		opt_charset=UTF-8
+		;;
+	*)
+		opt_charset=ISO-8859-15
+		;;
+	esac
+fi
+
+if [ "$(type -t quilt_mail_patch_filter 2> /dev/null)" != function ]
+then
+	quilt_mail_patch_filter()
+	{
+		local tmpdir=$(gen_tempfile -d)
+		cat > $tmpdir/patch
+		patch_header < $tmpdir/patch > $tmpdir/header
+		local subject
+		local -a mh
+
+		# Does this patch have a Subject: line?
+		subject=$(extract_header_value Subject: < $tmpdir/header)
+		if [ -n "$subject" ]
+		then
+			awk '
+			in_body		{ print }
+			/^$/		{ in_body = 1 }
+			' $tmpdir/patch > $tmpdir/body
+		fi
+
+		# Does this patch have DESC // subject // EDESC?
+		if [ -z "$subject" ]
+		then
+			local desc=$(awk '
+				/^EDESC/	{ desc = 0 }
+				desc		{ print }
+				/^DESC/	{ desc = 1 }
+				' $tmpdir/header)
+			if [ -n "$desc" ]
+			then
+				subject=$(echo "$desc" | join_lines)
+				awk '
+				/^DESC/		{ desc = 1 }
+				! desc		{ print }
+				/^EDESC/	{ desc = 0 }
+				' $tmpdir/patch > $tmpdir/body
+			fi
+		fi
+
+		# Is the first paragraph short enough to be used as the subject?
+		if [ -z "$subject" ]
+		then
+			local para=$(sed -e $'/^[ \t]*$/q' $tmpdir/header)
+			if [ ${#para} -gt 0 -a ${#para} -lt 150 ]
+			then
+				subject=$(echo "$para" | join_lines)
+				awk '
+				in_body		{ print }
+				/^[ \t]*$/	{ in_body = 1 }
+				' $tmpdir/patch > $tmpdir/body
+			fi
+		fi
+
+		if [ -z "$subject" ]
+		then
+			rm -rf $tmpdir
+			return 1
+		fi
+
+		subject=$(echo "$subject" \
+			  | sed -e $'s/^\\(\\(\\[[^]]*\\]\\|fwd:\\|fw:\\|re:\\|aw:\\|tr:\\)[ \t]*\\)*//i')
+		echo "Replace-Subject: $subject"
+
+		# Add recipients defined by some recognized keywords
+
+		# In Signed-off-by: and Acked-by: lines, try to recognize email
+		# addresses that contain commas and add quotes, e.g.,
+		#   Last, First <email>    =>    "Last, First" <email>
+
+		set -- Signed-off-by Acked-by Suggested-by Reviewed-by Requested-by Reported-by Tested-by Cc
+		set -- "$*"
+		set -- ${*// /\\|}
+
+		sed -n -e "/\<${LOGNAME:-$(whoami)}@/d" \
+		       -e 's/^\(\(To\|'"$*"'\):[ '$'\t'']*\)\([^"]*\(,[^"]*\)\+[^" '$'\t'']\)\([ '$'\t'']*<.*>\)/\1"\3"\5/I' \
+		       -e 's/^To:\(.*@.*\)/Recipient-To:\1/Ip' \
+		       -e 's/^\('"$*"'\):\(.*@.*\)/Recipient-Cc:\2/Ip' \
+		    $tmpdir/header
+
+		echo
+		cat $tmpdir/body
+		rm -rf $tmpdir
+	}
+fi
+
+if [ -n "$first_patch" ]
+then
+	if [ -n "$last_patch" ]
+	then
+		set -- $(patches_before "$last_patch") "$last_patch"
+		while [ $# -ne 0 ]
+		do
+			[ "$1" = "$first_patch" ] && break
+			shift
+		done
+		if [ $# -eq 0 ]
+		then
+			printf $"Patch %s not applied before patch %s\n" \
+			       "$(print_patch $first_patch)" \
+			       "$(print_patch $last_patch)" >&2
+			exit 1
+		fi
+		patches=( "$@" )
+	else
+		patches=( "$first_patch" $(patches_after "$first_patch") )
+	fi
+else
+	patches=( $(cat_series) )
+fi
+total=${#patches[@]}
+
+tmpdir=$(gen_tempfile -d)
+add_exit_handler "rm -rf $tmpdir"
+
+for patch in "${patches[@]}"
+do
+	patch_file="$(patch_file_name "$patch")"
+	mkdir -p "$tmpdir/$(dirname "$patch")"
+	cat_file "$patch_file" \
+	| quilt_mail_patch_filter "$patch" > "$tmpdir/$patch"
+	status=${PIPESTATUS[1]}
+
+	subject=$(extract_header_value Replace-Subject: < "$tmpdir/$patch" | join_lines)
+	if [ $status -ne 0 -o -z "$subject" ]
+	then
+		if [ ! -r "$patch_file" ]
+		then
+			printf \
+$"Patch %s does not exist\n" "$(print_patch "$patch")" >&2
+		else
+			printf \
+$"Unable to extract a subject header from %s\n" "$(print_patch "$patch")" >&2
+		fi
+
+		rm -rf $tmpdir
+		exit 1
+	fi
+	subjects[${#subjects[@]}]="$patch"$'\t'"$subject"
+done
+
+dup_subjects=( $(
+	printf "%s\n" "${subjects[@]}" \
+	| sort -k2 \
+	| awk '{ patch = $1 ; sub(/^[^\t]+\t/, "");
+		 if ($0 in subjects) {
+			if (subjects[$0] != "")
+				print subjects[$0];
+			print patch;
+			subjects[$0] = "";
+		}
+		else subjects[$0] = patch }' \
+	| while read patch; do
+		print_patch $patch
+	  done
+	) )
+if [ ${#dup_subjects[@]} -ne 0 ]
+then
+	printf $"Patches %s have duplicate subject headers.\n" \
+	       "$(array_join ", " "${dup_subjects[@]}")"
+	exit 1
+fi
+
+if [ -n "$opt_reply_to" ]
+then
+	if [ ! -e "$opt_reply_to" ]
+	then
+		printf $"File %s does not exist\n" "$opt_reply_to"
+		exit 1
+	fi
+
+	if [ -z "$opt_subject" ]
+	then
+		opt_subject="Re: $(extract_header_value Subject: < "$opt_reply_to" \
+			      | sed -e 's/^ *\([rR][eE]: *\)*//')"
+	fi
+fi
+
+introduction="$(gen_tempfile)"
+(
+	cat <<-EOF
+	Message-ID: <$(msgid)>
+	User-Agent: quilt/0.67
+	Date: $(date --rfc-822)
+	From: ${opt_from:-$opt_sender}
+	To: $(IFS=,; echo "${opt_to[*]}")
+	Cc: $(IFS=,; echo "${opt_cc[*]}")
+	Bcc: $(IFS=,; echo "${opt_bcc[*]}")
+	EOF
+
+	if [ -n "$opt_reply_to" ]
+	then
+		in_reply_to_header "$opt_reply_to"
+		references_header "$opt_reply_to"
+	fi
+
+	cat <<-EOF
+	Subject-Prefix: [$opt_prefix @num@/@total@]
+	Subject: $opt_subject
+
+	EOF
+	if [ -n "$opt_message" ]
+	then
+		echo "$opt_message"
+		echo
+	fi
+	if [ -n "$opt_signature" ]
+	then
+		echo "-- "
+		echo "$opt_signature"
+	fi
+) | $QUILT_DIR/scripts/edmail --charset $opt_charset > $introduction
+
+if [ -z "$opt_message" ]
+then
+	if ! LANG=$ORIGINAL_LANG $EDITOR $introduction
+	then
+		rm -f $introduction
+		exit 1
+	fi
+fi
+
+subject=$(extract_header_value Subject: < $introduction | join_lines)
+if [ -z "$subject" ]
+then
+	if [ -z "$opt_message" ]
+	then
+		printf $"Introduction has no subject header (saved as %s)\n" \
+			"$introduction" >&2
+	else
+		printf $"Introduction has no subject header\n"
+		rm -f $introduction
+	fi
+	exit 1
+fi
+
+if [ -n "$opt_mbox" ]
+then
+	exec 1> $opt_mbox
+fi
+
+subject_prefix=$(extract_header_value Subject-Prefix: < $introduction | join_lines)
+[ -n "$subject_prefix" ] && subject_prefix="$subject_prefix "
+
+subject_prefix=${subject_prefix//\'/\'\'}
+subject_prefix=${subject_prefix//\//\\\/}
+p=${subject_prefix//@num@/$(printf %0*d ${#total} 0)}
+p=${p//@total@/$total}
+sed -e $'s/^\\(Subject:[ \t]\\)/\\1'"$p"'/' \
+    -e '/^Subject-Prefix:/d' \
+$introduction \
+| $QUILT_DIR/scripts/edmail --charset $opt_charset \
+		  --remove-empty-headers To Cc Bcc \
+| process_mail
+
+if [ -n "$opt_mbox" ]
+then
+	exec 1>> $opt_mbox
+fi
+
+# Remember the timestamp of the last message sent. For each message,
+# increment the timestamp by one second and wait with sending until
+# that time has arrived. This allows MUAs to show the messages in the
+# correct order.
+last_ts=$(date '+%s' -d "$(sed -ne $'s/^Date:[ \t]*//p' $introduction)")
+
+num=1
+for patch in "${patches[@]}"; do
+	body=$tmpdir/$patch
+	#echo -n '.' >&2
+	# Timestamps that are a few seconds in the future don't hurt usually
+	#while [ $(date '+%s') -le $last_ts ]; do
+	#	sleep 1
+	#done
+	((last_ts++))
+	new_date="$(date --rfc-822 -d "1970/01/01 UTC $last_ts seconds")"
+
+	modify="$(awk '
+	in_header	{ if (/^[ \t]/) {
+			    headers[n] = headers[n] "\n" $0
+			    next }
+			  in_header = 0 }
+	sub(/^Recipient-/, "")	{ headers[++n] = $0
+				  options[n] = "--add-good-recipient"
+				  in_header = 1
+				  next }
+	sub(/^Replace-/, "")	{ headers[++n] = $0
+				  options[n] = "--replace-header"
+				  in_header = 1
+				  next }
+	END			{ for(n = 1; n in headers; n++) {
+				    r = headers[n]
+				    sub(/:.*/, "", r)
+				    s = headers[n]
+				    sub(/^[^:]*:[ \t]*/, "", s)
+				    gsub(/'\''/, "'\'\''", s)
+				    print options[n] " " r "='\''" s "'\'' \\" } }
+	' $body)"
+#	echo "$modify" | sed -e 's/^/>> /' >&2
+	p=${subject_prefix//@num@/$(printf %0*d ${#total} $num)}
+	p=${p//@total@/$total}
+
+	# Make pipes fail if any of their commands fail (requires bash 3):
+	set -o pipefail
+
+	( (	echo "Message-ID: <$(msgid)>"
+		awk '
+		    /^$/	{ exit }
+		    tolower($0) !~ /^(message-id|references|in-reply-to):/ \
+				{ print }
+		' $introduction
+		references_header $introduction
+		echo "MIME-Version: 1.0"
+		echo "Content-Type: text/plain; charset=$opt_charset"
+		awk '
+		    kill_header { if (/^[ \t]/) next ; kill_header = 0 }
+		    !in_body && tolower($0) ~ /^(recipient|replace)-.*:/ \
+				{ kill_header = 1 ; next }
+		    /^$/	{ in_body = 1 }
+				{ print }
+		    ' $body
+		echo
+		#if [ -n "$opt_signature" ]
+		#then
+		#	echo '-- '
+		#	echo "$opt_signature"
+		#fi
+	) | eval $QUILT_DIR/scripts/edmail --charset $opt_charset \
+		--replace-header Date="\"$new_date\"" \
+		To Cc Bcc \
+		"$modify" \
+	| sed -e $'s/^\\(Subject:[ \t]\\)/\\1'"$p"'/' \
+	      -e '/^Subject-Prefix:/d' \
+	| $QUILT_DIR/scripts/edmail --remove-empty-headers \
+	| process_mail ) 2> $tmpdir/err
+
+	status=$?
+	if [ -s $tmpdir/err ]
+	then
+		sed -e "s/^/${patch//\//\\/}: /" <  $tmpdir/err >&2
+	fi
+	if [ $status -ne 0 ]
+	then
+		printf $"Introduction saved as %s\n" "$introduction" >&2
+		exit 1
+	fi
+
+	# If the character set is UTF-8, check for invalid byte
+	# sequences.
+
+	#content_length=${#body}
+	#if [ -n "$(echo "$body" | tr -d '\0-\177')" ]
+	#then
+	#	charset=UTF-8
+	#fi
+	# Content-Transfer-Encoding: 7bit
+	# Content-Transfer-Encoding: 8bit
+	# Content-Type: text/plain; charset=ISO-8859-1
+	# Content-Type: text/plain; charset=UTF-8
+
+	((num++))
+done
+rm -f $introduction

@@ -1,0 +1,125 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt revert [-P patch] {file} ...\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Revert uncommitted changes to the topmost or named patch for the specified
+file(s): after the revert, 'quilt diff -z' will show no differences for those
+files. Changes to files that are modified by patches on top of the specified
+patch cannot be reverted.
+
+-P patch
+	Revert changes in the named patch.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o P:h -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-P)
+		opt_patch="$2"
+		shift 2 ;;
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -lt 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+patch=$(find_applied_patch "$opt_patch") || exit 1
+
+status=0
+for file in "${@/#/$SUBDIR}"
+do
+	if ! file_in_patch "$file" $patch
+	then
+		printf $"File %s is not in patch %s\n" \
+		       "$file" "$(print_patch $patch)" >&2
+		status=1
+		continue
+	fi
+
+	next_patch=$(next_patch_for_file $patch "$file")
+	if [ -n "$next_patch" ]
+	then
+		printf $"File %s modified by patch %s\n" \
+		       "$file" "$(print_patch $next_patch)"
+		status=1
+		continue
+	fi
+done
+[ $status -eq 0 ] || exit $status
+
+workdir=$(gen_tempfile -d "$PWD")
+add_exit_handler "rm -rf \"$workdir\""
+apply_patch_temporarily "$workdir" $patch "${@/#/$SUBDIR}" || exit 1
+
+for file in ${*/#/$SUBDIR}
+do
+	if [ -s "$workdir/$file" ]
+	then
+		if [ -e "$file" ] &&
+		   diff -q "$workdir/$file" "$file" > /dev/null
+		then
+			printf $"File %s is unchanged\n" "$file"
+			continue
+		fi
+
+		mkdir -p "$(dirname "$file")"
+		cp -p "$workdir/$file" "$file"
+	else
+		if [ ! -e "$file" ]
+		then
+			printf $"File %s is unchanged\n" "$file"
+			continue
+		fi
+
+		rm -f "$file"
+	fi
+	if [ $? -ne 0 ]
+	then
+		printf $"Failed to revert changes to %s in patch %s\n" \
+		       "$file" "$(print_patch $patch)" >&2
+		status=1
+	else
+		printf $"Changes to %s in patch %s reverted\n" \
+		       "$file" "$(print_patch $patch)"
+	fi
+done
+exit $status

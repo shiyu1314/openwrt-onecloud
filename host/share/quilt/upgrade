@@ -1,0 +1,105 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+# Don't abort in version or series check.
+skip_version_check=1
+skip_series_check=1
+
+usage()
+{
+	printf $"Usage: quilt upgrade\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Upgrade the meta-data in a working tree from an old version of quilt to the
+current version. This command is only needed when the quilt meta-data format
+has changed, and the working tree still contains old-format meta-data. In that
+case, quilt will request to run \`quilt upgrade'.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o h -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -gt 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+if version_check
+then
+	printf $"The quilt meta-data in %s are already in the version %s format; nothing to do\n" "$QUILT_PC/" "$DB_VERSION"
+	exit 0
+fi
+
+printf $"Converting meta-data to version %s\n" "$DB_VERSION"
+
+# Previously we have stripped standard patch extensions (.dif .diff
+# .patch .gz .bz2) of patch names; we have used the mangled names in
+# .pc/applied-patches, .pc/$patch/, but not in the series file.
+
+for patch in $(applied_patches)
+do
+	proper_name="$(grep "^$(quote_bre $patch)"'\(\|\.patch\|\.diff?\)\(\|\.gz\|\.bz2\)\([ \t]\|$\)' $SERIES)"
+	proper_name=${proper_name#$QUILT_PATCHES/}
+	proper_name=${proper_name%% *}
+	if [ -z "$proper_name" ]
+	then
+		failed=1
+		break
+	fi
+
+	if [ "$patch" != "$proper_name" -a -d $QUILT_PC/$patch ] \
+	   && grep -q "^$(quote_bre $patch)\$" \
+		   $QUILT_PC/applied-patches
+	then
+		mv $QUILT_PC/$patch $QUILT_PC/$proper_name \
+			|| failed=1
+		rename_in_db $patch $proper_name \
+			|| failed=1
+		[ -z "$failed" ] || break
+	fi
+done
+
+if [ -n "$failed" ]
+then
+	printf $"Conversion failed\n" >&2
+	printf $"
+Please remove all patches using \`quilt pop -a' from the quilt version used to create this working tree, or remove the %s directory and apply the patches from scratch.\n" "$QUILT_PC" >&2
+	exit 1
+fi
+echo $DB_VERSION > $QUILT_PC/.version

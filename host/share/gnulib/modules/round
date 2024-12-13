@@ -1,0 +1,39 @@
+Description:
+round() function: round toward nearest, breaking ties away from zero.
+
+Files:
+lib/round.c
+m4/check-math-lib.m4
+m4/round.m4
+m4/floor.m4
+m4/ceil.m4
+
+Depends-on:
+math
+extensions
+float           [test $HAVE_ROUND = 0 || test $REPLACE_ROUND = 1]
+floor           [test $HAVE_ROUND = 0 || test $REPLACE_ROUND = 1]
+
+configure.ac:
+gl_FUNC_ROUND
+gl_CONDITIONAL([GL_COND_OBJ_ROUND],
+               [test $HAVE_ROUND = 0 || test $REPLACE_ROUND = 1])
+gl_MATH_MODULE_INDICATOR([round])
+
+Makefile.am:
+if GL_COND_OBJ_ROUND
+lib_SOURCES += round.c
+endif
+
+Include:
+<math.h>
+
+Link:
+$(ROUND_LIBM)
+
+License:
+LGPL
+
+Maintainer:
+Ben Pfaff
+

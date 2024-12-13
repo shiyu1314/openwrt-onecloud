@@ -1,0 +1,35 @@
+Description:
+ISO C 11 mutex functions.
+
+Files:
+lib/mtx.c
+
+Depends-on:
+threads-h
+pthread_mutex_timedlock
+windows-mutex
+windows-recmutex
+windows-timedmutex
+windows-timedrecmutex
+
+configure.ac:
+AC_REQUIRE([gl_THREADS_H])
+gl_CONDITIONAL([GL_COND_OBJ_MTX], [test $HAVE_THREADS_H = 0])
+gl_THREADS_MODULE_INDICATOR([mtx])
+
+Makefile.am:
+if GL_COND_OBJ_MTX
+lib_SOURCES += mtx.c
+endif
+
+Include:
+<threads.h>
+
+Link:
+$(LIBSTDTHREAD)
+
+License:
+LGPLv2+
+
+Maintainer:
+all

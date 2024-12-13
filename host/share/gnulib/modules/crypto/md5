@@ -1,0 +1,26 @@
+Description:
+Compute MD5 checksum.
+
+Files:
+lib/md5-stream.c
+
+Depends-on:
+crypto/af_alg
+crypto/md5-buffer
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += md5-stream.c
+
+Include:
+"md5.h"
+
+Link:
+$(LIB_CRYPTO)
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering, glibc

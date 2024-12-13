@@ -1,0 +1,36 @@
+Description:
+strtoumax() function: convert string to 'uintmax_t'.
+
+Files:
+lib/strtoimax.c
+lib/strtoumax.c
+m4/strtoumax.m4
+
+Depends-on:
+inttypes-incomplete
+assert-h        [test $HAVE_DECL_STRTOUMAX = 0 || test $REPLACE_STRTOUMAX = 1]
+stdint          [test $HAVE_DECL_STRTOUMAX = 0 || test $REPLACE_STRTOUMAX = 1]
+strtoull        [{ test $HAVE_DECL_STRTOUMAX = 0 || test $REPLACE_STRTOUMAX = 1; } && test $ac_cv_type_unsigned_long_long_int = yes]
+
+configure.ac:
+gl_FUNC_STRTOUMAX
+gl_CONDITIONAL([GL_COND_OBJ_STRTOUMAX],
+               [test $HAVE_DECL_STRTOUMAX = 0 || test $REPLACE_STRTOUMAX = 1])
+AM_COND_IF([GL_COND_OBJ_STRTOUMAX], [
+  gl_PREREQ_STRTOUMAX
+])
+gl_INTTYPES_MODULE_INDICATOR([strtoumax])
+
+Makefile.am:
+if GL_COND_OBJ_STRTOUMAX
+lib_SOURCES += strtoumax.c
+endif
+
+Include:
+<inttypes.h>
+
+License:
+LGPL
+
+Maintainer:
+Paul Eggert

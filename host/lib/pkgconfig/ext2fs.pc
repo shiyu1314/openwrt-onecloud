@@ -1,0 +1,11 @@
+prefix=/workdir/openwrt/staging_dir/host
+exec_prefix=/workdir/openwrt/staging_dir/host
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: ext2fs
+Description: Ext2fs library
+Version: 1.47.0
+Requires.private: com_err
+Cflags: -I${includedir}/ext2fs -I${includedir}
+Libs: -L${libdir} -lext2fs

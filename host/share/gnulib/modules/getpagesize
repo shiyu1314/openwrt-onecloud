@@ -1,0 +1,28 @@
+Description:
+getpagesize() function: Return memory page size.
+
+Files:
+lib/getpagesize.c
+m4/getpagesize.m4
+
+Depends-on:
+unistd
+
+configure.ac:
+gl_FUNC_GETPAGESIZE
+gl_CONDITIONAL([GL_COND_OBJ_GETPAGESIZE], [test $REPLACE_GETPAGESIZE = 1])
+gl_UNISTD_MODULE_INDICATOR([getpagesize])
+
+Makefile.am:
+if GL_COND_OBJ_GETPAGESIZE
+lib_SOURCES += getpagesize.c
+endif
+
+Include:
+<unistd.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering

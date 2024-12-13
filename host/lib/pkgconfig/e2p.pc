@@ -1,0 +1,11 @@
+prefix=/workdir/openwrt/staging_dir/host
+exec_prefix=/workdir/openwrt/staging_dir/host
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: e2p
+Description: Ext2fs userspace programs utility library
+Version: 1.47.0
+Requires: 
+Cflags: -I${includedir}/e2p -I${includedir}
+Libs: -L${libdir} -le2p

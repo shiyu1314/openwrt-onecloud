@@ -1,0 +1,43 @@
+Description:
+mkdirat() function: Create a directory relative to a given directory.
+
+Files:
+lib/mkdirat.c
+lib/at-func.c
+m4/mkdirat.m4
+
+Depends-on:
+sys_stat
+extensions
+at-internal     [test $HAVE_MKDIRAT = 0]
+errno           [test $HAVE_MKDIRAT = 0]
+fchdir          [test $HAVE_MKDIRAT = 0]
+fcntl-h         [test $HAVE_MKDIRAT = 0]
+filename        [test $HAVE_MKDIRAT = 0]
+mkdir           [test $HAVE_MKDIRAT = 0]
+openat-die      [test $HAVE_MKDIRAT = 0]
+openat-h        [test $HAVE_MKDIRAT = 0]
+save-cwd        [test $HAVE_MKDIRAT = 0]
+unistd          [test $HAVE_MKDIRAT = 0]
+
+configure.ac:
+gl_FUNC_MKDIRAT
+gl_CONDITIONAL([GL_COND_OBJ_MKDIRAT], [test $HAVE_MKDIRAT = 0])
+AM_COND_IF([GL_COND_OBJ_MKDIRAT], [
+  gl_PREREQ_MKDIRAT
+])
+gl_SYS_STAT_MODULE_INDICATOR([mkdirat])
+
+Makefile.am:
+if GL_COND_OBJ_MKDIRAT
+lib_SOURCES += mkdirat.c
+endif
+
+Include:
+<sys/stat.h>
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering, Eric Blake

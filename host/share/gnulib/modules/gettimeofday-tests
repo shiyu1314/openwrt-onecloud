@@ -1,0 +1,14 @@
+Files:
+tests/test-gettimeofday.c
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+time
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-gettimeofday
+check_PROGRAMS += test-gettimeofday
+

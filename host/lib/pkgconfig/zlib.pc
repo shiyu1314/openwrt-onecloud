@@ -1,0 +1,13 @@
+prefix=/workdir/openwrt/staging_dir/host
+exec_prefix=${prefix}
+libdir=/workdir/openwrt/staging_dir/host/lib
+sharedlibdir=${libdir}
+includedir=/workdir/openwrt/staging_dir/host/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

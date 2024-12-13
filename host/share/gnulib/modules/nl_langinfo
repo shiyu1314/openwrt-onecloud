@@ -1,0 +1,43 @@
+Description:
+nl_langinfo() function: query locale dependent information.
+
+Files:
+lib/nl_langinfo.c
+lib/nl_langinfo-lock.c
+lib/windows-initguard.h
+m4/nl_langinfo.m4
+m4/threadlib.m4
+m4/visibility.m4
+
+Depends-on:
+langinfo
+localeconv      [test $HAVE_NL_LANGINFO = 0 || test $REPLACE_NL_LANGINFO = 1]
+setlocale-null  [test $HAVE_NL_LANGINFO = 0 || test $HAVE_LANGINFO_CODESET = 0]
+
+configure.ac:
+gl_FUNC_NL_LANGINFO
+gl_CONDITIONAL([GL_COND_OBJ_NL_LANGINFO],
+               [test $HAVE_NL_LANGINFO = 0 || test $REPLACE_NL_LANGINFO = 1])
+gl_CONDITIONAL([GL_COND_OBJ_NL_LANGINFO_LOCK],
+               [test $REPLACE_NL_LANGINFO = 1 && test $NL_LANGINFO_MTSAFE = 0])
+if test $REPLACE_NL_LANGINFO = 1 && test $NL_LANGINFO_MTSAFE = 0; then
+  gl_PREREQ_NL_LANGINFO_LOCK
+fi
+gl_LANGINFO_MODULE_INDICATOR([nl_langinfo])
+
+Makefile.am:
+if GL_COND_OBJ_NL_LANGINFO
+lib_SOURCES += nl_langinfo.c
+endif
+if GL_COND_OBJ_NL_LANGINFO_LOCK
+lib_SOURCES += nl_langinfo-lock.c
+endif
+
+Include:
+<langinfo.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

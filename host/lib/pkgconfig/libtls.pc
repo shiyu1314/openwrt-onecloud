@@ -1,0 +1,13 @@
+#libtls pkg-config source file
+
+prefix=/workdir/openwrt/staging_dir/host
+exec_prefix=/workdir/openwrt/staging_dir/host
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: LibreSSL-libtls
+Description: Secure communications using the TLS socket protocol.
+Version: 3.7.2
+Libs: -L${libdir} -ltls
+Libs.private: -lresolv  
+Cflags: -I${includedir}

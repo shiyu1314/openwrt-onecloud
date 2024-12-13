@@ -1,0 +1,36 @@
+Description:
+ldexpl() function: multiply a 'long double' by a power of 2.
+
+Files:
+lib/ldexpl.c
+m4/ldexpl.m4
+
+Depends-on:
+math
+extensions
+ldexp           [{ test $HAVE_DECL_LDEXPL = 0 || test $gl_func_ldexpl = no; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 1]
+isnanl          [{ test $HAVE_DECL_LDEXPL = 0 || test $gl_func_ldexpl = no; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 0]
+fpucw           [{ test $HAVE_DECL_LDEXPL = 0 || test $gl_func_ldexpl = no; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 0]
+
+configure.ac:
+gl_FUNC_LDEXPL
+gl_CONDITIONAL([GL_COND_OBJ_LDEXPL],
+               [test $HAVE_DECL_LDEXPL = 0 || test $gl_func_ldexpl = no])
+gl_MATH_MODULE_INDICATOR([ldexpl])
+
+Makefile.am:
+if GL_COND_OBJ_LDEXPL
+lib_SOURCES += ldexpl.c
+endif
+
+Include:
+<math.h>
+
+Link:
+$(LDEXPL_LIBM)
+
+License:
+LGPL
+
+Maintainer:
+Paolo Bonzini

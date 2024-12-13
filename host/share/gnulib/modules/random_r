@@ -1,0 +1,35 @@
+Description:
+reentrant random number generator
+
+Files:
+lib/random_r.c
+m4/random_r.m4
+
+Depends-on:
+c99
+libc-config     [test $HAVE_RANDOM_R = 0 || test $REPLACE_RANDOM_R = 1]
+stdlib
+stdint          [test $HAVE_RANDOM_R = 0 || test $REPLACE_RANDOM_R = 1]
+
+configure.ac:
+gl_FUNC_RANDOM_R
+gl_CONDITIONAL([GL_COND_OBJ_RANDOM_R],
+               [test $HAVE_RANDOM_R = 0 || test $REPLACE_RANDOM_R = 1])
+AM_COND_IF([GL_COND_OBJ_RANDOM_R], [
+  gl_PREREQ_RANDOM_R
+])
+gl_STDLIB_MODULE_INDICATOR([random_r])
+
+Makefile.am:
+if GL_COND_OBJ_RANDOM_R
+lib_SOURCES += random_r.c
+endif
+
+Include:
+<stdlib.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering, glibc

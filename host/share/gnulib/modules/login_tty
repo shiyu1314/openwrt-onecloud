@@ -1,0 +1,35 @@
+Description:
+login_tty() function: Assign a given terminal as controlling terminal and as
+standard input, standard output, standard error of the current process.
+
+Files:
+lib/login_tty.c
+m4/login_tty.m4
+m4/pty.m4
+
+Depends-on:
+utmp
+sys_ioctl
+open            [test $HAVE_LOGIN_TTY = 0]
+
+configure.ac:
+gl_FUNC_LOGIN_TTY
+gl_CONDITIONAL([GL_COND_OBJ_LOGIN_TTY], [test $HAVE_LOGIN_TTY = 0])
+gl_UTMP_MODULE_INDICATOR([login_tty])
+
+Makefile.am:
+if GL_COND_OBJ_LOGIN_TTY
+lib_SOURCES += login_tty.c
+endif
+
+Include:
+<utmp.h>
+
+Link:
+$(PTY_LIB)
+
+License:
+LGPL
+
+Maintainer:
+all

@@ -1,0 +1,34 @@
+Description:
+lstat() function: return information about a file or symbolic link.
+
+Files:
+lib/lstat.c
+m4/lstat.m4
+
+Depends-on:
+sys_stat
+largefile
+stat            [test $REPLACE_LSTAT = 1]
+stat-time       [test $REPLACE_LSTAT = 1]
+
+configure.ac:
+gl_FUNC_LSTAT
+gl_CONDITIONAL([GL_COND_OBJ_LSTAT], [test $REPLACE_LSTAT = 1])
+AM_COND_IF([GL_COND_OBJ_LSTAT], [
+  gl_PREREQ_LSTAT
+])
+gl_SYS_STAT_MODULE_INDICATOR([lstat])
+
+Makefile.am:
+if GL_COND_OBJ_LSTAT
+lib_SOURCES += lstat.c
+endif
+
+Include:
+<sys/stat.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering

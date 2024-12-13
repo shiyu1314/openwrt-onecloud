@@ -1,0 +1,36 @@
+Description:
+memset() function: fill memory with a constant byte.
+
+Status:
+obsolete
+
+Notice:
+This module is obsolete.
+
+Files:
+lib/memset.c
+m4/memset.m4
+
+Depends-on:
+string
+
+configure.ac:
+gl_FUNC_MEMSET
+gl_CONDITIONAL([GL_COND_OBJ_MEMSET], [test $ac_cv_func_memset = no])
+AM_COND_IF([GL_COND_OBJ_MEMSET], [
+  gl_PREREQ_MEMSET
+])
+
+Makefile.am:
+if GL_COND_OBJ_MEMSET
+lib_SOURCES += memset.c
+endif
+
+Include:
+<string.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering

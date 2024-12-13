@@ -1,0 +1,20 @@
+Files:
+tests/test-duplocale.c
+tests/signature.h
+tests/macros.h
+m4/intl-thread-locale.m4
+
+Depends-on:
+langinfo
+
+configure.ac:
+AC_CHECK_FUNCS_ONCE([strfmon_l snprintf_l])
+gl_CHECK_FUNCS_ANDROID([duplocale], [[#include <locale.h>]])
+gl_CHECK_FUNCS_ANDROID([nl_langinfo_l], [[#include <langinfo.h>]])
+AC_CHECK_HEADERS_ONCE([monetary.h])
+gt_FUNC_USELOCALE
+
+Makefile.am:
+TESTS += test-duplocale
+check_PROGRAMS += test-duplocale
+test_duplocale_LDADD = $(LDADD) $(SETLOCALE_LIB) @DUPLOCALE_LIB@

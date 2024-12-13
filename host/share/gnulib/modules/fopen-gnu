@@ -1,0 +1,34 @@
+Description:
+fopen() function: open a stream to a file, with GNU extensions.
+
+Files:
+lib/fopen.c
+
+Depends-on:
+fopen
+open            [test $REPLACE_FOPEN_FOR_FOPEN_GNU = 1]
+fcntl-h         [test $REPLACE_FOPEN_FOR_FOPEN_GNU = 1]
+stdbool         [test $REPLACE_FOPEN_FOR_FOPEN_GNU = 1]
+unistd          [test $REPLACE_FOPEN_FOR_FOPEN_GNU = 1]
+close           [test $REPLACE_FOPEN_FOR_FOPEN_GNU = 1]
+fstat           [test $REPLACE_FOPEN_FOR_FOPEN_GNU = 1]
+
+configure.ac:
+gl_FUNC_FOPEN_GNU
+if test $REPLACE_FOPEN_FOR_FOPEN_GNU = 1; then
+  AC_LIBOBJ([fopen])
+  gl_PREREQ_FOPEN
+fi
+gl_MODULE_INDICATOR([fopen-gnu])
+gl_STDIO_MODULE_INDICATOR([fopen-gnu])
+
+Makefile.am:
+
+Include:
+<stdio.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

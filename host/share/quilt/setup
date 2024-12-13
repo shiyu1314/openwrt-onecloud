@@ -1,0 +1,531 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+# Version and series checks are irrelevant to this command.
+skip_version_check=1
+skip_series_check=1
+
+check_for_existing_directories()
+{
+	local tag dir last_dir arg status=0
+
+	while read tag dir arg
+	do
+		[ "$dir" != "." -a "$dir" != "$last_dir" ] || continue
+
+		if [ -e "$prefix$dir" ]
+		then
+			printf $"Directory %s exists\n" \
+			       "$prefix$dir" >&2
+			status=1
+		fi
+		last_dir=$dir
+	done < $tmpfile
+
+	return $status
+}
+
+check_for_existing_files()
+{
+	local tag dir last_dir arg status=0
+
+	while read tag dir arg
+	do
+		[ "$tag" = "patch" -a "$dir" != "$last_dir" ] || continue
+
+		if [ -e "$prefix$dir/$QUILT_PATCHES" ]
+		then
+			printf $"Directory %s exists\n" \
+			       "$prefix$dir/$QUILT_PATCHES" >&2
+			status=1
+		fi
+		if [ -e "$prefix$dir/$QUILT_SERIES" ]
+		then
+			printf $"File %s exists\n" \
+			       "$prefix$dir/$QUILT_SERIES" >&2
+			status=1
+		fi
+		last_dir=$dir
+	done < $tmpfile
+
+	return $status
+}
+
+# Resolve ".." in path and clean up double slashes and "."
+normalize_path()
+{
+	echo "$1" | sed -r -e 's://:/:g' \
+			   -e 's:/\.(/\.)*(/|$):\2:g' \
+			   -e ':again' \
+			   -e 's:/[^/]+/\.\.(/|$):\1:g' \
+			   -e 'tagain'
+}
+
+create_symlink()
+{
+	local target=$1 link=$2 up
+	if [ "${target:0:1}" = / -o "${link:0:1}" = / ]
+	then
+		[ "${target:0:1}" = / ] || target=$PWD/$target
+		ln -s "$target" "$link"
+		return
+	fi
+
+	set -- "$(normalize_path "$PWD/$target")" \
+	       "$(normalize_path "$PWD/$link")"
+	while [ "${1%%/*}" = "${2%%/*}" ]
+	do
+		set -- "${1#*/}" "${2#*/}"
+	done
+	up=$(echo "$2" | sed -r -e 's:(^|/)[^/]*$::' -e 's:[^/]+:..:g')
+	set -- "${up:+$up/}$1"
+	set -- "${1%/}"
+	ln -s "${1:-.}" "$link"
+}
+
+dir_to_dir()
+{
+	local from=$1 to=$2
+
+	[ "${from:0:1}" = / ] || from=$PWD/$from
+	from=$(normalize_path "$from")
+
+	[ "${to:0:1}" = / ] || to=$PWD/$to
+	to=$(normalize_path "$to")
+
+	# If the target is a subdirectory of the origin, we can express the path
+	# in a relative way. Otherwise, return the absolute path.
+	if [ "${to:0:${#from}}" = "$from" ]
+	then
+		to=${to:${#from}}
+		to=${to#/}
+	fi
+
+	echo "$to"
+}
+
+# create md5 sums, also for uncompressed files
+create_md5sums()
+{
+	local sourcedir=$1 output=$2
+	local file basename filetype
+
+	echo -n "### md5sum: " >&4
+	shopt -s nullglob
+	for file in "$sourcedir"*
+	do
+		basename=${file##*/}
+		case "$basename" in
+			ready|bigpack|_constraints|_service|baselibs.conf|MD5SUMS|MD5SUMS.meta|*.spec|*.changes|*.sig|*.sign|*rpmlintrc)
+				continue
+				;;
+			# In fast mode, we are only interested in patches, so filter out
+			# archives
+			*.tar|*.tar.Z|*.tar.gz|*.tgz|*.tar.bz2|*.tar.xz|*.tar.lz|*.zip|*.7z)
+				[ -n "$QUILT_SETUP_FAST" ] && continue
+				;;
+		esac
+		[ -f "$file" ] || continue
+		echo -n "." >&4
+		echo "md5sum < $file" >&5
+		set -- $(md5sum < "$file")
+		echo "$1 $basename"
+
+		case "$file" in
+			*.lzma)
+				# file doesn't reliably recognize lzma-compressed files
+				filetype="lzma"
+				;;
+			*.xz)
+				# old versions of file don't know about xz-compressed
+				# files
+				filetype="xz"
+				;;
+			*)
+				filetype=$(file -b "$file")
+				;;
+		esac
+
+		case "$filetype" in
+			compress*|gzip*)
+				echo -n "g" >&4
+				echo "gzip -cd $file | md5sum" >&5
+				set -- $(gzip -cd "$file" | md5sum)
+				echo "$1 $basename"
+				;;
+			bzip2*)
+				echo -n "b" >&4
+				echo "bzip2 -cd $file | md5sum" >&5
+				set -- $(bzip2 -cd "$file" | md5sum)
+				echo "$1 $basename"
+				;;
+			xz*|XZ*)
+				echo -n "x" >&4
+				echo "xz -cd $file | md5sum" >&5
+				set -- $(xz -cd "$file" | md5sum)
+				echo "$1 $basename"
+				;;
+			lzma*)
+				echo -n "l" >&4
+				echo "lzma -cd $file | md5sum" >&5
+				set -- $(lzma -cd "$file" | md5sum)
+				echo "$1 $basename"
+				;;
+			lzip*)
+				echo -n "l" >&4
+				echo "lzip -cd $file | md5sum" >&5
+				set -- $(lzip -cd "$file" | md5sum)
+				echo "$1 $basename"
+				;;
+		esac
+	done > $output
+	echo >&4
+	shopt -u nullglob
+}
+
+# Uses global variables: verbose, sourcedir, targetdir
+inspect()
+{
+	local specfile=$1 specdir
+	local abs_sourcedir=$sourcedir tmpdir
+
+	[ "${abs_sourcedir:0:1}" = / ] || abs_sourcedir=$PWD/$abs_sourcedir
+
+	if [ "${specfile:0:1}"  = / ]
+	then
+		specdir=$(dirname "$specfile")
+		specfile=${spec_file##*/}
+	else
+		specdir=$PWD
+	fi
+
+	tmpdir=$(gen_tempfile -d ${VARTMPDIR:-/var/tmp}/${0##*/})
+	mkdir -p $tmpdir || exit 1
+	add_exit_handler "rm -rf $tmpdir"
+	mkdir -p $tmpdir/bin
+	ln -s $QUILT_DIR/scripts/inspect-wrapper $tmpdir/bin/patch
+	ln -s $QUILT_DIR/scripts/inspect-wrapper $tmpdir/bin/tar
+	ln -s $QUILT_DIR/scripts/inspect-wrapper $tmpdir/bin/unzip
+	ln -s $QUILT_DIR/scripts/inspect-wrapper $tmpdir/bin/7z
+
+	# Redirect file descriptors
+	# 5 is used in verbose mode, 4 in non-verbose mode, and 2 for both (real errors)
+	if [ -n "$verbose" ]
+	then
+		exec 3>&1 5>&2 4>/dev/null
+	else
+		exec 3>&1 4>&2 5>/dev/null
+	fi
+
+	if [ -n "$QUILT_SETUP_FAST" ]
+	then
+		# Fast mode
+		[ -d "$targetdir" ] || mkdir -p "$targetdir" || exit 1
+		ln -s "$targetdir" $tmpdir/build
+		export -f create_md5sums
+	else
+		# Legacy mode
+		mkdir -p $tmpdir/build
+		create_md5sums "$sourcedir" $tmpdir/md5sums
+	fi
+	export -f normalize_path dir_to_dir
+
+	# let rpm do all the dirty specfile stuff ...
+	echo -n "### rpmbuild: " >&4
+
+	PATH="$tmpdir/bin:$PATH" \
+	rpmbuild --eval "%define _sourcedir $abs_sourcedir" \
+		 --eval "%define _specdir   $specdir" \
+		 --eval "%define _builddir  $tmpdir/build" \
+		 --eval "%define __patch    $tmpdir/bin/patch" \
+		 --eval "%define __tar      $tmpdir/bin/tar" \
+		 --eval "%define __unzip    $tmpdir/bin/unzip" \
+		 --eval "%define __7zip     $tmpdir/bin/7z" \
+		 --eval "$DEFINE_FUZZ" \
+		 --nodeps \
+		 -bp "$specdir/$specfile" < /dev/null >&5 2>&5
+	status=$?
+	echo >&4
+	return $status
+}
+
+usage()
+{
+	printf $"Usage: quilt setup [-d path-prefix] [-v] [--sourcedir dir] [--fuzz=N] [--slow|--fast] {specfile|seriesfile}\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Initializes a source tree from an rpm spec file or a quilt series file.
+
+-d	Optional path prefix for the resulting source tree.
+
+--sourcedir
+	Directory that contains the package sources. Defaults to \`.'.
+
+-v	Verbose debug output.
+
+--fuzz=N
+	Set the maximum fuzz factor (needs rpm 4.6 or later).
+
+--slow	Use the original, slow method to process the spec file. In this mode,
+	rpmbuild generates a working tree in a temporary directory while all
+	its actions are recorded, and then everything is replayed from scratch
+	in the target directory.
+
+--fast	Use the new, faster method to process the spec file. In this mode,
+	rpmbuild is told to generate a working tree directly in the target
+	directory. This is now the default.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o d:vh --long sourcedir:,fuzz:,slow,fast -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+export QUILT_SETUP_FAST=1
+prefix=
+sourcedir=
+
+while true
+do
+	case "$1" in
+	-d)
+		prefix=${2%/}/
+		shift 2 ;;
+	-h)
+		usage -h ;;
+	-v)
+		verbose=1
+		shift ;;
+	--sourcedir)
+		sourcedir=${2%/}/
+		shift 2 ;;
+	--fuzz)
+		# Only works with rpm 4.6 and later
+		DEFINE_FUZZ="%define _default_patch_fuzz $2"
+		shift 2 ;;
+	--slow)
+		QUILT_SETUP_FAST=
+		shift ;;
+	--fast)
+		QUILT_SETUP_FAST=1
+		shift ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -ne 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+if [ -n "$SUBDIR" ]
+then
+	# Damn, found an enclosing quilt directory; don't follow its settings
+	cd $SUBDIR
+	unset SUBDIR
+	unset QUILT_PC QUILT_PATCHES QUILT_SERIES
+	: ${QUILT_PC:=.pc}
+	: ${QUILT_PATCHES:=patches}
+	: ${QUILT_SERIES:=series}
+fi
+
+tmpfile=$(gen_tempfile)
+add_exit_handler "rm -f $tmpfile"
+
+# The patches link will point to the source directory, while extra patches
+# may be available under $prefix. If the latter is a subdirectory of the former,
+# a prefix can be added to fix up the path to the extra patches.
+export QUILT_SETUP_PREFIX=$(dir_to_dir "$sourcedir" "$prefix")
+
+case "$1" in
+*.spec)
+	spec_file=$1
+
+	# check if rpmbuild is installed before running inspect
+	check_external_tool rpmbuild rpm-build
+
+	if [ -n "$QUILT_SETUP_FAST" ]
+	then
+		if [ "${prefix:0:1}" = / ]
+		then
+			targetdir=$prefix
+		else
+			targetdir=$PWD/$prefix
+		fi
+	fi
+
+	if ! inspect "$spec_file" 2>&1 > $tmpfile
+	then
+		printf $"The %%prep section of %s failed; results may be incomplete\n" "$spec_file"
+		if [ -z "$verbose" ]
+		then
+			printf $"The -v option will show rpm's output\n"
+		fi
+	fi
+	;;
+*)
+	series_file=$1
+	# parse series file
+	while read line; do
+		set -- $line
+		case "$@" in
+		"# Sourcedir: "*)
+			shift 2
+			tar_dir="$@"
+			tar_dir=${tar_dir// /\\ }
+			;;
+		"# Source: "*)
+			shift 2
+			source="$@"
+			filetype=$(file -b "$source")
+			case "$filetype" in
+			Zip*)
+				echo "unzip ${tar_dir:-.} ${source// /\\ }"
+				;;
+			7z*)
+				echo "7z ${tar_dir:-.} ${source// /\\ }"
+				;;
+			*)
+				echo "tar ${tar_dir:-.} ${source// /\\ }"
+				;;
+			esac
+			;;
+		"# Patchdir: "*)
+			shift 2
+			patch_dir="$@"
+			patch_dir=${patch_dir// /\\ }
+			;;
+		''|'#'*)
+			;;
+		*)
+			echo "patch ${patch_dir:-.} $@" ;;
+		esac
+	done < "$series_file" > $tmpfile
+	;;
+esac
+
+# If running on a spec file in fast mode, the source tree is already unpacked;
+# in all other cases, we must prepare the source tree now
+if [ -z "$QUILT_SETUP_FAST" -o -n "$series_file" ]
+then
+	# Make sure that unpacking will not overwrite anything
+	check_for_existing_directories || exit 1
+
+	while read tag dir arg1 arg2
+	do
+		[ "${arg1:0:1}" != '#' ] || continue
+
+		case "$tag" in
+		tar)
+			tarball=$sourcedir$arg1
+			if [ ! -e "$tarball" ]
+			then
+				printf $"File %s not found\n" "$tarball" >&2
+				exit 1
+			fi
+			printf $"Unpacking archive %s\n" "$tarball"
+			mkdir -p "${prefix:-.}" "$prefix$dir"
+			cat_file "$tarball" \
+			| tar xf - -C "$prefix$dir"
+			;;
+		unzip)
+			tarball=$sourcedir$arg1
+			if [ ! -e "$tarball" ]
+			then
+				printf $"File %s not found\n" "$tarball" >&2
+				exit 1
+			fi
+			printf $"Unpacking archive %s\n" "$tarball"
+			mkdir -p "${prefix:-.}" "$prefix$dir"
+			unzip -qqo "$tarball" -d "$prefix$dir"
+			;;
+		7z)
+			tarball=$sourcedir$arg1
+			if [ ! -e "$tarball" ]
+			then
+				printf $"File %s not found\n" "$tarball" >&2
+				exit 1
+			fi
+			printf $"Unpacking archive %s\n" "$tarball"
+			mkdir -p "${prefix:-.}" "$prefix$dir"
+			7z x -bd "$tarball" -o"$prefix$dir"
+			;;
+		esac
+	done < $tmpfile
+fi
+
+if ! check_for_existing_files
+then
+	echo $"Trying alternative patches and series names..." >&2
+	QUILT_PATCHES=quilt_patches
+	QUILT_SERIES=quilt_series
+	check_for_existing_files || exit 1
+fi
+
+series_header()
+{
+	local tar_dir=$1 tar_file=$2 dir=$3
+
+	echo "# Patch series file for quilt, created by ${0##*/}"
+	[ -n "$tar_dir" ] && echo "# Sourcedir: $tar_dir"
+	[ -n "$tar_file" ] && echo "# Source: $tar_file"
+	echo "# Patchdir: $dir"
+	echo "#"
+}
+
+while read tag dir arg1 arg2
+do
+	case "$tag" in
+	tar|unzip|7z)
+		tar_dir=$dir
+		[ "$tar_dir" = . ] && tar_dir=
+		tar_file=$arg1
+		;;
+	patch)
+		if [ ! -e "$prefix$dir/$QUILT_PATCHES" ]
+		then
+			create_symlink "$sourcedir" "$prefix$dir/$QUILT_PATCHES"
+			(cd "$prefix$dir" && create_db)
+		fi
+
+		if [ -n "$series_file" ]
+		then
+			[ -e "$prefix$dir/$QUILT_SERIES" ] \
+			|| create_symlink "$series_file" \
+					  "$prefix$dir/$QUILT_SERIES"
+		else
+			if ! [ -e "$prefix$dir/$QUILT_SERIES" ]
+			then
+				series_header "$tar_dir" "$tar_file" "$dir" \
+					      > "$prefix$dir/$QUILT_SERIES"
+			fi
+			echo "$arg1" $arg2 >> "$prefix$dir/$QUILT_SERIES"
+		fi
+		;;
+	esac
+done < $tmpfile

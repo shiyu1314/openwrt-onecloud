@@ -1,0 +1,40 @@
+Description:
+Return list of mounted file systems.
+
+Files:
+lib/mountlist.h
+lib/mountlist.c
+m4/fstypename.m4
+m4/mountlist.m4
+
+Depends-on:
+fopen-gnu
+free-posix
+getline
+open
+unlocked-io-internal
+stdbool
+stdint
+strstr-simple
+xalloc
+
+configure.ac:
+gl_MOUNTLIST
+gl_CONDITIONAL([GL_COND_OBJ_MOUNTLIST], [test $gl_cv_list_mounted_fs = yes])
+AM_COND_IF([GL_COND_OBJ_MOUNTLIST], [
+  gl_PREREQ_MOUNTLIST_EXTRA
+])
+
+Makefile.am:
+if GL_COND_OBJ_MOUNTLIST
+lib_SOURCES += mountlist.c
+endif
+
+Include:
+"mountlist.h"
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering

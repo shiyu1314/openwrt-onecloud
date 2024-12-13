@@ -1,0 +1,17 @@
+Files:
+tests/test-posix_spawn_file_actions_addclose.c
+tests/signature.h
+tests/macros.h
+m4/musl.m4
+
+Depends-on:
+getdtablesize
+posix_spawn_file_actions_init
+posix_spawn_file_actions_destroy
+
+configure.ac:
+gl_MUSL_LIBC
+
+Makefile.am:
+TESTS += test-posix_spawn_file_actions_addclose
+check_PROGRAMS += test-posix_spawn_file_actions_addclose

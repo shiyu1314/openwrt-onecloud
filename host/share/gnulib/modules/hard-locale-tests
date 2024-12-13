@@ -1,0 +1,20 @@
+Files:
+tests/test-hard-locale.c
+tests/locale.c
+m4/musl.m4
+
+Depends-on:
+
+configure.ac:
+gl_MUSL_LIBC
+dnl Distinguish OpenBSD >= 6.2 from OpenBSD < 6.2.
+gl_CHECK_FUNCS_ANDROID([duplocale], [[#include <locale.h>]])
+
+Makefile.am:
+TESTS += test-hard-locale
+check_PROGRAMS += test-hard-locale
+test_hard_locale_LDADD = $(LDADD) $(SETLOCALE_LIB) @HARD_LOCALE_LIB@
+# We cannot call this program 'locale', because the C++ compiler on Mac OS X
+# would then barf upon '#include <locale>'. So, call it 'current-locale'.
+noinst_PROGRAMS += current-locale
+current_locale_SOURCES = locale.c

@@ -1,0 +1,80 @@
+Description:
+A <glob.h> that conforms to POSIX.
+
+Files:
+lib/glob.in.h
+lib/glob-libc.h
+m4/glob_h.m4
+
+Depends-on:
+extensions
+gen-header
+include_next
+snippet/arg-nonnull
+snippet/c++defs
+snippet/warn-on-use
+libc-config
+lstat
+sys_stat
+
+configure.ac:
+gl_GLOB_H
+gl_GLOB_H_REQUIRE_DEFAULTS
+gl_CONDITIONAL_HEADER([glob.h])
+AC_PROG_MKDIR_P
+
+Makefile.am:
+BUILT_SOURCES += $(GLOB_H)
+
+# We need the following in order to create <glob.h>.
+if GL_GENERATE_GLOB_H
+glob.h: glob.in.h $(top_builddir)/config.status $(CXXDEFS_H) $(ARG_NONNULL_H) $(WARN_ON_USE_H)
+@NMD@	$(AM_V_GEN)$(MKDIR_P) '%reldir%'
+	$(gl_V_at)$(SED_HEADER_STDOUT) \
+	      -e 's|@''GUARD_PREFIX''@|${gl_include_guard_prefix}|g' \
+	      -e 's|@''HAVE_GLOB_H''@|$(HAVE_GLOB_H)|g' \
+	      -e 's|@''INCLUDE_NEXT''@|$(INCLUDE_NEXT)|g' \
+	      -e 's|@''PRAGMA_SYSTEM_HEADER''@|@PRAGMA_SYSTEM_HEADER@|g' \
+	      -e 's|@''PRAGMA_COLUMNS''@|@PRAGMA_COLUMNS@|g' \
+	      -e 's|@''NEXT_GLOB_H''@|$(NEXT_GLOB_H)|g' \
+	      -e 's/@''GNULIB_GLOB''@/$(GNULIB_GLOB)/g' \
+	      -e 's|@''HAVE_GLOB''@|$(HAVE_GLOB)|g' \
+	      -e 's|@''HAVE_GLOB_PATTERN_P''@|$(HAVE_GLOB_PATTERN_P)|g' \
+	      -e 's|@''REPLACE_GLOB''@|$(REPLACE_GLOB)|g' \
+	      -e 's|@''REPLACE_GLOB_PATTERN_P''@|$(REPLACE_GLOB_PATTERN_P)|g' \
+	      -e '/definitions of _GL_FUNCDECL_RPL/r $(CXXDEFS_H)' \
+	      -e '/definition of _GL_ARG_NONNULL/r $(ARG_NONNULL_H)' \
+	      -e '/definition of _GL_WARN_ON_USE/r $(WARN_ON_USE_H)' \
+	      $(srcdir)/glob.in.h > $@-t
+	$(AM_V_at)mv $@-t $@
+else
+glob.h: $(top_builddir)/config.status
+	rm -f $@
+endif
+MOSTLYCLEANFILES += glob.h glob.h-t
+
+BUILT_SOURCES += glob-libc.gl.h
+
+glob-libc.gl.h: glob-libc.h
+	$(AM_V_GEN)$(SED_HEADER_STDOUT) \
+	      -e '/__BEGIN_DECLS/{ s/__BEGIN_DECLS/#ifdef __cplusplus%extern "C" {%#endif/; y/%/\n/; }' \
+	      -e '/__END_DECLS/{ s/__END_DECLS/#ifdef __cplusplus%}%#endif/; y/%/\n/; }' \
+	      -e 's|__THROWNL||g' \
+	      -e 's|__THROW||g' \
+	      -e 's|__restrict|restrict|g' \
+	      -e 's|defined __USE_MISC|1|' \
+	      -e 's|ifdef __USE_GNU|if 1|' \
+	      -e 's|ifdef __USE_LARGEFILE64|if 0|' \
+	      $(srcdir)/glob-libc.h > $@-t
+	$(AM_V_at)mv $@-t $@
+MOSTLYCLEANFILES += glob-libc.gl.h glob-libc.gl.h-t
+
+
+Include:
+<glob.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all, glibc

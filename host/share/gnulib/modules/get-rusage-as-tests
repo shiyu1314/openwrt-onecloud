@@ -1,0 +1,13 @@
+Files:
+tests/test-get-rusage-as.c
+tests/qemu.h
+tests/macros.h
+
+Depends-on:
+stdbool
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-get-rusage-as
+check_PROGRAMS += test-get-rusage-as

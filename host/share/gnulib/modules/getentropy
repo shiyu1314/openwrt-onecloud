@@ -1,0 +1,34 @@
+Description:
+Fill buffer with random bytes.
+
+Files:
+lib/getentropy.c
+m4/getentropy.m4
+
+Depends-on:
+getrandom      [test $HAVE_GETENTROPY = 0 || test $REPLACE_GETENTROPY = 1]
+extensions
+unistd
+
+configure.ac:
+gl_FUNC_GETENTROPY
+gl_CONDITIONAL([GL_COND_OBJ_GETENTROPY],
+               [test $HAVE_GETENTROPY = 0 || test $REPLACE_GETENTROPY = 1])
+gl_UNISTD_MODULE_INDICATOR([getentropy])
+
+Makefile.am:
+if GL_COND_OBJ_GETENTROPY
+lib_SOURCES += getentropy.c
+endif
+
+Include:
+<unistd.h>
+
+Link:
+$(GETRANDOM_LIB)
+
+License:
+LGPL
+
+Maintainer:
+all

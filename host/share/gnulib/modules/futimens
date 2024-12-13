@@ -1,0 +1,34 @@
+Description:
+Set file access and modification times of a file descriptor.
+
+Files:
+lib/futimens.c
+m4/futimens.m4
+
+Depends-on:
+sys_stat
+extensions
+utimens         [test $HAVE_FUTIMENS = 0 || test $REPLACE_FUTIMENS = 1]
+
+configure.ac:
+gl_FUNC_FUTIMENS
+gl_CONDITIONAL([GL_COND_OBJ_FUTIMENS],
+               [test $HAVE_FUTIMENS = 0 || test $REPLACE_FUTIMENS = 1])
+gl_SYS_STAT_MODULE_INDICATOR([futimens])
+
+Makefile.am:
+if GL_COND_OBJ_FUTIMENS
+lib_SOURCES += futimens.c
+endif
+
+Include:
+<sys/stat.h>
+
+Link:
+$(CLOCK_TIME_LIB)
+
+License:
+LGPL
+
+Maintainer:
+Eric Blake

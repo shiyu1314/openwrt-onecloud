@@ -1,0 +1,12 @@
+prefix=/workdir/openwrt/staging_dir/host
+exec_prefix=/workdir/openwrt/staging_dir/host
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: ss
+Description: Subsystem command parsing library
+Version: 1.47.0
+Requires.private: com_err
+Cflags: -I${includedir}/ss -I${includedir}
+Libs: -L${libdir} -lss
+Libs.private: -ldl

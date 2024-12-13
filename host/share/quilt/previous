@@ -1,0 +1,65 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt previous [patch]\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Print the name of the previous patch before the specified or topmost
+patch in the series file.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o h -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -gt 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+patch=$(find_patch_in_series "$1") || exit 1
+
+previous=$(applied_before "$patch" | tail -n 1)
+if [ -n "$previous" ]
+then
+	print_patch $previous
+else
+	exit 2
+fi

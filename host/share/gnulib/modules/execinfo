@@ -1,0 +1,49 @@
+Description:
+A GNU-like <execinfo.h>.
+
+Files:
+lib/execinfo.c
+lib/execinfo.in.h
+m4/execinfo.m4
+
+Depends-on:
+extern-inline
+gen-header
+
+configure.ac:
+gl_EXECINFO_H
+gl_CONDITIONAL_HEADER([execinfo.h])
+AC_PROG_MKDIR_P
+gl_CONDITIONAL([GL_COND_OBJ_EXECINFO], [$GL_GENERATE_EXECINFO_H])
+
+Makefile.am:
+BUILT_SOURCES += $(EXECINFO_H)
+
+# We need the following in order to create <execinfo.h> when the system
+# doesn't have one that works.
+if GL_GENERATE_EXECINFO_H
+execinfo.h: execinfo.in.h $(top_builddir)/config.status
+@NMD@	$(AM_V_GEN)$(MKDIR_P) '%reldir%'
+	$(gl_V_at)$(SED_HEADER_TO_AT_t) $(srcdir)/execinfo.in.h
+	$(AM_V_at)mv $@-t $@
+else
+execinfo.h: $(top_builddir)/config.status
+	rm -f $@
+endif
+MOSTLYCLEANFILES += execinfo.h execinfo.h-t
+
+if GL_COND_OBJ_EXECINFO
+lib_SOURCES += execinfo.c
+endif
+
+Include:
+<execinfo.h>
+
+Link:
+$(LIB_EXECINFO)
+
+License:
+LGPLv2+
+
+Maintainer:
+all

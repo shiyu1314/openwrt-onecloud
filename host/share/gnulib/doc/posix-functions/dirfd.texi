@@ -1,0 +1,26 @@
+@node dirfd
+@section @code{dirfd}
+@findex dirfd
+
+POSIX specification:@* @url{https://pubs.opengroup.org/onlinepubs/9699919799/functions/dirfd.html}
+
+Gnulib module: dirfd
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+This function is missing on some platforms:
+Minix 3.1.8, AIX 7.1, HP-UX 11, Solaris 10, mingw, MSVC 14.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+This function always fails on some platforms:
+mingw.
+
+@item
+There is a @code{dirfd} macro but no function, and the macro does not
+work with an argument of type @code{void *}, as a function would:
+NetBSD 9.2.
+@end itemize

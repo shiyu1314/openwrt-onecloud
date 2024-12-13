@@ -1,0 +1,34 @@
+Description:
+connect() function: connect a client socket.
+
+Files:
+lib/connect.c
+lib/w32sock.h
+
+Depends-on:
+sys_socket
+socketlib
+errno           [test "$ac_cv_header_winsock2_h" = yes]
+msvc-nothrow    [test "$ac_cv_header_winsock2_h" = yes]
+
+configure.ac:
+AC_REQUIRE([gl_SYS_SOCKET_H])
+gl_CONDITIONAL([GL_COND_OBJ_CONNECT], [test "$ac_cv_header_winsock2_h" = yes])
+gl_SYS_SOCKET_MODULE_INDICATOR([connect])
+
+Makefile.am:
+if GL_COND_OBJ_CONNECT
+lib_SOURCES += connect.c
+endif
+
+Include:
+<sys/socket.h>
+
+Link:
+$(LIBSOCKET)
+
+License:
+LGPLv2+
+
+Maintainer:
+Paolo Bonzini, Simon Josefsson

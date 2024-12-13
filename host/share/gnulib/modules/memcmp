@@ -1,0 +1,37 @@
+Description:
+memcmp() function: compare memory areas.
+
+Status:
+obsolete
+
+Notice:
+This module is obsolete.
+
+Files:
+lib/memcmp.c
+m4/memcmp.m4
+
+Depends-on:
+stdint          [test $gl_func_memcmp = no]
+
+configure.ac:
+gl_FUNC_MEMCMP
+gl_CONDITIONAL([GL_COND_OBJ_MEMCMP], [test $gl_func_memcmp = no])
+AM_COND_IF([GL_COND_OBJ_MEMCMP], [
+  gl_PREREQ_MEMCMP
+])
+
+Makefile.am:
+if GL_COND_OBJ_MEMCMP
+lib_SOURCES += memcmp.c
+endif
+
+Include:
+<string.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering, glibc
+

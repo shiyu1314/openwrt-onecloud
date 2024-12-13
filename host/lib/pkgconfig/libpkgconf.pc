@@ -1,0 +1,10 @@
+prefix=/workdir/openwrt/staging_dir/host
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libpkgconf
+Description: a library for accessing and manipulating development framework configuration
+URL: http://github.com/pkgconf/pkgconf
+Version: 1.9.5
+Libs: -L${libdir} -lpkgconf
+Cflags: -I${includedir}/pkgconf -DPKGCONFIG_IS_STATIC

@@ -1,0 +1,105 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt remove [-P patch] {file} ...\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Remove one or more files from the topmost or named patch.  Files that
+are modified by patches on top of the specified patch cannot be removed.
+
+-P patch
+	Remove named files from the named patch.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o P:h -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-P)
+		opt_patch=$2
+		shift 2 ;;
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -lt 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+patch=$(find_applied_patch "$opt_patch") || exit 1
+
+status=0
+for file in "$@"
+do
+	if ! file_in_patch "$SUBDIR$file" "$patch"
+	then
+		printf $"File %s is not in patch %s\n" \
+		       "$SUBDIR$file" "$(print_patch "$patch")" >&2
+		status=1
+		continue
+	fi
+
+	next_patch=$(next_patch_for_file "$patch" "$SUBDIR$file")
+	if [ -n "$next_patch" ]
+	then
+		printf $"File %s modified by patch %s\n" \
+		       "$SUBDIR$file" "$(print_patch "$next_patch")"
+		status=1
+		continue
+	fi
+
+	# Restore file from backup
+	if ! $QUILT_DIR/scripts/backup-files -r -t -s -B "$QUILT_PC/$patch/" "$SUBDIR$file"
+	then
+		printf $"Failed to remove file %s from patch %s\n" \
+		       "$SUBDIR$file" "$(print_patch "$patch")" >&2
+		status=1
+		continue
+	fi
+
+	if [ -e "$(dirname "$QUILT_PC/$patch~refresh")" -a \
+	     -e "$(patch_file_name "$patch")" ]
+	then
+		# The patch must be refreshed in order to get rid of the
+		# patch permanently.
+		touch "$QUILT_PC/$patch~refresh"
+	fi
+
+	printf $"File %s removed from patch %s\n" \
+	       "$SUBDIR$file" "$(print_patch $patch)"
+done
+exit $status

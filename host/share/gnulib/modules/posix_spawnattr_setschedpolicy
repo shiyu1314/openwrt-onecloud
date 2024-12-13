@@ -1,0 +1,30 @@
+Description:
+posix_spawnattr_setschedpolicy() function: specify the scheduling policy for
+child process.
+
+Files:
+lib/spawnattr_setschedpolicy.c
+m4/posix_spawn.m4
+
+Depends-on:
+spawn
+
+configure.ac:
+gl_POSIX_SPAWN
+gl_CONDITIONAL([GL_COND_OBJ_SPAWNATTR_SETSCHEDPOLICY],
+               [test $HAVE_POSIX_SPAWN = 0 || test $REPLACE_POSIX_SPAWN = 1 || test $gl_cv_func_spawnattr_setschedpolicy = no])
+gl_SPAWN_MODULE_INDICATOR([posix_spawnattr_setschedpolicy])
+
+Makefile.am:
+if GL_COND_OBJ_SPAWNATTR_SETSCHEDPOLICY
+lib_SOURCES += spawnattr_setschedpolicy.c
+endif
+
+Include:
+<spawn.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+glibc

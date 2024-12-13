@@ -1,0 +1,13 @@
+Files:
+tests/test-reallocarray.c
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+stdint
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-reallocarray
+check_PROGRAMS += test-reallocarray

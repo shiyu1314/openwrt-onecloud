@@ -1,0 +1,28 @@
+Description:
+strftime() function: convert broken-down time to string.
+
+Files:
+lib/strftime-fixes.c
+m4/strftime-fixes.m4
+
+Depends-on:
+time-h
+
+configure.ac:
+gl_FUNC_STRFTIME
+gl_CONDITIONAL([GL_COND_OBJ_STRFTIME_FIXES], [test $REPLACE_STRFTIME = 1])
+gl_TIME_MODULE_INDICATOR([strftime])
+
+Makefile.am:
+if GL_COND_OBJ_STRFTIME_FIXES
+lib_SOURCES += strftime-fixes.c
+endif
+
+Include:
+<time.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

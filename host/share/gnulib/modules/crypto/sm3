@@ -1,0 +1,25 @@
+Description:
+Compute SM3 checksums.
+
+Files:
+lib/sm3-stream.c
+
+Depends-on:
+crypto/sm3-buffer
+
+configure.ac:
+
+Makefile.am:
+lib_SOURCES += sm3-stream.c
+
+Include:
+"sm3.h"
+
+Link:
+$(LIB_CRYPTO)
+
+License:
+LGPLv2+
+
+Maintainer:
+Jia Zhang

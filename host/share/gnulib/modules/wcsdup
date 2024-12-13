@@ -1,0 +1,31 @@
+Description:
+wcsdup() function: duplicate a wide string.
+
+Files:
+lib/wcsdup.c
+lib/wcsdup-impl.h
+m4/wcsdup.m4
+
+Depends-on:
+wchar
+wcslen          [test $HAVE_WCSDUP = 0]
+wmemcpy         [test $HAVE_WCSDUP = 0]
+
+configure.ac:
+gl_FUNC_WCSDUP
+gl_CONDITIONAL([GL_COND_OBJ_WCSDUP], [test $HAVE_WCSDUP = 0])
+gl_WCHAR_MODULE_INDICATOR([wcsdup])
+
+Makefile.am:
+if GL_COND_OBJ_WCSDUP
+lib_SOURCES += wcsdup.c
+endif
+
+Include:
+<wchar.h>
+
+License:
+LGPL
+
+Maintainer:
+all

@@ -1,0 +1,31 @@
+Description:
+perror() function: print a message describing error code.
+
+Files:
+lib/perror.c
+m4/perror.m4
+
+Depends-on:
+stdio
+errno            [test $REPLACE_PERROR = 1]
+strerror-override [test $REPLACE_PERROR = 1]
+strerror_r-posix [test $REPLACE_PERROR = 1]
+
+configure.ac:
+gl_FUNC_PERROR
+gl_CONDITIONAL([GL_COND_OBJ_PERROR], [test $REPLACE_PERROR = 1])
+gl_STRING_MODULE_INDICATOR([perror])
+
+Makefile.am:
+if GL_COND_OBJ_PERROR
+lib_SOURCES += perror.c
+endif
+
+Include:
+<stdio.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

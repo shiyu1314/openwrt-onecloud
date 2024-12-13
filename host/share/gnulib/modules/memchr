@@ -1,0 +1,34 @@
+Description:
+memchr() function: scan memory for a byte.
+
+Files:
+lib/memchr.c
+lib/memchr.valgrind
+m4/memchr.m4
+m4/mmap-anon.m4
+
+Depends-on:
+extensions
+string
+
+configure.ac:
+gl_FUNC_MEMCHR
+gl_CONDITIONAL([GL_COND_OBJ_MEMCHR], [test $REPLACE_MEMCHR = 1])
+AM_COND_IF([GL_COND_OBJ_MEMCHR], [
+  gl_PREREQ_MEMCHR
+])
+gl_STRING_MODULE_INDICATOR([memchr])
+
+Makefile.am:
+if GL_COND_OBJ_MEMCHR
+lib_SOURCES += memchr.c
+endif
+
+Include:
+<string.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering, glibc

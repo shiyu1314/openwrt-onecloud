@@ -1,0 +1,32 @@
+Description:
+Base layer for Unicode character names.
+
+Files:
+lib/uniname.in.h
+m4/libunistring-base.m4
+
+Depends-on:
+gen-header
+unitypes
+
+configure.ac:
+gl_LIBUNISTRING_LIBHEADER([0.9.5], [uniname.h])
+AC_PROG_MKDIR_P
+
+Makefile.am:
+BUILT_SOURCES += $(LIBUNISTRING_UNINAME_H)
+
+uniname.h: uniname.in.h
+@NMD@	$(AM_V_GEN)$(MKDIR_P) '%reldir%'
+	$(gl_V_at)$(SED_HEADER_TO_AT_t) $(srcdir)/uniname.in.h
+	$(AM_V_at)mv $@-t $@
+MOSTLYCLEANFILES += uniname.h uniname.h-t
+
+Include:
+"uniname.h"
+
+License:
+LGPLv3+ or GPLv2+
+
+Maintainer:
+all

@@ -1,0 +1,34 @@
+Description:
+copysignf() function: copy sign into another 'float' number.
+
+Files:
+lib/copysignf.c
+m4/copysignf.m4
+m4/mathfunc.m4
+
+Depends-on:
+math
+extensions
+signbit         [test $HAVE_COPYSIGNF = 0]
+
+configure.ac:
+gl_FUNC_COPYSIGNF
+gl_CONDITIONAL([GL_COND_OBJ_COPYSIGNF], [test $HAVE_COPYSIGNF = 0])
+gl_MATH_MODULE_INDICATOR([copysignf])
+
+Makefile.am:
+if GL_COND_OBJ_COPYSIGNF
+lib_SOURCES += copysignf.c
+endif
+
+Include:
+<math.h>
+
+Link:
+$(COPYSIGNF_LIBM)
+
+License:
+LGPL
+
+Maintainer:
+all

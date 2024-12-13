@@ -1,0 +1,235 @@
+#! /usr/bin/env perl
+
+use warnings;
+
+# RFCs important for this script:
+#
+# RFC 2822 - Internet Message Format
+# RFC 2047 - MIME (Multipurpose Internet Mail Extensions) Part Three:
+#            Message Header Extensions for Non-ASCII Text
+
+use Getopt::Long;
+use strict;
+
+# This ugly trick lets the script work even if gettext support is missing.
+# We did so because Locale::gettext doesn't ship with the standard perl
+# distribution.
+BEGIN {
+    if (eval { require Locale::gettext }) {
+	import Locale::gettext;
+	require POSIX;
+	import POSIX, qw(setlocale);
+    } else {
+	eval '
+	    use constant LC_MESSAGES => 0;
+	    sub setlocale($$) { }
+	    sub bindtextdomain($$) { }
+	    sub textdomain($) { }
+	    sub gettext($) { shift }
+	'
+    }
+}
+
+setlocale(LC_MESSAGES, "");
+bindtextdomain("quilt", $ENV{'STAGING_DIR_HOST'} ? $ENV{'STAGING_DIR_HOST'} . '/share/locale' : "/workdir/openwrt/staging_dir/host/share/locale");
+textdomain("quilt");
+
+sub _($) {
+    return gettext(shift);
+}
+
+my $special = '()<>\[\]:;@\\,"';  # special characters
+my $special_dot = "$special.";  # special characters + dot
+
+sub check_recipient($);
+
+my (%append_name, %append_value, $remove_empty_headers, %remove_header,
+    %extract_recipients_from, %replace_name, %replace_value, $charset);
+GetOptions('add-recipient=s%' =>
+    sub {
+	$append_name{lc $_[1]} = $_[1];
+	$append_value{lc $_[1]} .= ",\n " . $_[2];
+    },
+    'add-good-recipient=s%' =>
+    sub {
+	eval { check_recipient($_[2]) };
+	if ($@) {
+		chomp $@;
+		print STDERR "$@; skipping\n";
+	} else {
+		$append_name{lc $_[1]} = $_[1];
+		$append_value{lc $_[1]} .= ",\n " . $_[2];
+	}
+    },
+    'remove-header=s' => sub { $remove_header{lc $_[1]}++ },
+    'remove-empty-headers' => \$remove_empty_headers,
+    'replace-header=s%' =>
+    sub {
+	$replace_name{lc $_[1]} = $_[1];
+	$replace_value{lc $_[1]} = $_[2];
+    },
+    'extract-recipients=s' => sub { $extract_recipients_from{lc $_[1]} = 1 },
+    'charset=s' => \$charset)
+    or exit 1;
+my %recipient_headers = map {lc $_ => 1} (@ARGV, keys %append_name);
+
+sub encode_header($) {
+    my ($word) = @_;
+    $word =~ s{[^\t\41-\76\100-\176]}{sprintf "=%02X", ord($&)}ge;
+    return "=?$charset?q?$word?=";
+}
+
+# Check for a valid display name
+sub check_display_name($) {
+    my ($display) = @_;
+
+    if ($display =~ /^"((?:[^"\\]|\\[^\n\r])*)"/) {
+	my $quoted = $1;
+	if ($quoted =~ /[^\t\40-\176]/) {
+	    $display = $quoted;
+	    $display =~ s/\\//;
+	    return encode_header($display);
+	}
+    } else {
+	local $_ = $display;
+	# The value is not (properly) quoted. Check for invalid characters.
+	while (/\(/ or /\)/) {
+	    die sprintf(
+_("Display name `%s' contains unpaired parentheses\n"), $display)
+		unless s/\(([^()]*)\)/$1/;
+	}
+	if ($display =~ /[^\t\40-\176]/ || $display =~ /[$special_dot]/) {
+	    if ($display =~ /[^\1-\10\13\14\16-\37\40\41\43-\133\135-\177]/) {
+		return encode_header($display);
+	    } elsif ($display =~ /[$special_dot]/) {
+		return "\"$display\"";
+	    }
+	}
+    }
+    return $display;
+}
+
+# Check for a valid delivery address
+sub check_delivery_address($) {
+    my ($deliver) = @_;
+
+    die sprintf(_("Delivery address `%s' is invalid\n"), $deliver)
+	if $deliver =~ /[ \t]/ or
+	   $deliver =~ /[^ \t\40-\176]/ or
+	   $deliver !~ /^[^$special]+@(\[?)[^$special_dot]+(?:\.[^$special_dot]+)*(\]?)$/ or
+	   (!$1) != (!$2);
+    return $deliver;
+}
+
+sub check_recipient($) {
+    my ($recipient) = @_;
+
+    if ($recipient =~ /^(.*?)\s*<(.+)>$/) {
+	my $deliver = check_delivery_address($2);
+	return ( check_display_name($1) . " <" . $deliver . ">", $deliver );
+    } elsif ($recipient =~ /^(\S*)\s*\((.*)\)$/) {
+	my $deliver = check_delivery_address($1);
+	return ( $deliver . " (" . check_display_name($2) . ")", $deliver );
+    } else {
+	my $deliver = check_delivery_address($recipient);
+	return ( $deliver, $deliver );
+    }
+}
+
+sub split_recipients($) {
+    my ($recipients) = @_;
+    my @list = ();
+
+    while ($recipients !~ /^\s*$/) {
+	my $recipient;
+	if ($recipients =~ s/^\s*,?\s*((?:"(?:[^"]+)"|[^",])*)//) {
+	    $recipient = $1;
+	} else {
+	    $recipient = $recipients;
+	    $recipients = "";
+	}
+	$recipient =~ s/\s*$//;
+	push @list, $recipient;
+    }
+    return @list;
+}
+
+my %recipients;
+sub process_header($) {
+    local ($_) = @_;
+    my ($name, $value);
+
+    return unless defined $_;
+    unless (($name, $value) = /^([\41-\176]+):\s*(.*)/s) {
+	print;
+	return
+    }
+    if (%extract_recipients_from) {
+	if (exists $extract_recipients_from{lc $name}) {
+	    $value =~ s/^\s*//;  $value =~ s/\s*$//;
+	    foreach my $recipient (split_recipients($value)) {
+		    my $deliver;
+		    ($recipient, $deliver) = check_recipient($recipient);
+		    print "$deliver\n";
+	    }
+	}
+	return;
+    }
+    return if exists $remove_header{lc $name};
+    if (exists $replace_name{lc $name}) {
+	    if (exists $replace_value{lc $name}) {
+		print "$replace_name{lc $name}: $replace_value{lc $name}\n";
+		delete $replace_value{lc $name};
+	    }
+	    return;
+    }
+    if (exists $recipient_headers{lc $1}) {
+	if (exists $append_name{lc $name}) {
+	    $value .= $append_value{lc $name};
+	    delete $append_name{lc $name};
+	}
+	my @recipients;
+	# This is a recipients field. Split out all the recipients and
+	# check the addresses. Suppress duplicate recipients.
+	foreach my $recipient (split_recipients($value)) {
+	    my $deliver;
+	    ($recipient, $deliver) = check_recipient($recipient);
+	    unless (exists $recipients{$deliver}) {
+		push @recipients, $recipient;
+		$recipients{$deliver} = $deliver;
+	    }
+	}
+	print "$name: ", join(",\n ", @recipients), "\n"
+	    if @recipients || !$remove_empty_headers;
+    } else {
+	    print if $value ne "" || !$remove_empty_headers;
+    }
+}
+
+my $header;
+while (<STDIN>) {
+    last if (/^$/);
+    if (/^\S/) {
+	process_header $header;
+	undef $header;
+    }
+    $header .= $_;
+}
+process_header $header;
+foreach my $name (keys %append_name) {
+    process_header $append_name{$name} . ': ' . $append_value{$name};
+}
+unless (%extract_recipients_from) {
+    # Copy the message body to standard output
+    # FIXME check for 7-bit clean, else assume $charset
+    # FIXME if UTF-8, check for invalid characters!
+    # FIXME must make sure that all messages are written in
+    #       either 7-bit or $charset => mbox !!!
+
+    # Content-Transfer-Encoding: 7bit
+    # Content-Transfer-Encoding: 8bit
+    # Content-Type: text/plain; charset=ISO-8859-15
+    # Content-Type: text/plain; charset=UTF-8
+    undef $/;
+    print "\n", <STDIN>;
+}

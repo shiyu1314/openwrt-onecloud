@@ -1,0 +1,34 @@
+Description:
+freopen() function: open a stream to a file.
+
+Files:
+lib/freopen.c
+m4/freopen.m4
+
+Depends-on:
+fcntl-h        [test $REPLACE_FREOPEN = 1]
+open           [test $REPLACE_FREOPEN = 1]
+stdio
+largefile
+
+configure.ac:
+gl_FUNC_FREOPEN
+gl_CONDITIONAL([GL_COND_OBJ_FREOPEN], [test $REPLACE_FREOPEN = 1])
+AM_COND_IF([GL_COND_OBJ_FREOPEN], [
+  gl_PREREQ_FREOPEN
+])
+gl_STDIO_MODULE_INDICATOR([freopen])
+
+Makefile.am:
+if GL_COND_OBJ_FREOPEN
+lib_SOURCES += freopen.c
+endif
+
+Include:
+<stdio.h>
+
+License:
+LGPL
+
+Maintainer:
+all

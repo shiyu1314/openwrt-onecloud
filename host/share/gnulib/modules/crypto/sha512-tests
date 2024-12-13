@@ -1,0 +1,14 @@
+Files:
+tests/test-sha512-stream.c
+tests/test-digest.h
+tests/macros.h
+
+Depends-on:
+c99
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-sha512-stream
+check_PROGRAMS += test-sha512-stream
+test_sha512_stream_LDADD = $(LDADD) @LIB_CRYPTO@

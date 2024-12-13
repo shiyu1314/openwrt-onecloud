@@ -1,0 +1,112 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+# One of the few commands which does not need a series file
+skip_series_check=1
+
+usage()
+{
+	printf $"Usage: quilt new [-p n|-p ab] {patchname}\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Create a new patch with the specified file name, and insert it after the
+topmost patch. The name can be prefixed with a sub-directory name, allowing
+for grouping related patches together.
+
+-p n	Create a -p n style patch (-p0 or -p1 are supported).
+
+-p ab	Create a -p1 style patch, but use a/file and b/file as the
+	original and new filenames instead of the default
+	dir.orig/file and dir/file names.
+
+Quilt can be used in sub-directories of a source tree. It determines the
+root of a source tree by searching for a %s directory above the
+current working directory. Create a %s directory in the intended root
+directory if quilt chooses a top-level directory that is too high up
+in the directory tree.
+" "$QUILT_PATCHES" "$QUILT_PATCHES"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+options=`getopt -o p:h -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-p)	opt_strip_level=$2
+		shift 2 ;;
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+case "$opt_strip_level" in
+'' | 1)
+	opt_strip_level= ;;
+0 | ab)
+	;;
+*)
+	printf $"Cannot create patches with -p%s, please specify -p0, p1, or -pab instead\n" \
+	       "$opt_strip_level" >&2
+	exit 1
+	;;
+esac
+
+if [ $# -ne 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+if [ "$QUILT_PATCHES" = "$QUILT_PC" ]
+then
+	printf $"QUILT_PATCHES(%s) must differ from QUILT_PC(%s)\n" "$QUILT_PATCHES" "$QUILT_PC"
+	exit 1
+fi
+
+patch=${1#$QUILT_PATCHES/}
+
+if patch_in_series $patch
+then
+	printf $"Patch %s exists already\n" "$(print_patch $patch)" >&2
+	exit 1
+fi
+
+create_db
+rm -rf "$QUILT_PC/$patch"
+mkdir -p "$QUILT_PC/$patch"
+
+if insert_in_series $patch ${opt_strip_level:+-p$opt_strip_level} && \
+   add_to_db $patch
+then
+	printf $"Patch %s is now on top\n" "$(print_patch $patch)"
+else
+	printf $"Failed to create patch %s\n" "$(print_patch $patch)" >&2
+	exit 1
+fi

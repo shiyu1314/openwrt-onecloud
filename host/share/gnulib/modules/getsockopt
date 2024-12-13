@@ -1,0 +1,37 @@
+Description:
+getsockopt() function: retrieve optional settings on a socket.
+
+Files:
+lib/getsockopt.c
+lib/w32sock.h
+
+Depends-on:
+extensions
+sys_socket
+socketlib
+sys_time        [test "$ac_cv_header_winsock2_h" = yes]
+errno           [test "$ac_cv_header_winsock2_h" = yes]
+msvc-nothrow    [test "$ac_cv_header_winsock2_h" = yes]
+
+configure.ac:
+AC_REQUIRE([gl_SYS_SOCKET_H])
+gl_CONDITIONAL([GL_COND_OBJ_GETSOCKOPT],
+               [test "$ac_cv_header_winsock2_h" = yes])
+gl_SYS_SOCKET_MODULE_INDICATOR([getsockopt])
+
+Makefile.am:
+if GL_COND_OBJ_GETSOCKOPT
+lib_SOURCES += getsockopt.c
+endif
+
+Include:
+<sys/socket.h>
+
+Link:
+$(LIBSOCKET)
+
+License:
+LGPLv2+
+
+Maintainer:
+Paolo Bonzini, Simon Josefsson

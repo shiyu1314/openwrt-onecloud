@@ -1,0 +1,30 @@
+Description:
+posix_spawnattr_init() function: initialize child process attributes
+specification.
+
+Files:
+lib/spawnattr_init.c
+m4/posix_spawn.m4
+
+Depends-on:
+spawn
+
+configure.ac:
+gl_POSIX_SPAWN
+gl_CONDITIONAL([GL_COND_OBJ_SPAWNATTR_INIT],
+               [test $HAVE_POSIX_SPAWN = 0 || test $REPLACE_POSIX_SPAWN = 1])
+gl_SPAWN_MODULE_INDICATOR([posix_spawnattr_init])
+
+Makefile.am:
+if GL_COND_OBJ_SPAWNATTR_INIT
+lib_SOURCES += spawnattr_init.c
+endif
+
+Include:
+<spawn.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+glibc

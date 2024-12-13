@@ -1,0 +1,46 @@
+Description:
+mbsrtowcs() function: convert string to wide string.
+
+Files:
+lib/mbsrtowcs.c
+lib/mbsrtowcs-impl.h
+lib/mbsrtowcs-state.c
+m4/mbsrtowcs.m4
+m4/mbstate_t.m4
+m4/locale-fr.m4
+m4/locale-ja.m4
+m4/locale-zh.m4
+m4/codeset.m4
+
+Depends-on:
+wchar
+extensions
+mbrtowc         [test $HAVE_MBSRTOWCS = 0 || test $REPLACE_MBSRTOWCS = 1]
+strnlen1        [test $HAVE_MBSRTOWCS = 0 || test $REPLACE_MBSRTOWCS = 1]
+
+configure.ac:
+gl_FUNC_MBSRTOWCS
+gl_CONDITIONAL([GL_COND_OBJ_MBSRTOWCS],
+               [test $HAVE_MBSRTOWCS = 0 || test $REPLACE_MBSRTOWCS = 1])
+AM_COND_IF([GL_COND_OBJ_MBSRTOWCS], [
+  AC_LIBOBJ([mbsrtowcs-state])
+  gl_PREREQ_MBSRTOWCS
+])
+gl_WCHAR_MODULE_INDICATOR([mbsrtowcs])
+
+Makefile.am:
+if GL_COND_OBJ_MBSRTOWCS
+lib_SOURCES += mbsrtowcs.c
+endif
+
+Include:
+<wchar.h>
+
+Link:
+$(MBRTOWC_LIB)
+
+License:
+LGPLv2+
+
+Maintainer:
+all

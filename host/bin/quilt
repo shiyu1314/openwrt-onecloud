@@ -1,0 +1,177 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+# unset posix strict conformance variable since patch cannot be run
+# non-interactively when it's set.
+unset POSIXLY_CORRECT
+
+# unset GREP_OPTIONS as it's quite easy to break quilt with uncommon options
+# see http://bugs.debian.org/715563
+unset GREP_OPTIONS
+
+export TEXTDOMAIN=quilt
+
+if test -n "$STAGING_DIR_HOST"; then
+	export TEXTDOMAINDIR="$STAGING_DIR_HOST/share/locale"
+	: ${QUILT_DIR=$STAGING_DIR_HOST/share/quilt} ${QUILT_LIB=$STAGING_DIR_HOST/lib/quilt}
+	: ${QUILT_ETC=$STAGING_DIR_HOST/etc}
+else
+	export TEXTDOMAINDIR=/workdir/openwrt/staging_dir/host/share/locale
+	: ${QUILT_DIR=/workdir/openwrt/staging_dir/host/share/quilt}
+	: ${QUILT_ETC=/workdir/openwrt/staging_dir/host/etc}
+fi
+
+export QUILT_DIR
+
+if [ -z "$QUILTRC" ]
+then
+	for QUILTRC in $HOME/.quiltrc $QUILT_ETC/quilt.quiltrc; do
+		[ -e $QUILTRC ] && break
+	done
+	export QUILTRC
+fi
+
+# Support compatibility layer
+if [ -d $QUILT_DIR/compat ]
+then
+	export PATH="$QUILT_DIR/compat:$PATH"
+fi
+
+usage()
+{
+
+	echo $"Usage: quilt [--trace[=verbose]] [--quiltrc=XX] command [-h] ..."
+	echo $"       quilt --version"
+
+	echo $"Commands are:"
+	quilt_commands \
+	| sort \
+	| column | column -t \
+	| sed -e $'s/^/\t/'
+	printf $"
+Global options:
+
+--trace
+	Runs the command in bash trace mode (-x). For internal debugging.
+
+--quiltrc file
+	Use the specified configuration file instead of ~/.quiltrc (or
+	%s/quilt.quiltrc if ~/.quiltrc does not exist).  See the pdf
+	documentation for details about its possible contents.  The
+	special value \"-\" causes quilt not to read any configuration
+	file.
+
+--version
+	Print the version number and exit immediately.\n" "/workdir/openwrt/staging_dir/host/etc"
+	exit 1
+}
+
+quilt_commands()
+{
+	local command
+	for command in $QUILT_DIR/*
+	do
+		if [ -f "$command" -a -x "$command" ]
+		then
+			echo ${command##$QUILT_DIR/}
+		fi
+	done
+}
+
+if [ $# -eq 1 -a "$1" == "--version" ]
+then
+	echo '0.67'
+	exit
+fi
+
+BASH_OPTS=
+while [ $# -ne 0 ]
+do
+	case $1 in
+	[^-]*)
+		if [ -z "$command" ]
+		then
+			command=$1
+		else
+			args[${#args[@]}]=$1
+		fi ;;
+	# Use a resource file other than ~/.quiltrc
+	--quiltrc=*)
+		QUILTRC=${1#--quiltrc=}
+		[ "$QUILTRC" = - ] && unset QUILTRC ;;
+	--quiltrc)
+		QUILTRC=$2
+		[ "$QUILTRC" = - ] && unset QUILTRC
+		shift ;;
+	# Trace execution of commands
+	--trace*)
+		BASH_OPTS="${BASH_OPTS:+$BASH_OPTS }-x"
+		case "${1:7}" in
+			'')
+				;;
+			=verbose)
+				BASH_OPTS="${BASH_OPTS:+$BASH_OPTS }-v" ;;
+			*)
+				command=
+				break ;;
+		esac ;;
+	*)
+		args[${#args[@]}]=$1 ;;
+	esac
+	shift
+done
+
+if ! [ -f "$QUILT_DIR/$command" -a -x "$QUILT_DIR/$command" ]
+then
+	if [ -n "$command" ]
+	then
+		for arg in $(quilt_commands)
+		do
+			case "$arg" in
+			$command*)
+				commands[${#commands[@]}]=$arg
+				;;
+			esac
+		done
+		unset arg
+	fi
+
+	if [ ${#commands[@]} -eq 0 ]
+	then
+		usage
+	elif [ ${#commands[@]} -eq 1 ]
+	then
+		command=${commands[0]}
+		unset commands
+	else
+		echo "$command :" "${commands[@]}" >&2
+		exit 1
+	fi
+fi
+
+set -- "${args[@]}"
+unset args
+
+export QUILT_COMMAND="${command##*/}"
+
+if [ -e "$QUILTRC" ]
+then
+	source "$QUILTRC"
+fi
+
+# Add default arguments for this command
+if [ -n "$QUILT_COMMAND" ]; then
+	args="QUILT_$(echo $QUILT_COMMAND | tr a-z A-Z)_ARGS"
+	eval set -- ${!args} \"\$@\"
+	unset args
+fi
+
+if [ -n "$BASH_OPTS" ]; then
+	set $BASH_OPTS
+fi
+. "$QUILT_DIR/$command"

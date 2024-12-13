@@ -1,0 +1,42 @@
+Description:
+Discard pending data on both input and output streams.
+
+Files:
+lib/fflush.c
+lib/stdio-impl.h
+m4/fflush.m4
+
+Depends-on:
+stdio
+fpurge                    [test $REPLACE_FFLUSH = 1]
+ftello                    [test $REPLACE_FFLUSH = 1]
+freading                  [test $REPLACE_FFLUSH = 1]
+lseek                     [test $REPLACE_FFLUSH = 1]
+unistd                    [test $REPLACE_FFLUSH = 1]
+fseeko                    [test $REPLACE_FFLUSH = 1]
+
+configure.ac-early:
+AC_REQUIRE([gl_SET_LARGEFILE_SOURCE])
+
+configure.ac:
+gl_FUNC_FFLUSH
+gl_CONDITIONAL([GL_COND_OBJ_FFLUSH], [test $REPLACE_FFLUSH = 1])
+AM_COND_IF([GL_COND_OBJ_FFLUSH], [
+  gl_PREREQ_FFLUSH
+])
+gl_MODULE_INDICATOR([fflush])
+gl_STDIO_MODULE_INDICATOR([fflush])
+
+Makefile.am:
+if GL_COND_OBJ_FFLUSH
+lib_SOURCES += fflush.c
+endif
+
+Include:
+<stdio.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Eric Blake

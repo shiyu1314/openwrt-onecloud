@@ -1,0 +1,34 @@
+Description:
+Support for the fcntl() function, actions F_DUPFD, F_DUPFD_CLOEXEC, F_GETFD.
+
+Files:
+m4/fcntl.m4
+lib/fcntl.c
+
+Depends-on:
+fcntl-h
+extensions
+close           [test $HAVE_FCNTL = 0 || test $REPLACE_FCNTL = 1]
+dup2            [test $HAVE_FCNTL = 0 || test $REPLACE_FCNTL = 1]
+getdtablesize   [test $HAVE_FCNTL = 0 || test $REPLACE_FCNTL = 1]
+msvc-nothrow    [test $HAVE_FCNTL = 0 || test $REPLACE_FCNTL = 1]
+
+configure.ac:
+gl_FUNC_FCNTL
+gl_CONDITIONAL([GL_COND_OBJ_FCNTL],
+               [test $HAVE_FCNTL = 0 || test $REPLACE_FCNTL = 1])
+gl_FCNTL_MODULE_INDICATOR([fcntl])
+
+Makefile.am:
+if GL_COND_OBJ_FCNTL
+lib_SOURCES += fcntl.c
+endif
+
+Include:
+<fcntl.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Eric Blake

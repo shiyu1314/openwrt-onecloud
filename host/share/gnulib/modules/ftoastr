@@ -1,0 +1,25 @@
+Description:
+Convert float to accurate string.
+
+Files:
+lib/ftoastr.h
+lib/ftoastr.c
+
+Depends-on:
+extensions
+intprops
+
+configure.ac:
+gl_CHECK_FUNCS_ANDROID([strtof], [[#include <stdlib.h>]])
+
+Makefile.am:
+lib_SOURCES += ftoastr.c
+
+Include:
+"ftoastr.h"
+
+License:
+GPL
+
+Maintainer:
+Paul Eggert

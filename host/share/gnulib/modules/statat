@@ -1,0 +1,30 @@
+Description:
+statat() and lstatat() functions: Return info about a file at a directory.
+
+Status:
+obsolete
+
+Notice:
+This module is obsolete.  Please use fstatat instead, and decide
+whether you want AT_NO_AUTOMOUNT in each fstatat call.
+
+Files:
+lib/statat.c
+
+Depends-on:
+fstatat
+
+configure.ac:
+gl_MODULE_INDICATOR([statat]) dnl for lib/openat.h
+
+Makefile.am:
+lib_SOURCES += statat.c
+
+Include:
+"openat.h"
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering, Eric Blake, Paul Eggert

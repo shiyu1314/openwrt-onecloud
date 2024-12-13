@@ -1,0 +1,34 @@
+Description:
+Base layer for elementary Unicode string functions.
+
+Files:
+lib/unistr.in.h
+m4/libunistring-base.m4
+
+Depends-on:
+gen-header
+unitypes
+stdbool
+inline
+
+configure.ac:
+gl_LIBUNISTRING_LIBHEADER([0.9.11], [unistr.h])
+AC_PROG_MKDIR_P
+
+Makefile.am:
+BUILT_SOURCES += $(LIBUNISTRING_UNISTR_H)
+
+unistr.h: unistr.in.h
+@NMD@	$(AM_V_GEN)$(MKDIR_P) '%reldir%'
+	$(gl_V_at)$(SED_HEADER_TO_AT_t) $(srcdir)/unistr.in.h
+	$(AM_V_at)mv $@-t $@
+MOSTLYCLEANFILES += unistr.h unistr.h-t
+
+Include:
+"unistr.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+all

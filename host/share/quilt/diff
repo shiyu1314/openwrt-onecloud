@@ -1,0 +1,375 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt diff [-p n|-p ab] [-u|-U num|-c|-C num] [--combine patch|-z] [-R] [-P patch] [--snapshot] [--diff=utility] [--no-timestamps] [--no-index] [--sort] [--color[=always|auto|never]] [file ...]\n"
+
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Produces a diff of the specified file(s) in the topmost or specified
+patch.  If no files are specified, all files that are modified are
+included.
+
+-p n	Create a -p n style patch (-p0 or -p1 are supported).
+
+-p ab	Create a -p1 style patch, but use a/file and b/file as the
+	original and new filenames instead of the default
+	dir.orig/file and dir/file names.
+
+-u, -U num, -c, -C num
+	Create a unified diff (-u, -U) with num lines of context. Create
+	a context diff (-c, -C) with num lines of context. The number of
+	context lines defaults to 3.
+
+--no-timestamps
+	Do not include file timestamps in patch headers.
+
+--no-index
+	Do not output Index: lines.
+
+-z	Write to standard output the changes that have been made
+	relative to the topmost or specified patch.
+
+-R	Create a reverse diff.
+
+-P patch
+	Create a diff for the specified patch.  (Defaults to the topmost
+	patch.)
+
+--combine patch
+	Create a combined diff for all patches between this patch and
+	the patch specified with -P. A patch name of \`-' is equivalent
+	to specifying the first applied patch.
+
+--snapshot
+	Diff against snapshot (see \`quilt snapshot -h').
+
+--diff=utility
+	Use the specified utility for generating the diff. The utility
+	is invoked with the original and new file name as arguments.
+
+--color[=always|auto|never]
+	Use syntax coloring (auto activates it only if the output is a tty).
+
+--sort	Sort files by their name instead of preserving the original order.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+colorize()
+{
+	if [ -n "$opt_color" ]
+	then
+		sed -e '
+		    s/^\(Index:\|---\|+++\|\*\*\*\) .*/'$color_diff_hdr'&'$color_clear'/
+		t ; s/^+.*/'$color_diff_add'&'$color_clear'/
+		t ; s/^-.*/'$color_diff_rem'&'$color_clear'/
+		t ; s/^!.*/'$color_diff_mod'&'$color_clear'/
+		t ; s/^\(@@ \-[0-9]\+\(,[0-9]\+\)\? +[0-9]\+\(,[0-9]\+\)\? @@\)\([ \t]*\)\(.*\)/'$color_diff_hunk'\1'$color_clear'\4'$color_diff_ctx'\5'$color_clear'/
+		t ; s/^\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*.*/'$color_diff_cctx'&'$color_clear'/
+		'
+	else
+		cat
+	fi
+}
+
+do_diff()
+{
+	local file=$1 old_file=$2 new_file=$3 status
+
+	if [ -n "$opt_reverse" ]
+	then
+		local f=$new_file
+		new_file=$old_file
+		old_file=$f
+	fi
+
+	if [ -n "$opt_diff" ]
+	then
+		[ -s "$old_file" ] || old_file=/dev/null
+		[ -s "$new_file" ] || new_file=/dev/null
+		if ! diff -q "$old_file" "$new_file" >/dev/null
+		then
+			LANG=$ORIGINAL_LANG $opt_diff "$old_file" "$new_file"
+			true
+		fi
+	else
+		diff_file "$file" "$old_file" "$new_file" | colorize
+
+		# Test the return value of diff, and propagate the error if any
+		status=${PIPESTATUS[0]}
+		if [ $status != 0 ]
+		then
+			die $status
+		fi
+	fi
+}
+
+die()
+{
+	local status=$1
+	[ -e "$tmp_files" ] && rm -f $tmp_files
+	[ -n "$workdir" ] && rm -rf "$workdir"
+	exit $status
+}
+
+options=`getopt -o p:P:RuU:cC:zh --long diff:,snapshot,no-timestamps \
+				 --long no-index,combine:,color:: \
+				 --long sort -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+opt_format=-u
+while true
+do
+	case "$1" in
+	-p)
+		opt_strip_level=$2
+		shift 2 ;;
+	-P)
+		last_patch=$2
+		shift 2 ;;
+	--combine)
+		opt_combine=1
+		first_patch=$2
+		shift 2 ;;
+	-R)
+		opt_reverse=1
+		shift ;;
+	-z)
+		opt_relative=1
+		shift ;;
+	-u|-c)
+		opt_format=$1
+		shift ;;
+	-U|-C)
+		opt_format="$1 $2"
+		shift 2 ;;
+	-h)
+		usage -h ;;
+	--snapshot)
+		opt_snapshot=1
+		snap_subdir=.snap
+		shift ;;
+	--diff)
+		opt_diff=$2
+		shift 2 ;;
+	--no-timestamps)
+		QUILT_NO_DIFF_TIMESTAMPS=1
+		shift ;;
+	--no-index)
+		QUILT_NO_DIFF_INDEX=1
+		shift ;;
+	--sort)
+		opt_sort=1
+		shift ;;
+	--color)
+		case "$2" in
+		"" | always)
+			opt_color=1 ;;
+		auto | tty)
+			opt_color=
+			[ -t 1 ] && opt_color=1 ;;
+		never)
+			opt_color= ;;
+		*)
+			usage ;;
+		esac
+		shift 2 ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+setup_colors
+
+if [ -n "$first_patch" -a "$first_patch" != - ]
+then
+	first_patch=$(find_applied_patch "$first_patch") || exit 1
+fi
+
+QUILT_DIFF_OPTS="$QUILT_DIFF_OPTS $opt_format"
+
+opt_files=( $(for file in "$@"; do echo "$SUBDIR${file#./}" ; done) )
+
+if [ $[0$opt_combine + 0$opt_snapshot + 0$opt_relative] -gt 1 ]
+then
+	printf $"Options \`--combine', \`--snapshot', and \`-z' cannot be combined.\n" >&2
+	die 1
+fi
+
+last_patch=$(find_applied_patch "$last_patch") || exit 1
+
+if [ -z "$opt_strip_level" ]
+then
+	opt_strip_level=$(patch_strip_level "$last_patch")
+fi
+case "$opt_strip_level" in
+0 | 1 | ab)
+	;;
+*)
+	printf $"Cannot diff patches with -p%s, please specify -p0, -p1, or -pab instead\n" \
+	       "$opt_strip_level" >&2
+	die 1
+	;;
+esac
+
+# If diffing against snapshot, ensure that snapshot is actually present
+if [ -n "$opt_snapshot" ] && [ ! -d "$QUILT_PC/$snap_subdir" ]
+then
+	printf $"No snapshot to diff against\n" >&2
+	die 1
+fi
+
+trap "die 1" SIGTERM
+
+tmp_files=$(gen_tempfile)
+exec 4> $tmp_files  # open $tmp_files
+
+if [ -n "$opt_snapshot" -a ${#opt_files[@]} -eq 0 ]
+then
+	# Add all files in the snapshot into the file list (they may all
+	# have changed).
+	files=( $(find $QUILT_PC/$snap_subdir -type f \
+		  | sed -e "s/^$(quote_bre $QUILT_PC/$snap_subdir/)//" \
+		  | sort) )
+	printf "%s\n" "${files[@]}" >&4
+	unset files
+	# Also look at all patches that are currently applied.
+	opt_combine=1
+	first_patch=$(applied_patches | head -n 1)
+fi
+
+if [ -n "$opt_combine" ]
+then
+	set -- $(patches_before "$last_patch") "$last_patch"
+	if [ "$first_patch" != "-" ]
+	then
+		while [ $# -ge 1 -a "$1" != "$first_patch" ]
+		do
+			shift
+		done
+		if [ $# -eq 0 ]
+		then
+			printf $"Patch %s not applied before patch %s\n" \
+			       "$(print_patch "$first_patch")" \
+			       "$(print_patch "$last_patch")" >&2
+			die 1
+		fi
+	fi
+	patches=( "$@" )
+else
+	patches=( "$last_patch" )
+fi
+
+# Properly handle spaces in file names
+saved_IFS=$IFS
+IFS=$'\n'
+
+for patch in ${patches[@]}
+do
+	for file in $(files_in_patch_ordered "$patch")
+	do
+		if [ ${#opt_files[@]} -gt 0 ] && \
+		   ! in_array "$file" "${opt_files[@]}"
+		then
+			continue
+		fi
+		echo "$file" >&4
+	done
+done
+
+exec 4>&-  # close $tmp_files
+
+if [ -z "$opt_sort" ]
+then
+	files=( $(
+	    awk '
+	    { if ($0 in seen)
+		next
+	      seen[$0]=1
+	      print
+	    }
+	    ' $tmp_files) )
+else
+	files=( $(sort -u $tmp_files) )
+fi
+
+IFS=$saved_IFS
+
+if [ -n "$opt_relative" ]
+then
+	workdir=$(gen_tempfile -d "$PWD/quilt")
+	apply_patch_temporarily "$workdir" "$last_patch" "${files[@]}" \
+	|| die 1
+fi
+
+setup_pager
+
+for file in "${files[@]}"
+do
+	if [ -n "$opt_snapshot" -a -e "$QUILT_PC/$snap_subdir/$file" ]
+	then
+		old_file="$QUILT_PC/$snap_subdir/$file"
+	elif [ -n "$opt_relative" ]
+	then
+		old_file="$workdir/$file"
+	else
+		patch=$(first_modified_by "$file" "${patches[@]}")
+		if [ -z "$patch" ]
+		then
+			[ -z "$opt_snapshot" ] \
+			&& printf $"File %s is not being modified\n" "$file" >&2
+			continue
+		fi
+		old_file=$(backup_file_name "$patch" "$file")
+	fi
+
+	next_patch=$(next_patch_for_file "$last_patch" "$file")
+	if [ -z "$next_patch" ]
+	then
+		new_file=$file
+	else
+		new_file=$(backup_file_name "$next_patch" "$file")
+		files_were_shadowed=1
+	fi
+
+	do_diff "$file" "$old_file" "$new_file"
+
+	if [ $? -ne 0 ]
+	then
+		printf $"Diff failed, aborting\n" >&2
+		die 1
+	fi
+done
+
+if [ -n "$files_were_shadowed" ]
+then
+	printf $"Warning: more recent patches modify files in patch %s\n" \
+	       "$(print_patch "$last_patch")" >&2
+fi
+die 0

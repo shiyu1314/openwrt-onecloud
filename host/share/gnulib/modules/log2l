@@ -1,0 +1,37 @@
+Description:
+log2() function: base 2 logarithm.
+
+Files:
+lib/log2l.c
+m4/log2l.m4
+
+Depends-on:
+math
+extensions
+log2            [{ test $HAVE_LOG2L = 0 || test $REPLACE_LOG2L = 1; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 1]
+isnanl          [{ test $HAVE_LOG2L = 0 || test $REPLACE_LOG2L = 1; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 0]
+frexpl          [{ test $HAVE_LOG2L = 0 || test $REPLACE_LOG2L = 1; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 0]
+logl            [{ test $HAVE_LOG2L = 0 || test $REPLACE_LOG2L = 1; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 0]
+
+configure.ac:
+gl_FUNC_LOG2L
+gl_CONDITIONAL([GL_COND_OBJ_LOG2L],
+               [test $HAVE_LOG2L = 0 || test $REPLACE_LOG2L = 1])
+gl_MATH_MODULE_INDICATOR([log2l])
+
+Makefile.am:
+if GL_COND_OBJ_LOG2L
+lib_SOURCES += log2l.c
+endif
+
+Include:
+<math.h>
+
+Link:
+$(LOG2L_LIBM)
+
+License:
+LGPL
+
+Maintainer:
+all

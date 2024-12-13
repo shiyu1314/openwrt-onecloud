@@ -1,0 +1,45 @@
+Description:
+chdir-like function that tries not to fail due to ENAMETOOLONG
+
+Files:
+lib/chdir-long.h
+lib/chdir-long.c
+m4/chdir-long.m4
+m4/pathmax.m4
+
+Depends-on:
+unistd
+pathmax
+chdir
+assure          [test $gl_cv_have_unlimited_file_name_length = no]
+atexit          [test $gl_cv_have_unlimited_file_name_length = no]
+fchdir          [test $gl_cv_have_unlimited_file_name_length = no]
+fcntl-h         [test $gl_cv_have_unlimited_file_name_length = no]
+openat          [test $gl_cv_have_unlimited_file_name_length = no]
+memchr          [test $gl_cv_have_unlimited_file_name_length = no]
+mempcpy         [test $gl_cv_have_unlimited_file_name_length = no]
+memrchr         [test $gl_cv_have_unlimited_file_name_length = no]
+stdbool         [test $gl_cv_have_unlimited_file_name_length = no]
+stdlib          [test $gl_cv_have_unlimited_file_name_length = no]
+
+configure.ac:
+gl_FUNC_CHDIR_LONG
+gl_CONDITIONAL([GL_COND_OBJ_CHDIR_LONG],
+               [test $gl_cv_have_unlimited_file_name_length = no])
+AM_COND_IF([GL_COND_OBJ_CHDIR_LONG], [
+  gl_PREREQ_CHDIR_LONG
+])
+
+Makefile.am:
+if GL_COND_OBJ_CHDIR_LONG
+lib_SOURCES += chdir-long.c
+endif
+
+Include:
+"chdir-long.h"
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering

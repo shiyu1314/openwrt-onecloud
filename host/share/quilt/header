@@ -1,0 +1,175 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+: ${EDITOR:=vi}
+
+usage()
+{
+	printf $"Usage: quilt header [-a|-r|-e] [--backup] [--strip-diffstat] [--strip-trailing-whitespace] [patch]\n"
+
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Print or change the header of the topmost or specified patch.
+
+-a, -r, -e
+	Append to (-a) or replace (-r) the exiting patch header, or
+	edit (-e) the header in \$EDITOR (%s). If none of these options is
+	given, print the patch header.
+
+--strip-diffstat
+	Strip diffstat output from the header.
+
+--strip-trailing-whitespace
+	Strip trailing whitespace at the end of lines of the header.
+
+--backup
+	Create a backup copy of the old version of a patch as patch~.
+" "$EDITOR"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+maybe_strip_trailing_whitespace()
+{
+	if [ -n "$opt_strip_trailing_whitespace" ]
+	then
+		sed -e 's:[ '$'\t'']*$::'
+	else
+		cat
+	fi
+}
+
+maybe_strip_diffstat()
+{
+	if [ -n "$opt_strip_diffstat" ]
+	then
+		strip_diffstat
+	else
+		cat
+	fi
+}
+
+options=`getopt -o areh --long backup,strip-trailing-whitespace,strip-diffstat -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-a)
+		opt_append=1
+		shift ;;
+	-r)
+		opt_replace=1
+		shift ;;
+	-e)
+		opt_edit=1
+		shift ;;
+	--backup)
+		QUILT_BACKUP=1
+		shift ;;
+	--strip-diffstat)
+		opt_strip_diffstat=1
+		shift ;;
+	--strip-trailing-whitespace)
+		opt_strip_trailing_whitespace=1
+		shift ;;
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+case "$opt_append$opt_replace$opt_edit"
+in
+''|1)	;;
+*)	usage ;;
+esac
+
+if [ $# -gt 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+patch=$(find_patch_in_series "$1") || exit 1
+
+patch_file=$(patch_file_name $patch)
+
+if [ -z "$opt_replace" -a -z "$opt_append" -a -z "$opt_edit" ]
+then
+	[ -e "$patch_file" ] || exit 0
+
+	setup_pager
+
+	cat_file "$patch_file" \
+	| patch_header \
+	| maybe_strip_diffstat \
+	| maybe_strip_trailing_whitespace
+else
+	patch_file_or_null=/dev/null
+	[ -e "$patch_file" ] && patch_file_or_null=$patch_file
+
+	tmp=$(gen_tempfile) || exit 1
+	tmp2=$(gen_tempfile) || exit 1
+	add_exit_handler "rm -f $tmp $tmp2"
+
+	(	if [ -z "$opt_replace" ]
+		then
+			cat_file $patch_file_or_null | patch_header
+		fi
+		if [ -n "$opt_append" -o -n "$opt_replace" ]
+		then
+			cat
+		fi
+	) > $tmp
+
+	if [ -n "$opt_edit" ]
+	then
+		LANG=$ORIGINAL_LANG $EDITOR "$tmp" || exit 1
+	fi
+
+	# Ensure there is a trailing newline before we append the rest
+	ensure_trailing_newline $tmp
+
+	maybe_strip_diffstat < $tmp \
+	| maybe_strip_trailing_whitespace > $tmp2
+
+	cat_file "$patch_file_or_null" | patch_body >> $tmp2 || exit 1
+
+	if cat_to_new_file $patch_file $QUILT_BACKUP < $tmp2
+	then
+		if [ -z "$opt_append" ]
+		then
+			printf \
+$"Replaced header of patch %s\n" "$(print_patch $patch)"
+		else
+			printf \
+$"Appended text to header of patch %s\n" "$(print_patch $patch)"
+		fi
+	else
+		exit 1
+	fi
+fi

@@ -1,0 +1,34 @@
+Description:
+Compare strings holding version numbers.
+
+Files:
+lib/strverscmp.c
+m4/strverscmp.m4
+
+Depends-on:
+extensions
+libc-config  [test $HAVE_STRVERSCMP = 0]
+stdint       [test $HAVE_STRVERSCMP = 0]
+string
+
+configure.ac:
+gl_FUNC_STRVERSCMP
+gl_CONDITIONAL([GL_COND_OBJ_STRVERSCMP], [test $HAVE_STRVERSCMP = 0])
+AM_COND_IF([GL_COND_OBJ_STRVERSCMP], [
+  gl_PREREQ_STRVERSCMP
+])
+gl_STRING_MODULE_INDICATOR([strverscmp])
+
+Makefile.am:
+if GL_COND_OBJ_STRVERSCMP
+lib_SOURCES += strverscmp.c
+endif
+
+Include:
+<string.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering, glibc

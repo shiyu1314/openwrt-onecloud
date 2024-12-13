@@ -1,0 +1,45 @@
+Description:
+posix_spawn internals.
+
+Files:
+lib/spawni.c
+lib/spawn_int.h
+m4/posix_spawn.m4
+
+Depends-on:
+spawn
+alloca-opt
+dup2
+errno
+open
+sh-filename
+strchrnul
+unistd
+filename        [test $HAVE_POSIX_SPAWN = 0]
+concat-filename [test $HAVE_POSIX_SPAWN = 0]
+findprog-in     [test $HAVE_POSIX_SPAWN = 0]
+free-posix      [test $HAVE_POSIX_SPAWN = 0]
+malloca         [test $HAVE_POSIX_SPAWN = 0]
+stdbool         [test $HAVE_POSIX_SPAWN = 0]
+windows-spawn   [test $HAVE_POSIX_SPAWN = 0]
+
+configure.ac:
+gl_POSIX_SPAWN
+gl_CONDITIONAL([GL_COND_OBJ_SPAWNI],
+               [test $HAVE_POSIX_SPAWN = 0 || test $REPLACE_POSIX_SPAWN = 1])
+AM_COND_IF([GL_COND_OBJ_SPAWNI], [
+  gl_PREREQ_POSIX_SPAWN_INTERNAL
+])
+
+Makefile.am:
+if GL_COND_OBJ_SPAWNI
+lib_SOURCES += spawni.c
+endif
+
+Include:
+
+License:
+LGPLv2+
+
+Maintainer:
+glibc

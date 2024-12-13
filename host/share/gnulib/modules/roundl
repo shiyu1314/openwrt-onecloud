@@ -1,0 +1,40 @@
+Description:
+roundl() function: round toward nearest, breaking ties away from zero.
+
+Files:
+lib/round.c
+lib/roundl.c
+m4/check-math-lib.m4
+m4/roundl.m4
+m4/floorl.m4
+m4/ceill.m4
+
+Depends-on:
+math
+extensions
+round           [{ test $HAVE_ROUNDL = 0 || test $REPLACE_ROUNDL = 1; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 1]
+float           [{ test $HAVE_ROUNDL = 0 || test $REPLACE_ROUNDL = 1; } && test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 0]
+
+configure.ac:
+gl_FUNC_ROUNDL
+gl_CONDITIONAL([GL_COND_OBJ_ROUNDL],
+               [test $HAVE_ROUNDL = 0 || test $REPLACE_ROUNDL = 1])
+gl_MATH_MODULE_INDICATOR([roundl])
+
+Makefile.am:
+if GL_COND_OBJ_ROUNDL
+lib_SOURCES += roundl.c
+endif
+
+Include:
+<math.h>
+
+Link:
+$(ROUNDL_LIBM)
+
+License:
+LGPL
+
+Maintainer:
+Ben Pfaff
+

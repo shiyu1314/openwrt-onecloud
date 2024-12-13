@@ -1,0 +1,35 @@
+Description:
+POSIX mutexes (locks).
+
+Files:
+lib/pthread-mutex.c
+m4/pthread-mutex.m4
+
+Depends-on:
+pthread-h
+pthread_mutex_timedlock [test $gl_threads_api != windows]
+windows-timedmutex      [test $gl_threads_api = windows]
+windows-timedrecmutex   [test $gl_threads_api = windows]
+
+configure.ac:
+gl_PTHREAD_MUTEX
+gl_CONDITIONAL([GL_COND_OBJ_PTHREAD_MUTEX],
+               [test $HAVE_PTHREAD_MUTEX_INIT = 0 || test $REPLACE_PTHREAD_MUTEX_INIT = 1 || test $HAVE_PTHREAD_MUTEXATTR_GETROBUST = 0 || test $REPLACE_PTHREAD_MUTEXATTR_GETROBUST = 1])
+gl_PTHREAD_MODULE_INDICATOR([pthread-mutex])
+
+Makefile.am:
+if GL_COND_OBJ_PTHREAD_MUTEX
+lib_SOURCES += pthread-mutex.c
+endif
+
+Include:
+<pthread.h>
+
+Link:
+$(LIBPTHREAD) or $(LIBPMULTITHREAD)
+
+License:
+LGPLv2+
+
+Maintainer:
+all

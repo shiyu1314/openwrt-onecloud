@@ -1,0 +1,176 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt annotate [-P patch] {file}\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Print an annotated listing of the specified file showing which
+patches modify which lines. Only applied patches are included.
+
+-P patch
+	Stop checking for changes at the specified rather than the
+	topmost patch.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+empty_file()
+{
+	local file=$1
+	[ -s "$file" ] \
+	&& sed -e 's:.*::' "$file"
+}
+
+annotation_for()
+{
+	local old_file=$1 new_file=$2 annotation=$3
+	[ -s "$old_file" ] || old_file=/dev/null
+	[ -s "$new_file" ] || new_file=/dev/null
+	diff -e "$old_file" "$new_file" \
+	| perl -e '
+	while (<>) {
+	    if (/^\d+(?:,\d+)?[ac]$/) {
+		print;
+		while (<>) {
+		    last if /^\.$/;
+		    print "'"$annotation"'\n";
+		}
+		print;
+		next;
+	    }
+	    print;
+	}
+	'
+}
+
+merge_files()
+{
+	local a b saved_IFS="$IFS"
+	local template=$1 file=$2
+
+	[ -e "$file" ] || file=/dev/null
+
+	exec 3< "$template"
+	exec 4< "$file"
+	IFS=
+	while read -r a <&3
+	do
+		read -r b <&4
+		echo "$a"$'\t'"$b"
+	done
+	IFS="$saved_IFS"
+	exec 3<&-
+	exec 4<&-
+}
+
+options=`getopt -o P:h -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-P)
+		opt_patch="$2"
+		shift 2 ;;
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -ne 1 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+opt_file="$SUBDIR$1"
+
+opt_patch=$(find_applied_patch "$opt_patch") || exit 1
+
+for patch in $(applied_patches); do
+	old_file="$(backup_file_name "$patch" "$opt_file")"
+	if [ -f "$old_file" ]
+	then
+		patches[${#patches[@]}]="$patch"
+		files[${#files[@]}]="$old_file"
+	fi
+	if [ "$opt_patch" = "$patch" ]
+	then
+		# We also need to know the next patch, if any
+		next_patch="$(next_patch_for_file "$opt_patch" "$opt_file")"
+		break
+	fi
+done
+
+if [ -z "$next_patch" ]
+then
+	files[${#files[@]}]="$opt_file"
+else
+	files[${#files[@]}]="$(backup_file_name "$next_patch" "$opt_file")"
+fi
+
+if [ ${#patches[@]} = 0 ]
+then
+	sed -e 's:^:'$'\t'':' "${files[${#files[@]}-1]}"
+	exit 0
+fi
+
+template=$(gen_tempfile)
+
+add_exit_handler "rm -f $template"
+
+# The annotated listing is generated as follows: A file of annotations
+# is created based on a file that contains the same number of lines as
+# the source file, but all lines are empty.
+#
+# Then, for each patch that modifies the source file, an ed-style diff
+# (which has no context, and removes lines that are removed without
+# caring for the line's contents) is generated. In that diff, all line
+# additions are replaced with the identifier of the patch (1, 2, ...).
+# These patches are then applied to the empty file.
+#
+# Finally, the annotations listing is merged with the source file line
+# by line.
+
+setup_pager
+
+empty_file ${files[0]} > $template
+for ((n = 0; n < ${#patches[@]}; n++))
+do
+	annotation_for "${files[n]}" "${files[n+1]}" $((n+1))
+done \
+| patch $template
+merge_files $template "${files[${#files[@]}-1]}"
+
+echo
+for ((n = 0; n < ${#patches[@]}; n++))
+do
+	echo "$((n+1))"$'\t'"$(print_patch ${patches[n]})"
+done

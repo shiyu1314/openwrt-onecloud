@@ -1,0 +1,106 @@
+#! /usr/bin/env bash
+
+#  This script is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 2 as
+#  published by the Free Software Foundation.
+#
+#  See the COPYING and AUTHORS files for more details.
+
+usage()
+{
+	printf $"Usage: quilt series [--color[=always|auto|never]] [-v]\n"
+	if [ x$1 = x-h ]
+	then
+		printf $"
+Print the names of all patches in the series file.
+
+--color[=always|auto|never]
+	Use syntax coloring (auto activates it only if the output is a tty).
+
+-v	Verbose, more user friendly output.
+"
+		exit 0
+	else
+		exit 1
+	fi
+}
+
+cat_patches()
+{
+	local color=$1 prefix=$2
+	shift 2
+
+	if [ $# -ge 1 ]
+	then
+		printf "$color$prefix$(patch_format)$color_clear\n" "$@"
+	fi
+}
+
+options=`getopt -o vh --long color:: -- "$@"`
+
+if [ $? -ne 0 ]
+then
+	usage
+fi
+
+eval set -- "$options"
+
+while true
+do
+	case "$1" in
+	-v)
+		opt_verbose=1
+		shift ;;
+	--color)
+		case "$2" in
+		"" | always)
+			opt_color=1 ;;
+		auto | tty)
+			opt_color=
+			[ -t 1 ] && opt_color=1 ;;
+		never)
+			opt_color= ;;
+		*)
+			usage ;;
+		esac
+		shift 2 ;;
+	-h)
+		usage -h ;;
+	--)
+		shift
+		break ;;
+	esac
+done
+
+if [ $# -ne 0 ]
+then
+	usage
+fi
+
+# Read in library functions
+if ! [ -r $QUILT_DIR/scripts/patchfns ]
+then
+	echo "Cannot read library $QUILT_DIR/scripts/patchfns" >&2
+	exit 1
+fi
+. $QUILT_DIR/scripts/patchfns
+
+setup_pager
+
+if [ -n "$opt_verbose$opt_color" ]
+then
+	[ -n "$opt_color" ] && setup_colors
+
+	top=$(top_patch)
+	if [ -n "$top" ]
+	then
+		cat_patches "$color_series_app" \
+			"${opt_verbose:++ }" $(applied_before $top)
+		cat_patches "$color_series_top" \
+			"${opt_verbose:+= }" $top
+	fi
+	cat_patches "$color_series_una" \
+		"${opt_verbose:+  }" $(patches_after $top)
+else
+	cat_patches "" "" $(cat_series)
+fi

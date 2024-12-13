@@ -1,0 +1,54 @@
+Description:
+A <malloc.h> that works around platform issues.
+
+Files:
+lib/malloc.in.h
+m4/malloc_h.m4
+
+Depends-on:
+gen-header
+include_next
+snippet/c++defs
+snippet/warn-on-use
+stddef
+stdlib
+
+configure.ac:
+gl_MALLOC_H
+gl_MALLOC_H_REQUIRE_DEFAULTS
+AC_PROG_MKDIR_P
+
+Makefile.am:
+BUILT_SOURCES += malloc.h
+
+# We need the following in order to create <malloc.h> when we add workarounds.
+malloc.h: malloc.in.h $(top_builddir)/config.status $(CXXDEFS_H) $(WARN_ON_USE_H)
+@NMD@	$(AM_V_GEN)$(MKDIR_P) '%reldir%'
+	$(gl_V_at)$(SED_HEADER_STDOUT) \
+	      -e 's|@''GUARD_PREFIX''@|${gl_include_guard_prefix}|g' \
+	      -e 's|@''INCLUDE_NEXT_AS_FIRST_DIRECTIVE''@|$(INCLUDE_NEXT_AS_FIRST_DIRECTIVE)|g' \
+	      -e 's|@''HAVE_MALLOC_H''@|$(HAVE_MALLOC_H)|g' \
+	      -e 's|@''INCLUDE_NEXT''@|$(INCLUDE_NEXT)|g' \
+	      -e 's|@''PRAGMA_SYSTEM_HEADER''@|@PRAGMA_SYSTEM_HEADER@|g' \
+	      -e 's|@''PRAGMA_COLUMNS''@|@PRAGMA_COLUMNS@|g' \
+	      -e 's|@''NEXT_AS_FIRST_DIRECTIVE_MALLOC_H''@|$(NEXT_AS_FIRST_DIRECTIVE_MALLOC_H)|g' \
+	      -e 's|@''NEXT_MALLOC_H''@|$(NEXT_MALLOC_H)|g' \
+	      -e 's/@''GNULIB_FREE_POSIX''@/$(GNULIB_FREE_POSIX)/g' \
+	      -e 's/@''GNULIB_MEMALIGN''@/$(GNULIB_MEMALIGN)/g' \
+	      -e 's|@''HAVE_MEMALIGN''@|$(HAVE_MEMALIGN)|g' \
+	      -e 's|@''REPLACE_FREE''@|$(REPLACE_FREE)|g' \
+	      -e 's|@''REPLACE_MEMALIGN''@|$(REPLACE_MEMALIGN)|g' \
+	      -e '/definitions of _GL_FUNCDECL_RPL/r $(CXXDEFS_H)' \
+	      -e '/definition of _GL_WARN_ON_USE/r $(WARN_ON_USE_H)' \
+	      $(srcdir)/malloc.in.h > $@-t
+	$(AM_V_at)mv $@-t $@
+MOSTLYCLEANFILES += malloc.h malloc.h-t
+
+Include:
+<malloc.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+all

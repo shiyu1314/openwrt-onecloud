@@ -1,0 +1,19 @@
+Files:
+tests/test-localename.c
+tests/macros.h
+
+Depends-on:
+locale
+setenv
+unsetenv
+setlocale
+strdup
+
+configure.ac:
+gl_CHECK_FUNCS_ANDROID([newlocale], [[#include <locale.h>]])
+
+Makefile.am:
+TESTS += test-localename
+check_PROGRAMS += test-localename
+test_localename_LDADD = $(LDADD) $(SETLOCALE_LIB) @INTL_MACOSX_LIBS@ $(LIBTHREAD)
+

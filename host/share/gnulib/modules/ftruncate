@@ -1,0 +1,36 @@
+Description:
+ftruncate() function: truncate an open file to a specified length.
+
+Files:
+lib/ftruncate.c
+m4/ftruncate.m4
+
+Depends-on:
+unistd
+sys_types
+largefile
+msvc-nothrow    [test $HAVE_FTRUNCATE = 0 || test $REPLACE_FTRUNCATE = 1]
+msvc-inval      [test $HAVE_FTRUNCATE = 0 || test $REPLACE_FTRUNCATE = 1]
+
+configure.ac:
+gl_FUNC_FTRUNCATE
+gl_CONDITIONAL([GL_COND_OBJ_FTRUNCATE],
+               [test $HAVE_FTRUNCATE = 0 || test $REPLACE_FTRUNCATE = 1])
+AM_COND_IF([GL_COND_OBJ_FTRUNCATE], [
+  gl_PREREQ_FTRUNCATE
+])
+gl_UNISTD_MODULE_INDICATOR([ftruncate])
+
+Makefile.am:
+if GL_COND_OBJ_FTRUNCATE
+lib_SOURCES += ftruncate.c
+endif
+
+Include:
+<unistd.h>
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering

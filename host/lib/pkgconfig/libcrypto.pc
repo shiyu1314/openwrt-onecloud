@@ -1,0 +1,13 @@
+#libcrypto pkg-config source file
+
+prefix=/workdir/openwrt/staging_dir/host
+exec_prefix=/workdir/openwrt/staging_dir/host
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: LibreSSL-libcrypto
+Description: LibreSSL cryptography library
+Version: 3.7.2
+Libs: -L${libdir} -lcrypto
+Libs.private: -lresolv  
+Cflags: -I${includedir}

@@ -1,0 +1,33 @@
+Description:
+Base layer for Unicode classification and properties.
+
+Files:
+lib/unictype.in.h
+m4/libunistring-base.m4
+
+Depends-on:
+gen-header
+unitypes
+stdbool
+
+configure.ac:
+gl_LIBUNISTRING_LIBHEADER([0.9.11], [unictype.h])
+AC_PROG_MKDIR_P
+
+Makefile.am:
+BUILT_SOURCES += $(LIBUNISTRING_UNICTYPE_H)
+
+unictype.h: unictype.in.h
+@NMD@	$(AM_V_GEN)$(MKDIR_P) '%reldir%'
+	$(gl_V_at)$(SED_HEADER_TO_AT_t) $(srcdir)/unictype.in.h
+	$(AM_V_at)mv $@-t $@
+MOSTLYCLEANFILES += unictype.h unictype.h-t
+
+Include:
+"unictype.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+all

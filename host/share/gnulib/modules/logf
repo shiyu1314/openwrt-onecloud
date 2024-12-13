@@ -1,0 +1,34 @@
+Description:
+logf() function: natural logarithmic function.
+
+Files:
+lib/logf.c
+m4/logf.m4
+
+Depends-on:
+math
+extensions
+log             [test $HAVE_LOGF = 0 || test $REPLACE_LOGF = 1]
+
+configure.ac:
+gl_FUNC_LOGF
+gl_CONDITIONAL([GL_COND_OBJ_LOGF],
+               [test $HAVE_LOGF = 0 || test $REPLACE_LOGF = 1])
+gl_MATH_MODULE_INDICATOR([logf])
+
+Makefile.am:
+if GL_COND_OBJ_LOGF
+lib_SOURCES += logf.c
+endif
+
+Include:
+<math.h>
+
+Link:
+$(LOGF_LIBM)
+
+License:
+LGPL
+
+Maintainer:
+all
