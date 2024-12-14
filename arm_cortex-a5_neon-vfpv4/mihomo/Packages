@@ -28,7 +28,7 @@ Section: net
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 10497217
 Filename: mihomo_2024-12-11-5d9d8f4d-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 10480458
-SHA256sum: 7ef91c92fe9ba2011f54348a61e9ba5567ca35f01181a1198505d88f450c1c89
+Size: 10480467
+SHA256sum: 1c2d7f5648cf7d941eaa2f6bd92b08cf22bbb69e3bf9c5eb9caccda69caf40c2
 Description:  A rule based proxy in Go.
 
