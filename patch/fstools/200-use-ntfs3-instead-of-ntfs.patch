@@ -1,0 +1,47 @@
+diff --git a/block.c b/block.c
+index f094216..ec05fb6 100644
+--- a/block.c
++++ b/block.c
+@@ -721,7 +721,7 @@ static void check_filesystem(struct probe_info *pr)
+ 		ckfs = e2fsck;
+ 	} else if (!strncmp(pr->type, "btrfs", 5)) {
+ 		ckfs = btrfsck;
+-	} else if (!strncmp(pr->type, "ntfs", 4)) {
++	} else if (!strncmp(pr->type, "ntfs3", 4)) {
+ 		ckfs = ntfsck;
+ 	} else {
+ 		ULOG_ERR("check_filesystem: %s is not supported\n", pr->type);
+@@ -741,7 +741,7 @@ static void check_filesystem(struct probe_info *pr)
+ 		} else if(!strncmp(pr->type, "btrfs", 5)) {
+ 			execl(ckfs, ckfs, "--repair", pr->dev, NULL);
+ 			exit(EXIT_FAILURE);
+-		} else if(!strncmp(pr->type, "ntfs", 4)) {
++		} else if(!strncmp(pr->type, "ntfs3", 4)) {
+ 			execl(ckfs, ckfs, "-b", pr->dev, NULL);
+ 			exit(EXIT_FAILURE);
+ 		} else {
+@@ -1462,9 +1462,9 @@ static int mount_extroot(char *cfg)
+ 		if (strncmp(pr->type, "ext", 3) &&
+ 		    strncmp(pr->type, "f2fs", 4) &&
+ 		    strncmp(pr->type, "btrfs", 5) &&
+-		    strncmp(pr->type, "ntfs", 4) &&
++		    strncmp(pr->type, "ntfs3", 4) &&
+ 		    strncmp(pr->type, "ubifs", 5)) {
+-			ULOG_ERR("extroot: unsupported filesystem %s, try ext4, f2fs, btrfs, ntfs or ubifs\n", pr->type);
++			ULOG_ERR("extroot: unsupported filesystem %s, try ext4, f2fs, btrfs, ntfs3 or ubifs\n", pr->type);
+ 			return -1;
+ 		}
+ 
+diff --git a/libblkid-tiny/ntfs.c b/libblkid-tiny/ntfs.c
+index 2426e70..bba6271 100644
+--- a/libblkid-tiny/ntfs.c
++++ b/libblkid-tiny/ntfs.c
+@@ -214,7 +214,7 @@ static int probe_ntfs(blkid_probe pr, const struct blkid_idmag *mag)
+ 
+ const struct blkid_idinfo ntfs_idinfo =
+ {
+-	.name		= "ntfs",
++	.name		= "ntfs3",
+ 	.usage		= BLKID_USAGE_FILESYSTEM,
+ 	.probefunc	= probe_ntfs,
+ 	.magics		=

@@ -1,0 +1,206 @@
+From 87ce5b9478fbed0576abe1809a3eece9a5f28680 Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Fri, 29 Oct 2021 14:15:06 -0400
+Subject: [PATCH 42/43] QUIC: Better SSL_clear()
+
+Undo SSL_clear() changes in test
+Break apart SSL_clear() into SSL_clear_quic() and SSL_clear_not_quic()
+In SSL_clear(), call both functions
+In SSL_accept(), call SSL_clear_not_quic()
+Don't make the new functions public.
+---
+ ssl/ssl_lib.c       | 81 +++++++++++++++++++++++++++------------------
+ ssl/ssl_local.h     |  5 +++
+ ssl/statem/statem.c |  5 +++
+ test/sslapitest.c   | 17 +++-------
+ 4 files changed, 63 insertions(+), 45 deletions(-)
+
+--- a/ssl/ssl_lib.c
++++ b/ssl/ssl_lib.c
+@@ -581,8 +581,57 @@ static void clear_ciphers(SSL *s)
+     ssl_clear_hash_ctx(&s->write_hash);
+ }
+ 
++#ifndef OPENSSL_NO_QUIC
+ int SSL_clear(SSL *s)
+ {
++    if (!SSL_clear_not_quic(s))
++        return 0;
++    return SSL_clear_quic(s);
++}
++
++int SSL_clear_quic(SSL *s)
++{
++    OPENSSL_free(s->ext.peer_quic_transport_params_draft);
++    s->ext.peer_quic_transport_params_draft = NULL;
++    s->ext.peer_quic_transport_params_draft_len = 0;
++    OPENSSL_free(s->ext.peer_quic_transport_params);
++    s->ext.peer_quic_transport_params = NULL;
++    s->ext.peer_quic_transport_params_len = 0;
++    s->quic_read_level = ssl_encryption_initial;
++    s->quic_write_level = ssl_encryption_initial;
++    s->quic_latest_level_received = ssl_encryption_initial;
++    while (s->quic_input_data_head != NULL) {
++        QUIC_DATA *qd;
++
++        qd = s->quic_input_data_head;
++        s->quic_input_data_head = qd->next;
++        OPENSSL_free(qd);
++    }
++    s->quic_input_data_tail = NULL;
++    BUF_MEM_free(s->quic_buf);
++    s->quic_buf = NULL;
++    s->quic_next_record_start = 0;
++    memset(s->client_hand_traffic_secret, 0, EVP_MAX_MD_SIZE);
++    memset(s->server_hand_traffic_secret, 0, EVP_MAX_MD_SIZE);
++    memset(s->client_early_traffic_secret, 0, EVP_MAX_MD_SIZE);
++    /*
++     * CONFIG - DON'T CLEAR
++     * s->ext.quic_transport_params
++     * s->ext.quic_transport_params_len
++     * s->quic_transport_version
++     * s->quic_method = NULL;
++     */
++    return 1;
++}
++#endif
++
++/* Keep this conditional very local */
++#ifndef OPENSSL_NO_QUIC
++int SSL_clear_not_quic(SSL *s)
++#else
++int SSL_clear(SSL *s)
++#endif
++{
+     if (s->method == NULL) {
+         ERR_raise(ERR_LIB_SSL, SSL_R_NO_METHOD_SPECIFIED);
+         return 0;
+@@ -640,38 +689,6 @@ int SSL_clear(SSL *s)
+     s->shared_sigalgs = NULL;
+     s->shared_sigalgslen = 0;
+ 
+-#if !defined(OPENSSL_NO_QUIC)
+-    OPENSSL_free(s->ext.peer_quic_transport_params_draft);
+-    s->ext.peer_quic_transport_params_draft = NULL;
+-    s->ext.peer_quic_transport_params_draft_len = 0;
+-    OPENSSL_free(s->ext.peer_quic_transport_params);
+-    s->ext.peer_quic_transport_params = NULL;
+-    s->ext.peer_quic_transport_params_len = 0;
+-    s->quic_read_level = ssl_encryption_initial;
+-    s->quic_write_level = ssl_encryption_initial;
+-    s->quic_latest_level_received = ssl_encryption_initial;
+-    while (s->quic_input_data_head != NULL) {
+-        QUIC_DATA *qd;
+-
+-        qd = s->quic_input_data_head;
+-        s->quic_input_data_head = qd->next;
+-        OPENSSL_free(qd);
+-    }
+-    s->quic_input_data_tail = NULL;
+-    BUF_MEM_free(s->quic_buf);
+-    s->quic_buf = NULL;
+-    s->quic_next_record_start = 0;
+-    memset(s->client_hand_traffic_secret, 0, EVP_MAX_MD_SIZE);
+-    memset(s->server_hand_traffic_secret, 0, EVP_MAX_MD_SIZE);
+-    memset(s->client_early_traffic_secret, 0, EVP_MAX_MD_SIZE);
+-    /*
+-     * CONFIG - DON'T CLEAR
+-     * s->ext.quic_transport_params
+-     * s->ext.quic_transport_params_len
+-     * s->quic_transport_version
+-     * s->quic_method = NULL;
+-     */
+-#endif
+     /*
+      * Check to see if we were changed into a different method, if so, revert
+      * back.
+--- a/ssl/ssl_local.h
++++ b/ssl/ssl_local.h
+@@ -2867,6 +2867,11 @@ void custom_exts_free(custom_ext_methods
+ 
+ void ssl_comp_free_compression_methods_int(void);
+ 
++#ifndef OPENSSL_NO_QUIC
++__owur int SSL_clear_not_quic(SSL *s);
++__owur int SSL_clear_quic(SSL *s);
++#endif
++
+ /* ssl_mcnf.c */
+ void ssl_ctx_system_config(SSL_CTX *ctx);
+ 
+--- a/ssl/statem/statem.c
++++ b/ssl/statem/statem.c
+@@ -334,8 +334,13 @@ static int state_machine(SSL *s, int ser
+          * If we are stateless then we already called SSL_clear() - don't do
+          * it again and clear the STATELESS flag itself.
+          */
++#ifndef OPENSSL_NO_QUIC
++        if ((s->s3.flags & TLS1_FLAGS_STATELESS) == 0 && !SSL_clear_not_quic(s))
++            return -1;
++#else
+         if ((s->s3.flags & TLS1_FLAGS_STATELESS) == 0 && !SSL_clear(s))
+             return -1;
++#endif
+     }
+ #ifndef OPENSSL_NO_SCTP
+     if (SSL_IS_DTLS(s) && BIO_dgram_is_sctp(SSL_get_wbio(s))) {
+--- a/test/sslapitest.c
++++ b/test/sslapitest.c
+@@ -10831,7 +10831,6 @@ static int test_quic_api_version(int cln
+     static const char *client_str = "CLIENT";
+     const uint8_t *peer_str;
+     size_t peer_str_len;
+-    int err;
+ 
+     TEST_info("original clnt=0x%X, srvr=0x%X\n", clnt, srvr);
+ 
+@@ -10854,10 +10853,8 @@ static int test_quic_api_version(int cln
+             || !TEST_true(SSL_set_app_data(clientssl, serverssl))
+             || !TEST_true(test_quic_api_set_versions(clientssl, clnt))
+             || !TEST_true(test_quic_api_set_versions(serverssl, srvr))
+-            || !TEST_int_eq(err = SSL_accept(serverssl), -1)
+-            || !TEST_int_eq(SSL_get_error(serverssl, err), SSL_ERROR_WANT_READ)
+             || !TEST_true(create_bare_ssl_connection(serverssl, clientssl,
+-                                              SSL_ERROR_NONE, 0))
++                                                     SSL_ERROR_NONE, 0))
+             || !TEST_true(SSL_version(serverssl) == TLS1_3_VERSION)
+             || !TEST_true(SSL_version(clientssl) == TLS1_3_VERSION)
+             || !(TEST_int_eq(SSL_quic_read_level(clientssl), ssl_encryption_application))
+@@ -10979,7 +10976,6 @@ static int quic_setupearly_data_test(SSL
+ {
+     static const char *server_str = "SERVER";
+     static const char *client_str = "CLIENT";
+-    int err;
+ 
+     if (*sctx == NULL
+             && (!TEST_true(create_ssl_ctx_pair(libctx, TLS_server_method(),
+@@ -11057,10 +11053,8 @@ static int quic_setupearly_data_test(SSL
+     if (sess == NULL)
+         return 1;
+ 
+-    if (!TEST_int_eq(err = SSL_accept(*serverssl), -1)
+-            || !TEST_int_eq(SSL_get_error(*serverssl, err), SSL_ERROR_WANT_READ)
+-            || !TEST_true(create_bare_ssl_connection(*serverssl, *clientssl,
+-                                                     SSL_ERROR_NONE, 0)))
++    if (!TEST_true(create_bare_ssl_connection(*serverssl, *clientssl,
++                                              SSL_ERROR_NONE, 0)))
+         return 0;
+ 
+     /* Deal with two NewSessionTickets */
+@@ -11099,15 +11093,12 @@ static int test_quic_early_data(int tst)
+     SSL *clientssl = NULL, *serverssl = NULL;
+     int testresult = 0;
+     SSL_SESSION *sess = NULL;
+-    int err;
+ 
+     if (!TEST_true(quic_setupearly_data_test(&cctx, &sctx, &clientssl,
+                                              &serverssl, &sess, tst)))
+         goto end;
+ 
+-    if (!TEST_int_eq(err = SSL_accept(serverssl), -1)
+-            || !TEST_int_eq(SSL_get_error(serverssl, err), SSL_ERROR_WANT_READ)
+-            || !TEST_true(create_bare_ssl_connection(serverssl, clientssl, SSL_ERROR_NONE, 0))
++    if (!TEST_true(create_bare_ssl_connection(serverssl, clientssl, SSL_ERROR_NONE, 0))
+             || !TEST_true(SSL_get_early_data_status(serverssl)))
+         goto end;
+ 

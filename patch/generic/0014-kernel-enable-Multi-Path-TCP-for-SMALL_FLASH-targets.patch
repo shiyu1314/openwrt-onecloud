@@ -1,0 +1,39 @@
+From f30ae23e29ba9a00280dc1498d8dfda373cc1eb9 Mon Sep 17 00:00:00 2001
+From: Daniel Golle <daniel@makrotopia.org>
+Date: Fri, 25 Oct 2024 18:15:41 +0100
+Subject: [PATCH] kernel: enable Multi-Path TCP for !SMALL_FLASH targets
+
+Expose Kernel's CONFIG_MPTCP option and enable it by default for
+!SMALL_FLASH targets.
+
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ config/Config-kernel.in | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/config/Config-kernel.in b/config/Config-kernel.in
+index a262d59..c83337d 100644
+--- a/config/Config-kernel.in
++++ b/config/Config-kernel.in
+@@ -1126,6 +1126,18 @@ config KERNEL_PAGE_POOL_STATS
+ 	bool "Page pool stats support"
+ 	depends on KERNEL_PAGE_POOL
+ 
++config KERNEL_MPTCP
++	bool "Multi-Path TCP support"
++	default y if !SMALL_FLASH
++	help
++	   Select this option to enable support for Multi-Path TCP.
++	   Increases the compressed kernel size by ~214kB (as of Linux 6.6).
++
++config KERNEL_MPTCP_IPV6
++	bool "IPv6 support for Multipath TCP"
++	depends on KERNEL_MPTCP
++	default KERNEL_MPTCP
++
+ #
+ # NFS related symbols
+ #
+-- 
+2.42.0
+

@@ -1,0 +1,40 @@
+From 969e27426dcf838f80e1a04a1203b6a7c7de7964 Mon Sep 17 00:00:00 2001
+From: Rosen Penev <rosenp@gmail.com>
+Date: Sat, 1 Jul 2023 16:44:54 -0700
+Subject: [PATCH 1/2] nginx-util: fix compilation with GCC13
+
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ net/nginx-util/Makefile         | 2 +-
+ net/nginx-util/src/ubus-cxx.hpp | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/nginx-util/Makefile b/net/nginx-util/Makefile
+index 5d7070eb9..4a77e2f20 100644
+--- a/net/nginx-util/Makefile
++++ b/net/nginx-util/Makefile
+@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=nginx-util
+ PKG_VERSION:=1.6
+-PKG_RELEASE:=18
++PKG_RELEASE:=19
+ PKG_MAINTAINER:=Peter Stadler <peter.stadler@student.uibk.ac.at>
+ 
+ include $(INCLUDE_DIR)/package.mk
+diff --git a/net/nginx-util/src/ubus-cxx.hpp b/net/nginx-util/src/ubus-cxx.hpp
+index 6c193cfc3..42d2d21aa 100644
+--- a/net/nginx-util/src/ubus-cxx.hpp
++++ b/net/nginx-util/src/ubus-cxx.hpp
+@@ -159,7 +159,7 @@ class message {
+             both = keys;
+         }
+         both = concat(std::move(both), std::move(key_filter)...);
+-        return std::move(message{msg, std::move(both)});
++        return message{msg, std::move(both)};
+     }
+ 
+     inline ~message() = default;
+-- 
+2.39.3
+

@@ -1,0 +1,27 @@
+diff --git a/block.c b/block.c
+index 3842ca7..2176f72 100644
+--- a/block.c
++++ b/block.c
+@@ -945,8 +945,12 @@ static int handle_mount(const char *source, const char *target,
+ 	int err = -EINVAL;
+ 	size_t count;
+ 	int i;
++	char _data[128] = {0};
++	if (strstr(fstype, "fat") || strstr(fstype, "ntfs3")) {
++		snprintf(_data, sizeof(_data), "%s", "iocharset=utf8,uid=65534,gid=65534");
++	}
+ 
+-	if (!strcmp(fstype, "ntfs")) {
++	if (!strcmp(fstype, "ntfs3")) {
+ 		filesystems = ntfs_fs;
+ 		count = ARRAY_SIZE(ntfs_fs);
+ 	} else {
+@@ -958,7 +962,7 @@ static int handle_mount(const char *source, const char *target,
+ 		const char *fs = filesystems[i];
+ 
+ 		err = mount(source, target, fs, m ? m->flags : 0,
+-			    (m && m->options) ? m->options : "");
++			    (m && m->options) ? m->options : _data);
+ 		if (!err || errno != ENODEV)
+ 			break;
+ 	}
