@@ -4,43 +4,43 @@ Depends: libc, luci-base, mihomo
 Source: feeds/mihomo/luci-app-mihomo
 SourceName: luci-app-mihomo
 Section: luci
-SourceDateEpoch: 1734079840
+SourceDateEpoch: 1734178395
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 7032
+Installed-Size: 7031
 Filename: luci-app-mihomo_1.13.3_all.ipk
-Size: 7864
-SHA256sum: 3b28b554522be12cfa6b94e80707fb289257403c312881c340d30c4a70110c02
+Size: 7869
+SHA256sum: 3194d16348d2dca358d6fadd341e3815afee1922a1eb049049427cd9d54293ba
 Description:  LuCI Support for mihomo
 
 Package: luci-i18n-mihomo-zh-cn
-Version: git-24.348.31840-28bf4a5
+Version: git-24.349.43995-1621c0f
 Depends: libc, luci-app-mihomo
 Source: feeds/mihomo/luci-app-mihomo
 SourceName: luci-i18n-mihomo-zh-cn
 Section: luci
-SourceDateEpoch: 1734079840
+SourceDateEpoch: 1734178395
 Architecture: all
-Installed-Size: 3139
-Filename: luci-i18n-mihomo-zh-cn_git-24.348.31840-28bf4a5_all.ipk
-Size: 3867
-SHA256sum: 88bfbbb2fe0669ac50fa92f9ca8f852d2c902c70f500cfe0054dbcb4bbe381ec
+Installed-Size: 3138
+Filename: luci-i18n-mihomo-zh-cn_git-24.349.43995-1621c0f_all.ipk
+Size: 3863
+SHA256sum: dfe87256932e570355eba23c3a943d004419c4a6b0550d7d83e1aa12a37618b5
 Description:  Translation for luci-app-mihomo - 简体中文 (Chinese Simplified)
 
 Package: mihomo
-Version: 2024-12-11-5d9d8f4d-1
+Version: 2024-12-13-c7fc93df-1
 Depends: libc, ca-bundle, curl, yq, firewall4, ip-full, kmod-inet-diag, kmod-nft-tproxy, kmod-tun
 Source: feeds/mihomo/mihomo
 SourceName: mihomo
 License: MIT
 Section: net
 Require-User: root:mihomo=7890
-SourceDateEpoch: 1734079840
+SourceDateEpoch: 1734178395
 Maintainer: Joseph Mory <morytyann@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 10497217
-Filename: mihomo_2024-12-11-5d9d8f4d-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 10480467
-SHA256sum: 1c2d7f5648cf7d941eaa2f6bd92b08cf22bbb69e3bf9c5eb9caccda69caf40c2
+Installed-Size: 10497873
+Filename: mihomo_2024-12-13-c7fc93df-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 10481608
+SHA256sum: c2ccc060de0f2249db4d3b51f913982d2cb88d1c2c4ec4c0fa4d600325b9c35a
 Description:  A rule based proxy in Go.
 
