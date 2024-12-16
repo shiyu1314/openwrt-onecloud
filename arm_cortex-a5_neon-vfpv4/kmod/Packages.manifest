@@ -4,12 +4,12 @@ Depends: libc
 Source: feeds/base/emortal/autocore
 SourceName: autocore
 Section: opt
-SourceDateEpoch: 1734294399
+SourceDateEpoch: 1734317337
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 1259
 Filename: autocore_42_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1967
-SHA256sum: 312291e12254afb788ec131a67fa3e60c5e1ed308c2066183d188e029eb2cbb5
+Size: 1961
+SHA256sum: 158638b22144dca8a578413b37593f0edbabbc78c10b24db4fe0c911302f1568
 Description:  auto core loadbalance script.
 
 Package: automount
@@ -18,13 +18,13 @@ Depends: libc, block-mount, e2fsprogs, kmod-usb-storage, kmod-usb-storage-extras
 Source: feeds/base/emortal/automount
 SourceName: automount
 Section: opt
-SourceDateEpoch: 1734294399
+SourceDateEpoch: 1734317337
 Maintainer: Lean
 Architecture: all
-Installed-Size: 831
+Installed-Size: 832
 Filename: automount_10_all.ipk
-Size: 1590
-SHA256sum: ab8319c3a3376bf5b2bbc5d78ff1fbec16cb16ac380d8eff1913340d9f1879ae
+Size: 1593
+SHA256sum: dd912b4879c109e497fe2b09869c78eb6844d76e3e5ee4a5bb1a428aa8675878
 Description:  Mount autoconfig hotplug script.
 
 Package: base-files
@@ -38,8 +38,8 @@ SourceDateEpoch: 1727132020
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 45589
 Filename: base-files_1563-r24147-b551214c9d_arm_cortex-a5_neon-vfpv4.ipk
-Size: 46554
-SHA256sum: 200a3d7117fbce3b45d77f27b640a63a76904a1c4f2843a93cb8afe157079783
+Size: 46558
+SHA256sum: 07f7f0b5dded7100a39c2c337ca3dab1bf10b23e84159a47409c0bd8b9d272e5
 Description:  This package contains a base filesystem and system scripts for OpenWrt.
 
 Package: block-mount
@@ -909,6 +909,22 @@ Filename: kmod-mii_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 964
 SHA256sum: e146b8e2acfb6fa6b6deea3e23fb21059e9fef49adf211052e5d26c06dc7eb78
 Description:  MII library
+
+Package: kmod-netlink-diag
+Version: 6.11.11-1
+Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c)
+Source: feeds/base/kernel/linux
+SourceName: kmod-netlink-diag
+License: GPL-2.0-only
+LicenseFiles: COPYING
+Section: kernel
+SourceDateEpoch: 1726325473
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 2641
+Filename: kmod-netlink-diag_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 3415
+SHA256sum: 1335c1c0c271b027f2652177c1e60e92d02dc8788874ac9381be224b74b209cd
+Description:  Netlink diag is a module made for use with iproute2's ss utility
 
 Package: kmod-nf-conntrack-netlink
 Version: 6.11.11-1
@@ -1862,12 +1878,12 @@ Conflicts: ntfs-3g
 Source: feeds/base/emortal/automount
 SourceName: ntfs3-mount
 Section: utils
-SourceDateEpoch: 1734294399
+SourceDateEpoch: 1734317337
 Architecture: all
-Installed-Size: 195
+Installed-Size: 196
 Filename: ntfs3-mount_10_all.ipk
-Size: 899
-SHA256sum: daf462236a7edc490f28f97f7becbf60a0eeb7104b147088a41bf48ae5740f81
+Size: 897
+SHA256sum: 5664ba2c481d1ac00a7659bd2fc4aa798a87226f421ad33c4aec97fe89fd886c
 Description:  NTFS mount script for Paragon NTFS3 driver
 
 Package: xtables-nft

@@ -143,6 +143,44 @@ Size: 36481978
 SHA256sum: b37141aa608ff441e3b6fb8bee0e65e072bf1144263756583dd3cb3e01e12146
 Description:  An industry-standard container runtime with an emphasis on simplicity, robustness and portability
 
+Package: coreutils-base64
+Version: 9.3-1
+Depends: libc, coreutils
+Alternatives: 300:/bin/base64:/usr/libexec/base64-coreutils
+Source: feeds/packages/utils/coreutils
+SourceName: coreutils-base64
+License: GPL-3.0-or-later
+LicenseFiles: COPYING
+Section: utils
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:gnu:coreutils
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 21715
+Filename: coreutils-base64_9.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 22519
+SHA256sum: 251c4b7800d0bb4bd90cc97fac8af9529195f90074e37163d0090699849275fe
+Description:  Full version of standard GNU base64 utility.
+
+Package: coreutils-nohup
+Version: 9.3-1
+Depends: libc, coreutils
+Alternatives: 300:/usr/bin/nohup:/usr/libexec/nohup-coreutils
+Source: feeds/packages/utils/coreutils
+SourceName: coreutils-nohup
+License: GPL-3.0-or-later
+LicenseFiles: COPYING
+Section: utils
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:gnu:coreutils
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 20187
+Filename: coreutils-nohup_9.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 21005
+SHA256sum: a2f586db2be9e724b0042e007c832d1641496ee8e686dd1f91502fa7b19da827
+Description:  Full version of standard GNU nohup utility.
+
 Package: coreutils-stty
 Version: 9.3-1
 Depends: libc, coreutils
@@ -270,6 +308,25 @@ Description:  FUSE (Filesystem in UserSpacE)
  This package contains the FUSE utilities.
  - fusermount
  - ulockmgr_server
+
+Package: haproxy
+Version: 2.8.9-1
+Depends: libc, libpcre2, libltdl7, zlib, libpthread, liblua5.3-5.3, libopenssl3, libncurses6, libreadline8, libatomic1
+Source: feeds/packages/net/haproxy
+SourceName: haproxy
+License: GPL-2.0-only
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:haproxy:haproxy
+Maintainer: Thomas Heil <heil@terminal-consulting.de>, Christian Lachner <gladiac@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1101853
+Filename: haproxy_2.8.9-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 1101224
+SHA256sum: 108bdd123e04decee94cd15d83aee54f229917648a7e8fd2c8bc3c3ebf98e468
+Description:  Open source Reliable, High Performance TCP/HTTP Load Balancer.
+ This package is built with SSL and LUA support.
 
 Package: hd-idle
 Version: 1.05-2
@@ -440,6 +497,24 @@ Size: 109158
 SHA256sum: 9252bc0ef7fe774d0111516bf84d6a66f1ed87c845469ff3ce57556d93fbb0d8
 Description:  Simple interprocess messaging system (library)
 
+Package: libev
+Version: 4.33-2
+Depends: libc
+Source: feeds/packages/libs/libev
+SourceName: libev
+License: BSD-2-Clause or GPL-2.0-or-later
+LicenseFiles: LICENSE
+Section: libs
+SourceDateEpoch: 1734255067
+Maintainer: Karl Palsson <karlp@tweak.net.au>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 20004
+Filename: libev_4.33-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 20820
+SHA256sum: 1e8377677bd28e6fe5cb8bc96bb3b54d2b9c36f934da6cc83f2d2894b2de29db
+Description:  A full-featured and high-performance event loop that is loosely modelled after
+ libevent, but without its limitations and bugs.
+
 Package: libexpat
 Version: 2.5.0-1
 Depends: libc
@@ -562,6 +637,26 @@ Size: 185035
 SHA256sum: e4644b22cf165aaa5dd0df3cc1d46194f4eb1b91f365ff1401059e3cf266e2ec
 Description:  GNU Parted shared library
 
+Package: libruby3.2
+Version: 3.2.6-1
+Depends: libc, libpthread, librt, libgmp10, zlib
+Provides: libruby
+Source: feeds/packages/lang/ruby
+SourceName: libruby
+License: BSD-2-Clause
+LicenseFiles: COPYING
+Section: libs
+SourceDateEpoch: 1734255067
+ABIVersion: 3.2
+CPE-ID: cpe:/a:ruby-lang:ruby
+Maintainer: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1111956
+Filename: libruby3.2_3.2.6-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 1104660
+SHA256sum: 18b3107f1092b5dc4abbef4e164215c255ef77f95b6aa1cd08d36812c496af80
+Description:  Ruby scripting language (shared library)
+
 Package: libseccomp
 Version: 2.5.4-2
 Depends: libc
@@ -655,6 +750,23 @@ Filename: libwebsockets-full_4.3.2-2_arm_cortex-a5_neon-vfpv4.ipk
 Size: 176669
 SHA256sum: e10c31627409bb2fd8b049233af0a200aa79fb578310e0944424a344edc45994
 Description:  libwebsockets (Full - OpenSSL, libuv, plugins, CGI)
+
+Package: libyaml
+Version: 0.2.5-1
+Depends: libc
+Source: feeds/packages/libs/yaml
+SourceName: libyaml
+License: MIT
+LicenseFiles: COPYING
+Section: libs
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:pyyaml_project:pyyaml
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 37839
+Filename: libyaml_0.2.5-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 38707
+SHA256sum: 47b9756d6b1a867233d4d4278cc1ee403dba972ea982b0ef04bfff5d1a90f0c6
+Description:  Fast YAML 1.1 parser and emitter library
 
 Package: libzstd
 Version: 1.5.2-2
@@ -821,6 +933,260 @@ Description:  GNU Parted manipulates partition tables. This is useful for
  creating space for new operating systems, reorganizing
  disk usage, copying data on hard disks and disk imaging.
 
+Package: ruby-bigdecimal
+Version: 3.2.6-1
+Depends: libc, ruby
+Source: feeds/packages/lang/ruby
+SourceName: ruby-bigdecimal
+License: BSD-2-Clause
+LicenseFiles: COPYING
+Section: lang
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:ruby-lang:ruby
+Maintainer: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 41531
+Filename: ruby-bigdecimal_3.2.6-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 42448
+SHA256sum: d8fa8c85a84569cfe858ed916943aea1e59797ebe0639292f5d7554da6a100f0
+Description:  This package contains the ruby Arbitrary-precision decimal floating-point library.
+ 
+ Provides:
+ 
+ - /usr/lib/ruby/3.2/*/bigdecimal.so 
+ - /usr/lib/ruby/3.2/bigdecimal/ 
+ - /usr/lib/ruby/3.2/bigdecimal.rb 
+ - /usr/lib/ruby/gems/3.2/specifications/default/bigdecimal-*.gemspec
+ 
+
+Package: ruby-date
+Version: 3.2.6-1
+Depends: libc, ruby
+Source: feeds/packages/lang/ruby
+SourceName: ruby-date
+License: BSD-2-Clause
+LicenseFiles: COPYING
+Section: lang
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:ruby-lang:ruby
+Maintainer: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 60095
+Filename: ruby-date_3.2.6-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 61004
+SHA256sum: feb94b407c031ec47c545953f0df31891be30283e60532437ea050ceeb705df6
+Description:  This package contains the ruby Comparable module for handling dates.
+ 
+ Provides:
+ 
+ - /usr/lib/ruby/3.2/date.rb 
+ - /usr/lib/ruby/3.2/*/date_core.so 
+ - /usr/lib/ruby/gems/3.2/specifications/default/date-*.gemspec
+ 
+
+Package: ruby-digest
+Version: 3.2.6-1
+Depends: libc, ruby
+Source: feeds/packages/lang/ruby
+SourceName: ruby-digest
+License: BSD-2-Clause
+LicenseFiles: COPYING
+Section: lang
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:ruby-lang:ruby
+Maintainer: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 24913
+Filename: ruby-digest_3.2.6-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 25772
+SHA256sum: a93ea385e4443e5a53a25b5c4f278292703f4542ce1536675eec25b47867ff0f
+Description:  Provides digest* files. Can be configured to use OpenSSL or
+ bundled hash functions.
+ 
+ Provides:
+ 
+ - /usr/lib/ruby/3.2/digest 
+ - /usr/lib/ruby/3.2/digest.rb 
+ - /usr/lib/ruby/3.2/*/digest.so 
+ - /usr/lib/ruby/3.2/*/digest/* 
+ - /usr/lib/ruby/gems/3.2/specifications/default/digest-*.gemspec
+ 
+
+Package: ruby-enc
+Version: 3.2.6-1
+Depends: libc, ruby
+Source: feeds/packages/lang/ruby
+SourceName: ruby-enc
+License: BSD-2-Clause
+LicenseFiles: COPYING
+Section: lang
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:ruby-lang:ruby
+Maintainer: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 8968
+Filename: ruby-enc_3.2.6-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 9839
+SHA256sum: ec7481b8c33c2f652c889829edca7d83be524ef5378b6184141ead3a24b097e2
+Description:  This package contains the ruby character re-coding library charset (small subset).
+ 
+ Provides:
+ 
+ - /usr/lib/ruby/3.2/*/enc/encdb.so 
+ - /usr/lib/ruby/3.2/*/enc/iso_8859_1.so 
+ - /usr/lib/ruby/3.2/*/enc/utf_*.so 
+ - /usr/lib/ruby/3.2/*/enc/euc_jp.so
+ 
+
+Package: ruby-forwardable
+Version: 3.2.6-1
+Depends: libc, ruby
+Source: feeds/packages/lang/ruby
+SourceName: ruby-forwardable
+License: BSD-2-Clause
+LicenseFiles: COPYING
+Section: lang
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:ruby-lang:ruby
+Maintainer: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 3797
+Filename: ruby-forwardable_3.2.6-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 4684
+SHA256sum: b4e3f81ef9ff3b94a7a9a6311c20efd0f0cc4a8d563255b131372afbadb35460
+Description:  This package contains the ruby delegation of methods to a object.
+ 
+ Provides:
+ 
+ - /usr/lib/ruby/3.2/forwardable.rb 
+ - /usr/lib/ruby/3.2/forwardable 
+ - /usr/lib/ruby/gems/3.2/specifications/default/forwardable-*.gemspec
+ 
+
+Package: ruby-pstore
+Version: 3.2.6-1
+Depends: libc, ruby, ruby-digest, ruby-enc
+Source: feeds/packages/lang/ruby
+SourceName: ruby-pstore
+License: BSD-2-Clause
+LicenseFiles: COPYING
+Section: lang
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:ruby-lang:ruby
+Maintainer: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 6965
+Filename: ruby-pstore_3.2.6-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 7898
+SHA256sum: 85affcef69f89c4931966a88313ace6ea8effece15414778a4e40c7922c95514
+Description:  This package contains the ruby file based persistence.
+ 
+ Provides:
+ 
+ - /usr/lib/ruby/3.2/pstore.rb 
+ - /usr/lib/ruby/3.2/pstore/ 
+ - /usr/lib/ruby/gems/3.2/gems/pstore-*/ 
+ - /usr/lib/ruby/gems/3.2/specifications/default/pstore-*.gemspec
+ 
+
+Package: ruby-psych
+Version: 3.2.6-1
+Depends: libc, ruby, ruby-bigdecimal, ruby-date, ruby-enc, ruby-forwardable, ruby-stringio, libyaml
+Source: feeds/packages/lang/ruby
+SourceName: ruby-psych
+License: BSD-2-Clause
+LicenseFiles: COPYING
+Section: lang
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:ruby-lang:ruby
+Maintainer: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 32756
+Filename: ruby-psych_3.2.6-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 33765
+SHA256sum: 1b3791744153ae02694ba7a0aa9258f42a41b7f3de493fc6addfde95e5c173bc
+Description:  This package contains the ruby YAML parser and emitter.
+ 
+ Provides:
+ 
+ - /usr/lib/ruby/3.2/psych 
+ - /usr/lib/ruby/3.2/psych.rb 
+ - /usr/lib/ruby/3.2/*/psych.so 
+ - /usr/lib/ruby/gems/3.2/specifications/default/psych-*.gemspec
+ 
+
+Package: ruby-stringio
+Version: 3.2.6-1
+Depends: libc, ruby
+Source: feeds/packages/lang/ruby
+SourceName: ruby-stringio
+License: BSD-2-Clause
+LicenseFiles: COPYING
+Section: lang
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:ruby-lang:ruby
+Maintainer: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 10654
+Filename: ruby-stringio_3.2.6-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 11516
+SHA256sum: 63851c881710ac4732e33a8d6582abfdbe1143aa5e08c29d2077c26aeb5f982b
+Description:  This package contains the ruby Pseudo `IO` class from/to `String`.
+ 
+ Provides:
+ 
+ - /usr/lib/ruby/3.2/*/stringio.so 
+ - /usr/lib/ruby/gems/3.2/specifications/default/stringio-*.gemspec
+ 
+
+Package: ruby-yaml
+Version: 3.2.6-1
+Depends: libc, ruby, ruby-pstore, ruby-psych
+Source: feeds/packages/lang/ruby
+SourceName: ruby-yaml
+License: BSD-2-Clause
+LicenseFiles: COPYING
+Section: lang
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:ruby-lang:ruby
+Maintainer: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 4499
+Filename: ruby-yaml_3.2.6-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 5357
+SHA256sum: 208d62dd90362106b7eba5578d8f077deb5131fd94c1fee3011f488392fcf172
+Description:  This package contains the ruby YAML toolkit.
+ 
+ Provides:
+ 
+ - /usr/lib/ruby/3.2/yaml 
+ - /usr/lib/ruby/3.2/yaml.rb 
+ - /usr/lib/ruby/gems/3.2/gems/yaml-*/ 
+ - /usr/lib/ruby/gems/3.2/specifications/default/yaml-*.gemspec
+ 
+
+Package: ruby
+Version: 3.2.6-1
+Depends: libc, libruby3.2
+Source: feeds/packages/lang/ruby
+SourceName: ruby
+License: BSD-2-Clause
+LicenseFiles: COPYING
+Section: lang
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:ruby-lang:ruby
+Maintainer: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1661
+Filename: ruby_3.2.6-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 2573
+SHA256sum: aaf5e8403f96eb51a4103922064e357e4944cff3825361f46795edceef204256
+Description:  Ruby is the interpreted scripting language for quick and easy
+ object-oriented programming.  It has many features to process text files
+ and to do system management tasks (as in perl).  It is simple,
+ straight-forward, and extensible.
+ 
+
 Package: runc
 Version: 1.1.14-1
 Depends: libc, libseccomp
@@ -933,6 +1299,27 @@ Filename: ttyd_1.7.3-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 320589
 SHA256sum: 8cbe12b9992aae6a9f1dcf6af11dcb663e442f5bf420e71427611e7413baf1a7
 Description:  ttyd is a command-line tool for sharing terminal over the web.
+
+Package: unzip
+Version: 6.0-8
+Depends: libc
+Source: feeds/packages/utils/unzip
+SourceName: unzip
+License: BSD-4-Clause
+LicenseFiles: LICENSE
+Section: utils
+SourceDateEpoch: 1734255067
+CPE-ID: cpe:/a:info-zip:unzip
+Maintainer: Álvaro Fernández Rojas <noltari@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 109194
+Filename: unzip_6.0-8_arm_cortex-a5_neon-vfpv4.ipk
+Size: 110184
+SHA256sum: 085abfbaff45aa00f890165b472bb5f253e629834b1048f61553beabb3031637
+Description:  InfoZIP's unzip program. With the exception of multi-volume archives
+ (ie, .ZIP files that are split across several disks using PKZIP's /& option),
+ this can handle any file produced either by PKZIP, or the corresponding
+ InfoZIP zip program.
 
 Package: uwsgi-cgi-plugin
 Version: 2.0.26-1

@@ -10,8 +10,8 @@ Maintainer: sbwml <admin@cooluc.com>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 26886795
 Filename: alist_3.41.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26795405
-SHA256sum: 3ef5cba2b0fd8165e4d60118d3d5e7a4bf494caada8fe417ea3c0269fc7f7720
+Size: 26795352
+SHA256sum: 02e88fe3118ead0825bff453692f5be9aa6bb1ee80ea38207aaa4e4b0904a68d
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -37,13 +37,13 @@ Depends: libc, luci-app-samba4, wsdd2
 Source: feeds/base/emortal/autosamba
 SourceName: autosamba
 Section: opt
-SourceDateEpoch: 1734294399
+SourceDateEpoch: 1734317337
 Maintainer: Lean
 Architecture: all
 Installed-Size: 1175
 Filename: autosamba_1-12_all.ipk
-Size: 1902
-SHA256sum: f167b616b807fb38afe77db57389f0d2cbaf53943c4ee7f07735e1ca317e1670
+Size: 1903
+SHA256sum: d91503b972c67aa31562a3da1e1f09901e3c0758576f1d071c4e5c5d49f46700
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
@@ -119,6 +119,57 @@ Filename: ca-certificates_20230311-1_all.ipk
 Size: 134595
 SHA256sum: c2221919c4fce3856ec2543ba191ebf4d9736844e37e74c132a8ed88dfc16fd9
 Description:  System CA certificates
+
+Package: chinadns-ng
+Version: 2024.11.17-1
+Depends: libc, ipset
+Source: feeds/base/openwrt-passwall/chinadns-ng
+SourceName: chinadns-ng
+License: AGPL-3.0-only
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1734266881
+Maintainer: sbwml <admin@cooluc.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 261834
+Filename: chinadns-ng_2024.11.17-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 261772
+SHA256sum: 66813e07eed2d27b68cb9042d18fde6dc0977762b24bb15a2aeb9c4507caf360
+Description:  ChinaDNS next generation, refactoring with epoll and ipset.
+
+Package: dns2socks
+Version: 2.1-2
+Depends: libc, libpthread
+Source: feeds/base/openwrt-passwall/dns2socks
+SourceName: dns2socks
+License: BSD-3-Clause
+Section: net
+SourceDateEpoch: 1734266881
+Maintainer: ghostmaker
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 10755
+Filename: dns2socks_2.1-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 11518
+SHA256sum: 171269f9e0787b54107dbe97f5a1978aef3ff3330f42785f9332a69a30176b96
+Description:  This is a command line utility to resolve DNS requests via
+ a SOCKS tunnel like Tor or a HTTP proxy.
+
+Package: dns2tcp
+Version: 1.1.2-1
+Depends: libc
+Source: feeds/base/openwrt-passwall/dns2tcp
+SourceName: dns2tcp
+License: AGPL-3.0-only
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1734266881
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 9964
+Filename: dns2tcp_1.1.2-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 10746
+SHA256sum: 6f2287e2e5b1a92efc9bb91c347345f046f7fe1ca65793d2f8f3df6a569a356e
+Description:  utility to convert dns query from udp to tcp
 
 Package: dnsmasq-full
 Version: 2.90-2
@@ -198,6 +249,23 @@ SHA256sum: 8c14e381ae2f520362ce92d1714ef1c8e23cceb78cdb2248c498102f1c6f86b7
 Description:  This package provides an nftables-based implementation of the UCI firewall
  sharing the same configuration format.
 
+Package: geoview
+Version: 0.1.0-1
+Depends: libc
+Source: feeds/base/openwrt-passwall/v2ray-geoview
+SourceName: geoview
+License: Apache-2.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1734266881
+Maintainer: snowie2000
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1696684
+Filename: geoview_0.1.0-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 1695684
+SHA256sum: a635bf107a307ddfb33dfa3f18ac4c88afbf852d982043c768cc2c2cb3eac10b
+Description:  geoview is a handy tool to extract useful information from geo* files.
+
 Package: getrandom
 Version: 2022-08-13-4c7b720b-2
 Depends: libc
@@ -232,6 +300,38 @@ Filename: ip-full_6.3.0-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 220402
 SHA256sum: 9251e9824f20d2fa5e2e80f65afb2beee2670c8b03c76fce1379ff5a0702cd5b
 Description:  Routing control utility (full)
+
+Package: ipset
+Version: 7.17-1
+Depends: libc, kmod-ipt-ipset, libmnl0, libipset13
+Source: feeds/base/network/utils/ipset
+SourceName: ipset
+License: GPL-2.0
+Section: net
+SourceDateEpoch: 1695847021
+CPE-ID: cpe:/a:netfilter:ipset
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1293
+Filename: ipset_7.17-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 2092
+SHA256sum: 6eac31ebf3d6dd4951e0fa88833a7d84edf5f6247b4d5af136c1058132a5f10b
+Description:  IPset administration utility
+
+Package: ipt2socks
+Version: 1.1.4-3
+Depends: libc, libpthread
+Source: feeds/base/openwrt-passwall/ipt2socks
+SourceName: ipt2socks
+License: AGPL-3.0
+Section: net
+SourceDateEpoch: 1734266881
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 25685
+Filename: ipt2socks_1.1.4-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 26442
+SHA256sum: 26fb57b70c960b7a7d248afa2a25e81a2385c74220f039e4352cc68eabf72d37
+Description:  Utility for converting iptables (redirect/tproxy) to socks5.
 
 Package: jansson4
 Version: 2.14-3
@@ -342,6 +442,26 @@ Filename: libbpf1_1.2.2-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 128970
 SHA256sum: 283895db85f68a1202e844e5c1680edd2ce1360fb71d7ce098776a28f99d1b59
 Description:  libbpf is a library for loading eBPF programs and reading and manipulating eBPF objects from user-space.
+
+Package: libcap-bin
+Version: 2.69-1
+Depends: libc, libcap
+Source: feeds/base/libs/libcap
+SourceName: libcap-bin
+License: GPL-2.0-only
+LicenseFiles: License
+Section: libs
+SourceDateEpoch: 1684952784
+CPE-ID: cpe:/a:libcap_project:libcap
+Maintainer: Paul Wassi <p.wassi@gmx.at>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 21051
+Filename: libcap-bin_2.69-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 21852
+SHA256sum: 921cad60528e05b2d0956a1f317b1492ac2f4dd2773eef6125afc3f65d2e6cb0
+Description:  Linux capabilities
+ .
+ This package contains the libcap utilities.
 
 Package: libcap
 Version: 2.69-1
@@ -460,6 +580,25 @@ SHA256sum: 7bf0958afe0096e63bdde8d55022f0cc74c190ea1e6326cca83c5fa2c503eb49
 Description:  GMP is a free library for arbitrary precision arithmetic, operating on
  signed integers, rational numbers, and floating point numbers.
 
+Package: libipset13
+Version: 7.17-1
+Depends: libc, kmod-ipt-ipset, libmnl0
+Provides: libipset
+Source: feeds/base/network/utils/ipset
+SourceName: libipset
+License: GPL-2.0
+Section: net
+SourceDateEpoch: 1695847021
+ABIVersion: 13
+CPE-ID: cpe:/a:netfilter:ipset
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 44239
+Filename: libipset13_7.17-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 44674
+SHA256sum: a338d500ac29575040e3cee43f236b86db56772c9a4e538cb9b4141d313b68b4
+Description:  IPset administration utility
+
 Package: libiwinfo-data
 Version: 2023-07-01-ca79f641-1
 Depends: libc
@@ -533,6 +672,25 @@ Size: 4983
 SHA256sum: 2ad67db013fed8237c9ef7386c3284d37c0dbaf09ef17bb68d299d6c7d6c5d40
 Description:  Minimalistic JSON based scripting engine
 
+Package: libltdl7
+Version: 2.4.7-1
+Depends: libc
+Provides: libltdl
+Source: feeds/base/libs/libtool
+SourceName: libltdl
+License: GPL-2.0+
+LicenseFiles: COPYING
+Section: libs
+SourceDateEpoch: 1657472867
+ABIVersion: 7
+CPE-ID: cpe:/a:gnu:libtool
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 13213
+Filename: libltdl7_2.4.7-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 13879
+SHA256sum: 90c7790dee769cfd1fb86317dc0e70994b37763c74817282a46b010862d8f42c
+Description:  A generic dynamic object loading library
+
 Package: liblua5.1.5
 Version: 5.1.5-11
 Depends: libc
@@ -554,6 +712,29 @@ SHA256sum: 643473bb80f4f1ad4e5d66122856d9b9397b37fcd9976a6c1688c90fe20260aa
 Description:  Lua is a powerful light-weight programming language designed for extending 
  applications. Lua is also frequently used as a general-purpose, stand-alone 
  language. Lua is free software.
+ This package contains the Lua shared libraries, needed by other programs.
+
+Package: liblua5.3-5.3
+Version: 5.3.5-5
+Depends: libc
+Provides: liblua5.3
+Source: feeds/base/utils/lua5.3
+SourceName: liblua5.3
+License: MIT
+LicenseFiles: COPYRIGHT
+Section: libs
+SourceDateEpoch: 1702205234
+ABIVersion: -5.3
+CPE-ID: cpe:/a:lua:lua
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 77148
+Filename: liblua5.3-5.3_5.3.5-5_arm_cortex-a5_neon-vfpv4.ipk
+Size: 77941
+SHA256sum: 5ed8718b3b8a48b39fb1e20415180d4ee3a37c7cb1c914c3a09c59f8d06f4384
+Description:  Lua is a powerful, efficient, lightweight, embeddable scripting language. It
+ supports procedural programming, object-oriented programming, functional
+ programming, data-driven programming, and data description.
  This package contains the Lua shared libraries, needed by other programs.
 
 Package: libmbedtls12
@@ -1055,6 +1236,22 @@ Size: 9849
 SHA256sum: d5ef9f7642c7811ea876980881398622d1203c20a8211c0b44bb195d89310047
 Description:  OpenWrt RPC client library
 
+Package: libuci-lua
+Version: 2023-08-10-5781664d-1
+Depends: libc, libuci20130104, liblua5.1.5
+Source: feeds/base/system/uci
+SourceName: libuci-lua
+License: LGPL-2.1
+Section: libs
+SourceDateEpoch: 1691751214
+Maintainer: Felix Fietkau <nbd@nbd.name>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 5622
+Filename: libuci-lua_2023-08-10-5781664d-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 6349
+SHA256sum: d59ea432bdba13c50cc6a8ca7edd5b6acc66b788a479266624bcdc50fba2b477
+Description:  Lua plugin for UCI
+
 Package: libuci20130104
 Version: 2023-08-10-5781664d-1
 Depends: libc, libubox20230523
@@ -1301,6 +1498,36 @@ Size: 76985
 SHA256sum: bc39d1d6439892340aa2389c168989e376add32218e246d8a86a2d8cbe5ac5de
 Description:  LuCI Support for mosdns
 
+Package: luci-app-openclash
+Version: 0.46.050-beta
+Depends: libc, dnsmasq-full, coreutils, coreutils-nohup, bash, curl, ca-certificates, ip-full, libcap, libcap-bin, ruby, ruby-yaml, kmod-tun, unzip
+Source: feeds/base/luci-app-openclash
+SourceName: luci-app-openclash
+Section: opt
+SourceDateEpoch: 1734317337
+Maintainer: vernesong
+Architecture: all
+Installed-Size: 7653067
+Filename: luci-app-openclash_0.46.050-beta_all.ipk
+Size: 7614887
+SHA256sum: 5c82d597517f3195eac47e02e9e1e22155886a1a0a0c56f4381bef8fde4732e4
+Description:  A LuCI support for clash
+
+Package: luci-app-passwall
+Version: 24.12.08
+Depends: libc, coreutils, coreutils-base64, coreutils-nohup, curl, chinadns-ng, dns2socks, dns2tcp, dnsmasq-full, ip-full, libuci-lua, lua, luci-compat, luci-lib-jsonc, microsocks, resolveip, tcping, luci-lua-runtime
+Source: feeds/base/passwall/luci-app-passwall
+SourceName: luci-app-passwall
+Section: luci
+SourceDateEpoch: 1734285205
+Maintainer: OpenWrt LuCI community
+Architecture: all
+Installed-Size: 831820
+Filename: luci-app-passwall_24.12.08_all.ipk
+Size: 832609
+SHA256sum: 90ba7b66f4187b7ae6e63819a30242b51b8205dff340834736832a9463185d9c
+Description:  LuCI support for PassWall
+
 Package: luci-i18n-alist-zh-cn
 Version: git-24.317.46814-bc62846
 Depends: libc, luci-app-alist
@@ -1360,6 +1587,20 @@ Size: 4759
 SHA256sum: 8c1f951d1b6e19a2ff401ebfb3a02de1870b6960de354801bded2a1882c7c829
 Description:  Translation for luci-app-mosdns - 简体中文 (Chinese Simplified)
 
+Package: luci-i18n-passwall-zh-cn
+Version: git-24.350.64405-8e59741
+Depends: libc, luci-app-passwall
+Source: feeds/base/passwall/luci-app-passwall
+SourceName: luci-i18n-passwall-zh-cn
+Section: luci
+SourceDateEpoch: 1734285205
+Architecture: all
+Installed-Size: 14050
+Filename: luci-i18n-passwall-zh-cn_git-24.350.64405-8e59741_all.ipk
+Size: 14789
+SHA256sum: 4b558324d4e3625201b52e1ddc57cbd9182362612acb02d23219643b0d4741e9
+Description:  Translation for luci-app-passwall - 简体中文 (Chinese Simplified)
+
 Package: luci-theme-argon
 Version: 2.3.1
 Depends: libc, curl, jsonfilter, luci-lua-runtime
@@ -1374,6 +1615,24 @@ Filename: luci-theme-argon_2.3.1_all.ipk
 Size: 773899
 SHA256sum: e7b34fcfc2e3affa1488cd2adc359893a937bb658e293b057b55d234f0d0cca6
 Description:  Argon Theme
+
+Package: microsocks
+Version: 1.0.4-1
+Depends: libc, libpthread
+Source: feeds/base/openwrt-passwall/microsocks
+SourceName: microsocks
+License: MIT
+LicenseFiles: COPYING
+Section: net
+SourceDateEpoch: 1734266881
+Maintainer: lean
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 5275
+Filename: microsocks_1.0.4-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 6074
+SHA256sum: 872c3e8368e19e996b0800ebb3ab5c835f038f24f2a58848e6c347e37de95414
+Description:  A SOCKS5 service that you can run on your remote boxes to tunnel connections
+ through them, if for some reason SSH doesn't cut it for you.
 
 Package: mkf2fs
 Version: 1.16.0-1
@@ -1662,6 +1921,26 @@ Size: 25792
 SHA256sum: 03c0a403c55d843f0db4c34a530e421d51c7f8a247c2ffde169b0d2710f1a297
 Description:  Ext2 Filesystem resize utility
 
+Package: resolveip
+Version: 2
+Depends: libc
+Source: feeds/base/network/utils/resolveip
+SourceName: resolveip
+License: GPL-2.0
+Section: utils
+SourceDateEpoch: 1476524212
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1584
+Filename: resolveip_2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 2489
+SHA256sum: caf176d166ce99096d8584e90aaea9f1411a9ddca680fa4dbd30152b6f3c01ea
+Description:  This package contains the small resolveip utility which
+ can be used by scripts to turn host names into numeric
+ IP addresses. It supports IPv4 and IPv6 resolving and
+ has a configurable timeout to guarantee a certain maximum
+ runtime in case of slow or defunct DNS servers.
+
 Package: rpcd-mod-file
 Version: 2023-07-01-c07ab2f9-1
 Depends: libc, libubus20230605, libubox20230523, rpcd
@@ -1743,6 +2022,56 @@ Filename: script-utils_2.39-2_arm_cortex-a5_neon-vfpv4.ipk
 Size: 38745
 SHA256sum: 4f9421d4c84e2194b27979d46940e5c535e90cb087144397f0d2cd2aa8c8bfff
 Description:  contains: script, scriptreplay
+
+Package: simple-obfs
+Version: 0.0.5-1
+Depends: libc, libpthread, libev
+Source: feeds/base/openwrt-passwall/simple-obfs
+SourceName: simple-obfs
+License: GPL-3.0-or-later
+LicenseFiles: COPYING LICENSE
+Section: net
+SourceDateEpoch: 1734266881
+Maintainer: Jian Chang <aa65535@live.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 27552
+Filename: simple-obfs_0.0.5-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 28336
+SHA256sum: 05826e4b5a75d8e6d2538170376fa1b70e006fb3e172872b4d5d0cdc18250784
+Description:  Simple-obfs is a simple obfusacting tool, designed as plugin server of shadowsocks.
+
+Package: sing-box
+Version: 1.10.3-1
+Depends: libc, ca-bundle, kmod-inet-diag, kmod-netlink-diag, kmod-tun
+Source: feeds/base/openwrt-passwall/sing-box
+SourceName: sing-box
+License: GPL-3.0-or-later
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1734266881
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 10349089
+Filename: sing-box_1.10.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 10331284
+SHA256sum: a6953c84cced159d89dc9390ded286d4af8dd2fb4cd677b48b74ba53141aca6b
+Description:  Sing-box is a universal proxy platform which supports hysteria, SOCKS,
+ Shadowsocks, ShadowTLS, Tor, trojan, VLess, VMess, WireGuard and so on.
+
+Package: tcping
+Version: 0.3-1
+Depends: libc
+Source: feeds/base/openwrt-passwall/tcping
+SourceName: tcping
+License: GPL-2.0-only
+LicenseFiles: license.txt
+Section: net
+SourceDateEpoch: 1734266881
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 3439
+Filename: tcping_0.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 4154
+SHA256sum: f17f75362b41976b02e67961d3134d00e4641c44f2434517070e3cd52f41b8ec
+Description:  tcping measures the latency of a tcp-connection
 
 Package: terminfo
 Version: 6.4-2
@@ -1999,38 +2328,56 @@ SHA256sum: 8b074f65734826d93a455bfac92d8af36ff6baeff620e3e25149998fdc8eb94e
 Description:  V2ray geo/ip data unpack tools
 
 Package: v2ray-geoip
-Version: 2024-12-15-1
+Version: 202412050058.1
 Depends: libc
-Source: feeds/base/v2ray-geodata
+Source: feeds/base/openwrt-passwall/v2ray-geodata
 SourceName: v2ray-geoip
 License: CC-BY-SA-4.0
 LicenseFiles: LICENSE
 Section: net
-SourceDateEpoch: 1727959000
-Maintainer: sbwml <admin@cooluc.com>
+SourceDateEpoch: 1734266881
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
 Architecture: all
-Installed-Size: 64682
-Filename: v2ray-geoip_2024-12-15-1_all.ipk
-Size: 62652
-SHA256sum: 8247693f2ba2c8dcb0f9c247fdeb6442546d7cdbd76b7ba387ed0f3dbd9d27a7
+Installed-Size: 3388687
+Filename: v2ray-geoip_202412050058.1_all.ipk
+Size: 3113685
+SHA256sum: 48fda66c03da715da0b82b5b4f516c966c4c15afc3ad0576e40fbd13f4f56054
 Description:  GeoIP List for V2Ray
 
 Package: v2ray-geosite
-Version: 2024-12-15-1
+Version: 20241112092643.1
 Depends: libc
-Source: feeds/base/v2ray-geodata
+Source: feeds/base/openwrt-passwall/v2ray-geodata
 SourceName: v2ray-geosite
-License: GPL-3.0
+License: MIT
 LicenseFiles: LICENSE
 Section: net
-SourceDateEpoch: 1727959000
-Maintainer: sbwml <admin@cooluc.com>
+SourceDateEpoch: 1734266881
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
 Architecture: all
-Installed-Size: 2191126
-Filename: v2ray-geosite_2024-12-15-1_all.ipk
-Size: 2191743
-SHA256sum: 5eb9ce84819f2308b566cc23fcdc37193e32ad5dc6277c7ce94682bbb7e3e8c3
+Installed-Size: 625083
+Filename: v2ray-geosite_20241112092643.1_all.ipk
+Size: 625032
+SHA256sum: 22fb8b88569a46a794453f69309cd8aa38e5aa7c6cdf4bc41a86e38b1feee9c6
 Description:  Geosite List for V2Ray
+
+Package: xray-core
+Version: 24.12.15-1
+Depends: libc, ca-bundle
+Source: feeds/base/openwrt-passwall/xray-core
+SourceName: xray-core
+License: MPL-2.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1734266881
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 9748100
+Filename: xray-core_24.12.15-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 9731717
+SHA256sum: 213b241a1cec6a1cedc8147b8bc56522b83627c324b871c1a8bf9d1982d0fd9e
+Description:  Xray, Penetrates Everything. It helps you to build your own computer network.
+ It secures your network connections and thus protects your privacy.
 
 Package: zlib
 Version: 1.2.13-1
