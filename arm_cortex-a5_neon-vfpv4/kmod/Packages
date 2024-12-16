@@ -5,8 +5,8 @@ Section: opt
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 1259
 Filename: autocore_42_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1961
-SHA256sum: 158638b22144dca8a578413b37593f0edbabbc78c10b24db4fe0c911302f1568
+Size: 1965
+SHA256sum: 34b8d55ddcd52933e312ab4c2ed4236ca42fd88b321373135319dcb71028eaef
 Description:  auto core loadbalance script.
 
 Package: automount
@@ -14,10 +14,10 @@ Version: 10
 Depends: libc, block-mount, e2fsprogs, kmod-usb-storage, kmod-usb-storage-extras, kmod-usb-storage-uas, kmod-fs-ext4, kmod-fs-exfat, kmod-fs-vfat, ntfs3-mount
 Section: opt
 Architecture: all
-Installed-Size: 832
+Installed-Size: 831
 Filename: automount_10_all.ipk
-Size: 1593
-SHA256sum: dd912b4879c109e497fe2b09869c78eb6844d76e3e5ee4a5bb1a428aa8675878
+Size: 1584
+SHA256sum: ea3602f64f6bf1a524da8b4a3de553933e57397c3b5fba0acfa0d89cc6cf0671
 Description:  Mount autoconfig hotplug script.
 
 Package: base-files
@@ -26,10 +26,10 @@ Depends: libc, netifd, jsonfilter, usign, openwrt-keyring, fstools, fwtool
 License: GPL-2.0
 Section: base
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 45589
+Installed-Size: 45590
 Filename: base-files_1563-r24147-b551214c9d_arm_cortex-a5_neon-vfpv4.ipk
-Size: 46558
-SHA256sum: 07f7f0b5dded7100a39c2c337ca3dab1bf10b23e84159a47409c0bd8b9d272e5
+Size: 46552
+SHA256sum: f161d7db856043588951ce6cebd7cc538a5e6e822d0cdde707b6eb29a2a3e488
 Description:  This package contains a base filesystem and system scripts for OpenWrt.
 
 Package: block-mount
@@ -102,6 +102,30 @@ Description:  Extra ip6tables nftables nft binaries.
  ip6tables-translate
  ip6tables-restore-translate
 
+Package: iptables-mod-conntrack-extra
+Version: 1.8.8-3
+Depends: libc, libxtables12, kmod-ipt-conntrack-extra
+License: GPL-2.0
+Section: net
+CPE-ID: cpe:/a:netfilter:iptables
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 11177
+Filename: iptables-mod-conntrack-extra_1.8.8-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 12010
+SHA256sum: ed46a5f8a03ffae62d25dce2731b0f801428a2c0882f77030c0936a2d60b481a
+Description:  Extra iptables extensions for connection tracking.
+ 
+ Matches:
+ - connbytes
+ - connlimit
+ - connmark
+ - recent
+ - helper
+ 
+ Targets:
+ - CONNMARK
+ 
+
 Package: iptables-mod-extra
 Version: 1.8.8-3
 Depends: libc, libxtables12, kmod-ipt-extra
@@ -121,6 +145,74 @@ Description:  Other extra iptables extensions.
  - owner
  - pkttype
  - quota
+ 
+
+Package: iptables-mod-iprange
+Version: 1.8.8-3
+Depends: libc, libxtables12, kmod-ipt-iprange
+License: GPL-2.0
+Section: net
+CPE-ID: cpe:/a:netfilter:iptables
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 2998
+Filename: iptables-mod-iprange_1.8.8-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 3757
+SHA256sum: feb51bad7820587408b763cd8ab1c054088b7affeffd60b91f64c232509229db
+Description:  iptables extensions for matching ip ranges.
+ 
+ Matches:
+ - iprange
+ 
+
+Package: iptables-mod-nat-extra
+Version: 1.8.8-3
+Depends: libc, libxtables12, kmod-ipt-nat-extra
+License: GPL-2.0
+Section: net
+CPE-ID: cpe:/a:netfilter:iptables
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 2054
+Filename: iptables-mod-nat-extra_1.8.8-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 2828
+SHA256sum: 821f12908bb1006d1aa851f352dd0320f3df08c9a4c8c958e7feb89618fd9ef7
+Description:  iptables extensions for extra NAT targets.
+ 
+ Targets:
+ - MIRROR
+ - NETMAP
+
+Package: iptables-mod-socket
+Version: 1.8.8-3
+Depends: libc, libxtables12, kmod-ipt-socket
+License: GPL-2.0
+Section: net
+CPE-ID: cpe:/a:netfilter:iptables
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1568
+Filename: iptables-mod-socket_1.8.8-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 2349
+SHA256sum: 0273a0ce83df28968dfa62e5a6f7f9b7bc55a37106f7aea4f5e31d174cfb7613
+Description:  Socket match iptables extensions.
+ 
+ Matches:
+ - socket
+ 
+
+Package: iptables-mod-tproxy
+Version: 1.8.8-3
+Depends: libc, libxtables12, kmod-ipt-tproxy
+License: GPL-2.0
+Section: net
+CPE-ID: cpe:/a:netfilter:iptables
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1630
+Filename: iptables-mod-tproxy_1.8.8-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 2416
+SHA256sum: 6b1caf5bfdca155bf2dabb0528d35ed0ebc5914c773147ca34dcb68605b8e8cf
+Description:  Transparent proxy iptables extensions.
+ 
+ Targets:
+ - TPROXY
  
 
 Package: iptables-nft
@@ -437,6 +529,24 @@ Size: 4840
 SHA256sum: a51ba2fe165fc6853f95efaaf6622dcc9673ae17c269c6994d1598f15b0a84d0
 Description:  Netfilter IPv6 firewalling support
 
+Package: kmod-ipt-conntrack-extra
+Version: 6.11.11-1
+Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-nf-conncount, kmod-ipt-core, kmod-ipt-conntrack
+License: GPL-2.0-only
+Section: kernel
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 11483
+Filename: kmod-ipt-conntrack-extra_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 12307
+SHA256sum: 924b7901ed9a77222b227d82fa1db6c78cbec85f91e34db307e0e1138813e435
+Description:  Netfilter (IPv4) extra kernel modules for connection tracking
+ Includes:
+ - connbytes
+ - connmark/CONNMARK
+ - conntrack
+ - helper
+ - recent
+
 Package: kmod-ipt-conntrack
 Version: 6.11.11-1
 Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-ipt-core, kmod-nf-conntrack
@@ -492,6 +602,20 @@ Description:  Other Netfilter (IPv4) kernel modules
  - pkttype
  - quota
 
+Package: kmod-ipt-iprange
+Version: 6.11.11-1
+Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-ipt-core
+License: GPL-2.0-only
+Section: kernel
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1573
+Filename: kmod-ipt-iprange_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 2385
+SHA256sum: 706dfcb2e2171b1c0e0c6d7e5d0180b9a9ea53c32adb1fe96f9d45835662f893
+Description:  Netfilter (IPv4) module for matching ip ranges
+ Includes:
+ - iprange
+
 Package: kmod-ipt-ipset
 Version: 6.11.11-1
 Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-ipt-core, kmod-nfnetlink
@@ -503,6 +627,21 @@ Filename: kmod-ipt-ipset_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 204077
 SHA256sum: ef95362631202dcef59677098966066572530b5fb37dd7e80f088ab05adc9de9
 Description:  IPset netfilter modules
+
+Package: kmod-ipt-nat-extra
+Version: 6.11.11-1
+Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-ipt-core, kmod-ipt-nat
+License: GPL-2.0-only
+Section: kernel
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 2046
+Filename: kmod-ipt-nat-extra_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 2880
+SHA256sum: 20e6717f1c6d535acd7481d13d779b3fcdb2177baa8aa83dabb0587a2d90c8c6
+Description:  Netfilter (IPv4) kernel modules for extra NAT targets
+ Includes:
+ - NETMAP
+ - REDIRECT
 
 Package: kmod-ipt-nat6
 Version: 6.11.11-1
@@ -541,6 +680,30 @@ Filename: kmod-ipt-physdev_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 2888
 SHA256sum: 7ec525b7dcaecb902930772b1ec085fc4a964351b533fd5093bb3c6d777eddaa
 Description:  The iptables physdev kernel module
+
+Package: kmod-ipt-socket
+Version: 6.11.11-1
+Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-nf-socket, kmod-nf-conntrack, kmod-ipt-core
+License: GPL-2.0-only
+Section: kernel
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 2658
+Filename: kmod-ipt-socket_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 3431
+SHA256sum: 2f624be33d35d66a19fc669a6c0beca96c77e29fb750d552bbc294f8ef437bef
+Description:  Kernel modules for socket matching
+
+Package: kmod-ipt-tproxy
+Version: 6.11.11-1
+Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-nf-tproxy, kmod-nf-conntrack, kmod-ipt-core
+License: GPL-2.0-only
+Section: kernel
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 2801
+Filename: kmod-ipt-tproxy_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 3574
+SHA256sum: 414b69cc5b85227ef1ed7f8bb664c9f13c5edc3ce4f0a84414e94834da59601f
+Description:  Kernel modules for Transparent Proxying
 
 Package: kmod-lib-crc-ccitt
 Version: 6.11.11-1
@@ -709,6 +872,18 @@ Filename: kmod-netlink-diag_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 3415
 SHA256sum: 1335c1c0c271b027f2652177c1e60e92d02dc8788874ac9381be224b74b209cd
 Description:  Netlink diag is a module made for use with iproute2's ss utility
+
+Package: kmod-nf-conncount
+Version: 6.11.11-1
+Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-nf-conntrack
+License: GPL-2.0-only
+Section: kernel
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 5384
+Filename: kmod-nf-conncount_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 6161
+SHA256sum: d7ff5e922c14d9ae8ab30e52c880a5d1bbfc4b46d543ca910d60894ea7dadff3
+Description:  Netfilter conncount support
 
 Package: kmod-nf-conntrack-netlink
 Version: 6.11.11-1
@@ -1437,10 +1612,10 @@ Depends: libc, kmod-fs-ntfs3
 Conflicts: ntfs-3g
 Section: utils
 Architecture: all
-Installed-Size: 196
+Installed-Size: 194
 Filename: ntfs3-mount_10_all.ipk
-Size: 897
-SHA256sum: 5664ba2c481d1ac00a7659bd2fc4aa798a87226f421ad33c4aec97fe89fd886c
+Size: 894
+SHA256sum: 819c808aa0fa2d49c748af69ae50fc82be57399443b2efc9b8a1bdf2efa8bde6
 Description:  NTFS mount script for Paragon NTFS3 driver
 
 Package: xtables-nft

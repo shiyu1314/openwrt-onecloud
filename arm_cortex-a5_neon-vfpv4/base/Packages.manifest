@@ -10,8 +10,8 @@ Maintainer: sbwml <admin@cooluc.com>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 26886795
 Filename: alist_3.41.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26795352
-SHA256sum: 02e88fe3118ead0825bff453692f5be9aa6bb1ee80ea38207aaa4e4b0904a68d
+Size: 26795406
+SHA256sum: ece38f882ab9ec726eca385cd15cc886458321bc766488bb444d608eb49ceeb0
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -37,13 +37,13 @@ Depends: libc, luci-app-samba4, wsdd2
 Source: feeds/base/emortal/autosamba
 SourceName: autosamba
 Section: opt
-SourceDateEpoch: 1734317337
+SourceDateEpoch: 1734327932
 Maintainer: Lean
 Architecture: all
-Installed-Size: 1175
+Installed-Size: 1176
 Filename: autosamba_1-12_all.ipk
-Size: 1903
-SHA256sum: d91503b972c67aa31562a3da1e1f09901e3c0758576f1d071c4e5c5d49f46700
+Size: 1901
+SHA256sum: 11844661122f0319d6aede1544aa0ac3cc2fce224598ac823685a9921385c14f
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
@@ -1504,13 +1504,13 @@ Depends: libc, dnsmasq-full, coreutils, coreutils-nohup, bash, curl, ca-certific
 Source: feeds/base/luci-app-openclash
 SourceName: luci-app-openclash
 Section: opt
-SourceDateEpoch: 1734317337
+SourceDateEpoch: 1734327932
 Maintainer: vernesong
 Architecture: all
-Installed-Size: 7653067
+Installed-Size: 7652894
 Filename: luci-app-openclash_0.46.050-beta_all.ipk
-Size: 7614887
-SHA256sum: 5c82d597517f3195eac47e02e9e1e22155886a1a0a0c56f4381bef8fde4732e4
+Size: 7614841
+SHA256sum: 0eb06b2c96b1da891829c9d70da98e901bdac36378fcc243a628cd049697e984
 Description:  A LuCI support for clash
 
 Package: luci-app-passwall
