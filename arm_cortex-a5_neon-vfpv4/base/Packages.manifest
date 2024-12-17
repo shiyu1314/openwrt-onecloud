@@ -10,8 +10,8 @@ Maintainer: sbwml <admin@cooluc.com>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 26886795
 Filename: alist_3.41.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26795406
-SHA256sum: ece38f882ab9ec726eca385cd15cc886458321bc766488bb444d608eb49ceeb0
+Size: 26795470
+SHA256sum: 0a163f1d40e14b3f71da88ed61aa26f3e12bfce20854f380d70ca51941ebee11
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -37,13 +37,13 @@ Depends: libc, luci-app-samba4, wsdd2
 Source: feeds/base/emortal/autosamba
 SourceName: autosamba
 Section: opt
-SourceDateEpoch: 1734327932
+SourceDateEpoch: 1734430537
 Maintainer: Lean
 Architecture: all
-Installed-Size: 1176
+Installed-Size: 1175
 Filename: autosamba_1-12_all.ipk
-Size: 1901
-SHA256sum: 11844661122f0319d6aede1544aa0ac3cc2fce224598ac823685a9921385c14f
+Size: 1899
+SHA256sum: 0cd1423b1cdc9202d7da62942a6096c9141dc5d3018444889eb1debf76fa7371
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
@@ -1458,13 +1458,13 @@ Depends: libc, luci-theme-argon
 Source: feeds/base/xd/luci-theme-argon/luci-app-argon-config
 SourceName: luci-app-argon-config
 Section: luci
-SourceDateEpoch: 1733068089
+SourceDateEpoch: 1734359223
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 3195
+Installed-Size: 3198
 Filename: luci-app-argon-config_1.0_all.ipk
-Size: 4049
-SHA256sum: 5e84440a49d328892ccc9a01941cab3e7a82b37841c5aeb6286016dbc6678349
+Size: 4053
+SHA256sum: 4484e1c5659523af136585975125e1a340534add78c5bdebf719c5bc63230a48
 Description:  LuCI app for Argon theme configuration
 
 Package: luci-app-aria2
@@ -1504,28 +1504,28 @@ Depends: libc, dnsmasq-full, coreutils, coreutils-nohup, bash, curl, ca-certific
 Source: feeds/base/luci-app-openclash
 SourceName: luci-app-openclash
 Section: opt
-SourceDateEpoch: 1734327932
+SourceDateEpoch: 1734430537
 Maintainer: vernesong
 Architecture: all
-Installed-Size: 7652894
+Installed-Size: 7652965
 Filename: luci-app-openclash_0.46.050-beta_all.ipk
-Size: 7614841
-SHA256sum: 0eb06b2c96b1da891829c9d70da98e901bdac36378fcc243a628cd049697e984
+Size: 7614768
+SHA256sum: c53f8862067c0589ed0c58228872393452a70588b4b4db8acd43108f6d97ef28
 Description:  A LuCI support for clash
 
 Package: luci-app-passwall
-Version: 24.12.08
+Version: 24.12.17
 Depends: libc, coreutils, coreutils-base64, coreutils-nohup, curl, chinadns-ng, dns2socks, dns2tcp, dnsmasq-full, ip-full, libuci-lua, lua, luci-compat, luci-lib-jsonc, microsocks, resolveip, tcping, luci-lua-runtime
 Source: feeds/base/passwall/luci-app-passwall
 SourceName: luci-app-passwall
 Section: luci
-SourceDateEpoch: 1734285205
+SourceDateEpoch: 1734416575
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 831820
-Filename: luci-app-passwall_24.12.08_all.ipk
-Size: 832609
-SHA256sum: 90ba7b66f4187b7ae6e63819a30242b51b8205dff340834736832a9463185d9c
+Installed-Size: 830258
+Filename: luci-app-passwall_24.12.17_all.ipk
+Size: 831087
+SHA256sum: 8cf92e64a557586a4e23397105eb46ed68138c1267c06ea4f896590d573b91f2
 Description:  LuCI support for PassWall
 
 Package: luci-i18n-alist-zh-cn
@@ -1543,18 +1543,18 @@ SHA256sum: 7f1bb7b25c12dd58a7dcd27a18d1e8a002f4cea513de6653b57c2642dae6200e
 Description:  Translation for luci-app-alist - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-argon-config-zh-cn
-Version: git-24.336.56889-26e4d57
+Version: git-24.351.52023-fb36113
 Depends: libc, luci-app-argon-config
 Source: feeds/base/xd/luci-theme-argon/luci-app-argon-config
 SourceName: luci-i18n-argon-config-zh-cn
 Section: luci
-SourceDateEpoch: 1733068089
+SourceDateEpoch: 1734359223
 Maintainer: jerrykuku <jerrykuku@qq.com>
 Architecture: all
-Installed-Size: 1456
-Filename: luci-i18n-argon-config-zh-cn_git-24.336.56889-26e4d57_all.ipk
-Size: 2263
-SHA256sum: 79f3f0425a2908be58dca02aa92a303561ac458bbc73879171a47736554a5601
+Installed-Size: 1457
+Filename: luci-i18n-argon-config-zh-cn_git-24.351.52023-fb36113_all.ipk
+Size: 2265
+SHA256sum: bd21b36cacf3a450eb9ff60bf5e4b082332c36a2322c36f768689d71d9c4100d
 Description:  Translation for luci-app-argon-config - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-aria2-zh-cn
@@ -1588,17 +1588,17 @@ SHA256sum: 8c1f951d1b6e19a2ff401ebfb3a02de1870b6960de354801bded2a1882c7c829
 Description:  Translation for luci-app-mosdns - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-passwall-zh-cn
-Version: git-24.350.64405-8e59741
+Version: git-24.352.22975-582e13a
 Depends: libc, luci-app-passwall
 Source: feeds/base/passwall/luci-app-passwall
 SourceName: luci-i18n-passwall-zh-cn
 Section: luci
-SourceDateEpoch: 1734285205
+SourceDateEpoch: 1734416575
 Architecture: all
-Installed-Size: 14050
-Filename: luci-i18n-passwall-zh-cn_git-24.350.64405-8e59741_all.ipk
-Size: 14789
-SHA256sum: 4b558324d4e3625201b52e1ddc57cbd9182362612acb02d23219643b0d4741e9
+Installed-Size: 14069
+Filename: luci-i18n-passwall-zh-cn_git-24.352.22975-582e13a_all.ipk
+Size: 14804
+SHA256sum: a5ac17ab0bcaed7b6c71b33ebb37f4486c208ad0fff74b71ac44f4cb0f392f6c
 Description:  Translation for luci-app-passwall - 简体中文 (Chinese Simplified)
 
 Package: luci-theme-argon
@@ -1607,13 +1607,13 @@ Depends: libc, curl, jsonfilter, luci-lua-runtime
 Source: feeds/base/xd/luci-theme-argon/luci-theme-argon
 SourceName: luci-theme-argon
 Section: luci
-SourceDateEpoch: 1733068089
+SourceDateEpoch: 1734359223
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 773064
+Installed-Size: 773071
 Filename: luci-theme-argon_2.3.1_all.ipk
-Size: 773899
-SHA256sum: e7b34fcfc2e3affa1488cd2adc359893a937bb658e293b057b55d234f0d0cca6
+Size: 773888
+SHA256sum: 209dafaea7010a32c27be8136c7e260d22f010b918da30e2c461d58d34f8c3d1
 Description:  Argon Theme
 
 Package: microsocks
