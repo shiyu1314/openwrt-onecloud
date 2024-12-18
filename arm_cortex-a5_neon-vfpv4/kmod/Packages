@@ -3,10 +3,10 @@ Version: 42
 Depends: libc
 Section: opt
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 1259
+Installed-Size: 1258
 Filename: autocore_42_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1965
-SHA256sum: 81f8e31ba3d7521845ce0455be9816fd6aa11a284b6e6da490ada058e78a1aa0
+Size: 1962
+SHA256sum: b7d159b30e0aa860b6882e7950c9c04567843f23d61ee3f47e1f8854a2535096
 Description:  auto core loadbalance script.
 
 Package: automount
@@ -14,10 +14,10 @@ Version: 10
 Depends: libc, block-mount, e2fsprogs, kmod-usb-storage, kmod-usb-storage-extras, kmod-usb-storage-uas, kmod-fs-ext4, kmod-fs-exfat, kmod-fs-vfat, ntfs3-mount
 Section: opt
 Architecture: all
-Installed-Size: 831
+Installed-Size: 830
 Filename: automount_10_all.ipk
-Size: 1584
-SHA256sum: 1b99a21f6c50478c9f35bac0a1e19737c3fbe49678bfb4f3536abe38a07fadfa
+Size: 1581
+SHA256sum: 34dc214f3bef7c74f2158c6674de539bb80d5da3962bc64ac2811db1870b9b65
 Description:  Mount autoconfig hotplug script.
 
 Package: base-files
@@ -26,10 +26,10 @@ Depends: libc, netifd, jsonfilter, usign, openwrt-keyring, fstools, fwtool
 License: GPL-2.0
 Section: base
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 45589
+Installed-Size: 45592
 Filename: base-files_1563-r24147-b551214c9d_arm_cortex-a5_neon-vfpv4.ipk
-Size: 46556
-SHA256sum: ae299183180bebf8053ba78851275854fdfbe98a312adbb119f803adb63b964e
+Size: 46566
+SHA256sum: 1ae4b3c65cc8e8c990ed94b4be60e584b57abdd4efeafb0a49e415b6a106be4c
 Description:  This package contains a base filesystem and system scripts for OpenWrt.
 
 Package: block-mount
@@ -342,6 +342,18 @@ Filename: kmod-crypto-manager_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 999
 SHA256sum: e001d364d6b4b18115d21eec1c505ef01481c6cc559b7ba075aa49e59c712166
 Description:  CryptoAPI algorithm manager
+
+Package: kmod-crypto-md5
+Version: 6.11.11-1
+Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-crypto-hash
+License: GPL-2.0-only
+Section: kernel
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 3724
+Filename: kmod-crypto-md5_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 4492
+SHA256sum: c09ffbb64bd4adfd42a1d133d0d239cb8ff3930d14223efd8b6b262c987c359e
+Description:  MD5 digest CryptoAPI module
 
 Package: kmod-crypto-null
 Version: 6.11.11-1
@@ -1187,6 +1199,30 @@ Size: 3296
 SHA256sum: f2c1fd6228645540a58ef0ff0373f57169598bb7f9baea2883e46cc0618e5ee9
 Description:  Kernel module for NLS Codepage 437 (United States, Canada)
 
+Package: kmod-nls-cp936
+Version: 6.11.11-1
+Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-nls-base
+License: GPL-2.0-only
+Section: kernel
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 85149
+Filename: kmod-nls-cp936_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 85707
+SHA256sum: 38e3950692d57bf83faaf15283b9a06aac63863f31a07646b9fb4c9ca36100fe
+Description:  Kernel module for NLS Codepage 936 (Simplified Chinese)
+
+Package: kmod-nls-cp950
+Version: 6.11.11-1
+Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-nls-base
+License: GPL-2.0-only
+Section: kernel
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 61791
+Filename: kmod-nls-cp950_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 62664
+SHA256sum: 67a0060b8d520f820d5b97d082004fdfaab4de18b06c5ad368a92223a5ba17b6
+Description:  Kernel module for NLS Codepage 950 (Traditional Chinese)
+
 Package: kmod-nls-iso8859-1
 Version: 6.11.11-1
 Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-nls-base
@@ -1614,8 +1650,8 @@ Section: utils
 Architecture: all
 Installed-Size: 195
 Filename: ntfs3-mount_10_all.ipk
-Size: 894
-SHA256sum: def95ac0f7b27f087053ef15dabcfae919e7006fb1101f94e5247dcabddcc9ff
+Size: 895
+SHA256sum: eaf0cc95408982525614258dedb18178f99a694644ea4ce25ec304a3b580e630
 Description:  NTFS mount script for Paragon NTFS3 driver
 
 Package: xtables-nft

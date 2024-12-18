@@ -7,10 +7,10 @@ Section: luci
 SourceDateEpoch: 1734419831
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 7184
+Installed-Size: 7205
 Filename: luci-app-mihomo_1.14.0_all.ipk
-Size: 8029
-SHA256sum: 73e7c47c3e6963385fe52cfb7b3bf7c7bf51e7951ff13fa78d5f79c22284999b
+Size: 8051
+SHA256sum: 23d69f257b1069a36b4e86b7f8f41aa83175050c5ff79e3c64336e567f78386b
 Description:  LuCI Support for mihomo
 
 Package: luci-i18n-mihomo-zh-cn
@@ -38,9 +38,9 @@ Require-User: root:mihomo=7890
 SourceDateEpoch: 1734419831
 Maintainer: Joseph Mory <morytyann@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 10497810
+Installed-Size: 10497955
 Filename: mihomo_2024-12-13-c7fc93df-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 10481694
-SHA256sum: 35c2ec7718e9ea8dfe44744b60fc634a14e8b2b29ac6ec5656e49154aa2411ca
+Size: 10481588
+SHA256sum: 80e28d9d02da4598d902633d760f0510adf48cca6a096c572aa5238a56c54be6
 Description:  A rule based proxy in Go.
 

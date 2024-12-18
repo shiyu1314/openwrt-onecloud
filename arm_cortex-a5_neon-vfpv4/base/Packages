@@ -4,10 +4,10 @@ Depends: libc, ca-bundle
 License: GPL-3.0
 Section: net
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 26886795
+Installed-Size: 26886794
 Filename: alist_3.41.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26795470
-SHA256sum: 0a163f1d40e14b3f71da88ed61aa26f3e12bfce20854f380d70ca51941ebee11
+Size: 26795453
+SHA256sum: e0e641901670c2a8df46aa3a7be0886e7637c8064ef3c7957fc7a28ecb87f53a
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: ariang-nginx
@@ -29,8 +29,8 @@ Section: opt
 Architecture: all
 Installed-Size: 1175
 Filename: autosamba_1-12_all.ipk
-Size: 1899
-SHA256sum: 0cd1423b1cdc9202d7da62942a6096c9141dc5d3018444889eb1debf76fa7371
+Size: 1897
+SHA256sum: 04f81eb0d220b00b5e38702604b1b5b99d4fc4f0f938f5019437f8d75fa7cda7
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
@@ -172,6 +172,19 @@ SHA256sum: 55507fab010c3b0d07cc63e5aa684c79761489a439848fd628174ae0cacc3653
 Description:  ethtool is a small utility for examining and tuning your ethernet-based
  network interface
 
+Package: fdisk
+Version: 2.39-2
+Depends: libc, libblkid1, libsmartcols1, libfdisk1, libncursesw6
+License: GPL-2.0-only
+Section: utils
+CPE-ID: cpe:/a:kernel:util-linux
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 53007
+Filename: fdisk_2.39-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 53655
+SHA256sum: fcd66ba999265c7ba4be1fea7dc658f2b5e65805fec4069c8d19a015d117d4de
+Description:  a menu-driven program for creation and manipulation of partition tables
+
 Package: firewall4
 Version: 2023-09-01-598d9fbb-1
 Depends: ucode (>= 2022-03-22), libc, kmod-nft-core, kmod-nft-fib, kmod-nft-offload, kmod-nft-nat, nftables-json, ucode, ucode-mod-fs, ucode-mod-ubus, ucode-mod-uci
@@ -209,6 +222,19 @@ Filename: getrandom_2022-08-13-4c7b720b-2_arm_cortex-a5_neon-vfpv4.ipk
 Size: 2195
 SHA256sum: bccb5bbfaa83cbaade8f31d92865fa5f18fcecd855b5cc6352c278e69f1ae12d
 Description:  OpenWrt getrandom system helper
+
+Package: hostapd-common
+Version: 2023-09-08-e5ccbfc6-8
+Depends: libc
+License: BSD-3-Clause
+Section: net
+CPE-ID: cpe:/a:w1.fi:hostapd
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 16222
+Filename: hostapd-common_2023-09-08-e5ccbfc6-8_arm_cortex-a5_neon-vfpv4.ipk
+Size: 17026
+SHA256sum: 071d60c45d872cda76dd3149a499ada8e8588abfbdb719167d2c96126cf8a52f
+Description:  hostapd/wpa_supplicant common support files
 
 Package: ip-full
 Version: 6.3.0-1
@@ -425,6 +451,21 @@ Filename: libf2fs6_1.16.0-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 42537
 SHA256sum: c01a03dae63e16786654abe7417762d13429f33597b10a277b49350f24c2b996
 Description:  Library for Flash-Friendly File System (F2FS) tools
+
+Package: libfdisk1
+Version: 2.39-2
+Depends: libc, libuuid1, libblkid1
+Provides: libfdisk
+License: GPL-2.0-only
+Section: libs
+ABIVersion: 1
+CPE-ID: cpe:/a:kernel:util-linux
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 149983
+Filename: libfdisk1_2.39-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 150543
+SHA256sum: b05c519071f73486b795e31a4b93f46e58cc476bcca4885690e9828c8638b392
+Description:  The libfdisk library is used for manipulating with partition tables.
 
 Package: libgmp10
 Version: 6.2.1-1
@@ -1012,6 +1053,22 @@ Size: 68005
 SHA256sum: 976a9dcc7742ed8750578f6b7aeecf3cc8c924ec6694afe436aa713581569a15
 Description:  The libucode package provides the shared runtime library for the ucode interpreter.
 
+Package: libusb-1.0-0
+Version: 1.0.26-3
+Depends: libc, libpthread, librt, libatomic1
+Provides: libusb-1.0
+License: LGPL-2.1-or-later
+Section: libs
+ABIVersion: -0
+CPE-ID: cpe:/a:libusb:libusb
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 28537
+Filename: libusb-1.0-0_1.0.26-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 29349
+SHA256sum: cd3209111c558d1c0ad14d186f844e1c32531095734f0985b340041bd9768332
+Description:  libusb is a C library that gives applications easy access to USB devices on
+ many different operating systems.
+
 Package: libustream-mbedtls20201210
 Version: 2023-02-25-498f6e26-1
 Depends: libc, libubox20230523, libmbedtls12
@@ -1097,6 +1154,19 @@ Size: 68148
 SHA256sum: 2c92b29c58b21e5c137da456bb81f867983fd4dd3174086f992edf71c3a31cd6
 Description:  lsblk lists information about all or the specified block devices
 
+Package: lscpu
+Version: 2.39-2
+Depends: libc, libsmartcols1
+License: GPL-2.0-only
+Section: utils
+CPE-ID: cpe:/a:kernel:util-linux
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 49101
+Filename: lscpu_2.39-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 50007
+SHA256sum: 9fe9d2b6e53df861b8b7a9edd541b3641c49615aaa53d795deeb62193c55344b
+Description:  lscpu displays information about the CPU architecture
+
 Package: lua
 Version: 5.1.5-11
 Depends: libc, liblua5.1.5
@@ -1163,10 +1233,10 @@ Version: 0.46.050-beta
 Depends: libc, dnsmasq-full, coreutils, coreutils-nohup, bash, curl, ca-certificates, ip-full, libcap, libcap-bin, ruby, ruby-yaml, kmod-tun, unzip
 Section: opt
 Architecture: all
-Installed-Size: 7652965
+Installed-Size: 7652865
 Filename: luci-app-openclash_0.46.050-beta_all.ipk
-Size: 7614768
-SHA256sum: c53f8862067c0589ed0c58228872393452a70588b4b4db8acd43108f6d97ef28
+Size: 7614544
+SHA256sum: cb3dd996fc7ca9379667359da31529eab9884bbb6e0e1148fd967eab2b45b3a7
 Description:  A LuCI support for clash
 
 Package: luci-app-passwall
@@ -1466,6 +1536,20 @@ Size: 53090
 SHA256sum: 1882198b43dae07ceb10b045159419173ac5c7e060f76b1cdb5f48503ac9de73
 Description:  OpenWrt system process manager
 
+Package: rename
+Version: 2.39-2
+Depends: libc, librt
+License: GPL-2.0-only
+Section: utils
+CPE-ID: cpe:/a:kernel:util-linux
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 4735
+Filename: rename_2.39-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 5578
+SHA256sum: 3a0a53f88a003f9ae16ad8d4ff99078201892c66d3517fb03bd11d2ab86f2feb
+Description:  rename will rename the specified files by replacing the first occurrence of
+ expression in their name by replacement
+
 Package: resize2fs
 Version: 1.47.0-2
 Depends: libc, e2fsprogs
@@ -1694,6 +1778,30 @@ Size: 3054
 SHA256sum: 1eda0955147e8a32509c9676d342b4c471a004ad4d432141c128ce63ccfc9fd0
 Description:  The math plugin provides access to various <math.h> procedures.
 
+Package: ucode-mod-nl80211
+Version: 2024-07-11-1a8a0bcf-3
+Depends: libc, ucode, libnl-tiny1, libubox20230523
+License: ISC
+Section: lang
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 19077
+Filename: ucode-mod-nl80211_2024-07-11-1a8a0bcf-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 19678
+SHA256sum: 297b22cb3ad676b04e12d189ef982225bd977f65734e767ce40216b39e6914ee
+Description:  The nl80211 plugin provides access to the Linux wireless 802.11 netlink API.
+
+Package: ucode-mod-rtnl
+Version: 2024-07-11-1a8a0bcf-3
+Depends: libc, ucode, libnl-tiny1, libubox20230523
+License: ISC
+Section: lang
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 26924
+Filename: ucode-mod-rtnl_2024-07-11-1a8a0bcf-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 27337
+SHA256sum: 6521f60c0402efe55097754b4968a72011a3aa87fadcccb1861192b4ffb8cfce
+Description:  The rtnl plugin provides access to the Linux routing netlink API.
+
 Package: ucode-mod-ubus
 Version: 2024-07-11-1a8a0bcf-3
 Depends: libc, ucode, libubus20230605, libblobmsg-json20230523
@@ -1717,6 +1825,18 @@ Filename: ucode-mod-uci_2024-07-11-1a8a0bcf-3_arm_cortex-a5_neon-vfpv4.ipk
 Size: 7118
 SHA256sum: c9648799589e00806f2e98f45490e4da951715ca2d38ca4ff6e1e6e9b341dedc
 Description:  The uci module allows templates to read and modify uci configuration.
+
+Package: ucode-mod-uloop
+Version: 2024-07-11-1a8a0bcf-3
+Depends: libc, ucode, libubox20230523
+License: ISC
+Section: lang
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 6856
+Filename: ucode-mod-uloop_2024-07-11-1a8a0bcf-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 7690
+SHA256sum: d9716c4dd072a97a988aa290e780939fec49803f1c8279238fef1404c4d3b941
+Description:  The uloop module allows ucode scripts to interact with OpenWrt uloop event loop implementation.
 
 Package: ucode
 Version: 2024-07-11-1a8a0bcf-3
@@ -1812,6 +1932,22 @@ Filename: v2ray-geosite_20241112092643.1_all.ipk
 Size: 625032
 SHA256sum: 22fb8b88569a46a794453f69309cd8aa38e5aa7c6cdf4bc41a86e38b1feee9c6
 Description:  Geosite List for V2Ray
+
+Package: wpad-openssl
+Version: 2023-09-08-e5ccbfc6-8
+Depends: hostapd-common (=2023-09-08-e5ccbfc6-8), libc, libnl-tiny1, hostapd-common, ucode, libubus20230605, libucode20230711, ucode-mod-fs, ucode-mod-nl80211, ucode-mod-rtnl, ucode-mod-ubus, ucode-mod-uloop, libblobmsg-json20230523, libopenssl3, libopenssl-legacy
+Conflicts: hostapd, hostapd-basic, hostapd-basic-openssl, hostapd-basic-wolfssl, hostapd-basic-mbedtls, hostapd-mini, hostapd-openssl, hostapd-wolfssl, hostapd-mbedtls, wpad, wpad-mesh-openssl, wpad-mesh-wolfssl, wpad-mesh-mbedtls, wpad-basic, wpad-basic-openssl, wpad-basic-wolfssl, wpad-basic-mbedtls, wpad-mini, wpad, wpad-mesh-openssl, wpad-mesh-wolfssl, wpad-mesh-mbedtls, wpad-basic, wpad-basic-openssl, wpad-basic-wolfssl, wpad-basic-mbedtls, wpad-mini
+Provides: hostapd, wpa-supplicant
+License: BSD-3-Clause
+Section: net
+CPE-ID: cpe:/a:w1.fi:hostapd
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 724448
+Filename: wpad-openssl_2023-09-08-e5ccbfc6-8_arm_cortex-a5_neon-vfpv4.ipk
+Size: 723482
+SHA256sum: 9a209460b144f3566fbfaad4250f05946a2c3a58c4f163dc92caa4e86f89f645
+Description:  This package contains a full featured IEEE 802.1x/WPA/EAP/RADIUS
+ Authenticator and Supplicant
 
 Package: xray-core
 Version: 24.12.15-1
