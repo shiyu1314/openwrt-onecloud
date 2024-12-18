@@ -1,0 +1,166 @@
+From e517ab7c73c93af83b62a317b943218908e04405 Mon Sep 17 00:00:00 2001
+From: Christian Marangi <ansuelsmth@gmail.com>
+Date: Fri, 22 Sep 2023 18:15:01 +0200
+Subject: [PATCH 2/2] nginx-util: move to pcre2
+
+Convert to pcre2 library as pcre is EOL. No functional change intended.
+
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ net/nginx-util/Makefile           |  4 +--
+ net/nginx-util/src/CMakeLists.txt |  4 +--
+ net/nginx-util/src/regex-pcre.hpp | 42 ++++++++++++++++++++++---------
+ 3 files changed, 34 insertions(+), 16 deletions(-)
+
+diff --git a/net/nginx-util/Makefile b/net/nginx-util/Makefile
+index 4a77e2f20..b4f06aaae 100644
+--- a/net/nginx-util/Makefile
++++ b/net/nginx-util/Makefile
+@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=nginx-util
+ PKG_VERSION:=1.6
+-PKG_RELEASE:=19
++PKG_RELEASE:=20
+ PKG_MAINTAINER:=Peter Stadler <peter.stadler@student.uibk.ac.at>
+ 
+ include $(INCLUDE_DIR)/package.mk
+@@ -30,7 +30,7 @@ endef
+ define Package/nginx-ssl-util
+   $(Package/nginx-ssl-util/default)
+   TITLE+= (using PCRE)
+-  DEPENDS+= +libpcre
++  DEPENDS+= +libpcre2
+   CONFLICTS:=nginx-ssl-util-nopcre,
+ endef
+ 
+diff --git a/net/nginx-util/src/CMakeLists.txt b/net/nginx-util/src/CMakeLists.txt
+index 2adff1c71..e023f1eb6 100644
+--- a/net/nginx-util/src/CMakeLists.txt
++++ b/net/nginx-util/src/CMakeLists.txt
+@@ -27,7 +27,7 @@ FIND_LIBRARY(ubus NAMES ubus)
+ INCLUDE_DIRECTORIES(${ubus_include_dir})
+ 
+ ADD_EXECUTABLE(nginx-ssl-util nginx-util.cpp)
+-TARGET_LINK_LIBRARIES(nginx-ssl-util ${uci} ${ubox} ${ubus} pthread ssl crypto pcre)
++TARGET_LINK_LIBRARIES(nginx-ssl-util ${uci} ${ubox} ${ubus} pthread ssl crypto pcre2-8)
+ INSTALL(TARGETS nginx-ssl-util RUNTIME DESTINATION bin)
+ 
+ ADD_EXECUTABLE(nginx-ssl-util-nopcre nginx-util.cpp)
+@@ -51,7 +51,7 @@ INSTALL(TARGETS px5g RUNTIME DESTINATION bin)
+ 
+ ADD_EXECUTABLE(nginx-ssl-util-noubus nginx-util.cpp)
+ TARGET_COMPILE_DEFINITIONS(nginx-ssl-util-noubus PUBLIC -DNO_UBUS)
+-TARGET_LINK_LIBRARIES(nginx-ssl-util-noubus ${uci} ${ubox} pthread ssl crypto pcre)
++TARGET_LINK_LIBRARIES(nginx-ssl-util-noubus ${uci} ${ubox} pthread ssl crypto pcre2-8)
+ INSTALL(TARGETS nginx-ssl-util-noubus RUNTIME DESTINATION bin)
+ 
+ ADD_EXECUTABLE(nginx-ssl-util-nopcre-noubus nginx-util.cpp)
+diff --git a/net/nginx-util/src/regex-pcre.hpp b/net/nginx-util/src/regex-pcre.hpp
+index f63d5f90c..ab255542b 100644
+--- a/net/nginx-util/src/regex-pcre.hpp
++++ b/net/nginx-util/src/regex-pcre.hpp
+@@ -1,7 +1,9 @@
+ #ifndef __REGEXP_PCRE_HPP
+ #define __REGEXP_PCRE_HPP
+ 
+-#include <pcre.h>
++#define PCRE2_CODE_UNIT_WIDTH 8
++
++#include <pcre2.h>
+ #include <array>
+ #include <stdexcept>
+ #include <string>
+@@ -65,11 +67,9 @@ class regex {
+   private:
+     int errcode = 0;
+ 
+-    const char* errptr = nullptr;
+-
+-    int erroffset = 0;
++    PCRE2_SIZE erroffset = 0;
+ 
+-    pcre* const re = nullptr;
++    pcre2_code* const re = nullptr;
+ 
+     static const std::array<regex_constants::error_type, 86> errcode_pcre2regex;
+ 
+@@ -89,10 +89,18 @@ class regex {
+     explicit regex(const std::string& str) : regex(str.c_str()) {}
+ 
+     explicit regex(const char* const str)
+-        : re{pcre_compile2(str, 0, &errcode, &errptr, &erroffset, nullptr)}
++        : re{pcre2_compile((PCRE2_SPTR)str, PCRE2_ZERO_TERMINATED, 0, &errcode, &erroffset, nullptr)}
+     {
+         if (re == nullptr) {
+-            std::string what = std::string("regex error: ") + errptr + '\n';
++            std::vector<PCRE2_UCHAR> buffer(256);
++            int errlen;
++
++            errlen = pcre2_get_error_message(errcode, buffer.data(), buffer.size());
++            if (errlen < 0)
++                throw regex_error(errcode_pcre2regex.at(errlen));
++
++            std::string what = std::string("regex error: ") +
++                std::string(buffer.data(), buffer.data() + errlen) + '\n';
+             what += "    '" + std::string{str} + "'\n";
+             what += "     " + std::string(erroffset, ' ') + '^';
+ 
+@@ -103,11 +111,11 @@ class regex {
+     ~regex()
+     {
+         if (re != nullptr) {
+-            pcre_free(re);
++            pcre2_code_free(re);
+         }
+     }
+ 
+-    inline auto operator()() const -> const pcre*
++    inline auto operator()() const -> const pcre2_code*
+     {
+         return re;
+     }
+@@ -187,11 +195,19 @@ auto regex_search(std::string::const_iterator begin,
+ 
+ inline auto regex_search(const std::string& subj, const regex& rgx)
+ {
++    pcre2_match_data *match_data;
++
+     if (rgx() == nullptr) {
+         throw std::runtime_error("regex_search error: no regex given");
+     }
++
++    match_data = pcre2_match_data_create_from_pattern(rgx(), NULL);
++
+     int n =
+-        pcre_exec(rgx(), nullptr, subj.c_str(), static_cast<int>(subj.length()), 0, 0, nullptr, 0);
++        pcre2_match(rgx(), (PCRE2_SPTR)subj.c_str(), static_cast<int>(subj.length()), 0, 0, match_data, nullptr);
++
++    pcre2_match_data_free(match_data);
++
+     return n >= 0;
+ }
+ 
+@@ -205,7 +221,7 @@ auto regex_search(const std::string::const_iterator begin,
+     }
+ 
+     int sz = 0;
+-    pcre_fullinfo(rgx(), nullptr, PCRE_INFO_CAPTURECOUNT, &sz);
++    pcre2_pattern_info(rgx(), PCRE2_INFO_CAPTURECOUNT, &sz);
+     sz = 3 * (sz + 1);
+ 
+     match.vec.reserve(sz);
+@@ -216,7 +232,9 @@ auto regex_search(const std::string::const_iterator begin,
+     match.begin = begin;
+     match.end = end;
+ 
+-    match.n = pcre_exec(rgx(), nullptr, subj, len, 0, 0, &match.vec[0], sz);
++    pcre2_match_data *match_data = pcre2_match_data_create(sz, NULL);
++    match.n = pcre2_match(rgx(), (PCRE2_SPTR)subj, len, 0, 0, match_data, NULL);
++    pcre2_match_data_free(match_data);
+ 
+     if (match.n < 0) {
+         return false;
+-- 
+2.39.3
+

@@ -1,0 +1,29 @@
+From 9103ae64bb8f2abc4d4f146293bd104b641209cc Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Fri, 30 Aug 2019 09:47:48 -0400
+Subject: [PATCH 13/43] QUIC: Correctly disable middlebox compat
+
+---
+ ssl/ssl_quic.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/ssl/ssl_quic.c
++++ b/ssl/ssl_quic.c
+@@ -173,7 +173,7 @@ int SSL_CTX_set_quic_method(SSL_CTX *ctx
+         break;
+     }
+     ctx->quic_method = quic_method;
+-    ctx->options &= SSL_OP_ENABLE_MIDDLEBOX_COMPAT;
++    ctx->options &= ~SSL_OP_ENABLE_MIDDLEBOX_COMPAT;
+     return 1;
+ }
+ 
+@@ -189,7 +189,7 @@ int SSL_set_quic_method(SSL *ssl, const
+         break;
+     }
+     ssl->quic_method = quic_method;
+-    ssl->options &= SSL_OP_ENABLE_MIDDLEBOX_COMPAT;
++    ssl->options &= ~SSL_OP_ENABLE_MIDDLEBOX_COMPAT;
+     return 1;
+ }
+ 
