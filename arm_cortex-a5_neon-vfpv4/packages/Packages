@@ -1,17 +1,3 @@
-Package: aria2
-Version: 1.37.0-1
-Depends: libc, zlib, libstdcpp6, libopenssl3
-License: GPLv2
-Section: net
-CPE-ID: cpe:/a:tatsuhiro_tsujikawa:aria2
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 563776
-Filename: aria2_1.37.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 563769
-SHA256sum: 71bc8886fddff361f98207a723ca49df04ef993db5409a20e60eacb7013c4651
-Description:  aria2 is a lightweight multi-protocol & multi-source command-line download
- utility
-
 Package: attr
 Version: 2.5.1-1
 Depends: libc, libattr
@@ -68,16 +54,78 @@ Description:  Bash is an sh-compatible command language interpreter that execute
  commands read from the standard input or from a file. Bash also
  incorporates useful features from the Korn and C shells (ksh and csh).
 
+Package: boost-system
+Version: 1.82.0-1
+Depends: libc, libstdcpp6, libpthread, librt
+License: BSL-1.0
+Section: libs
+CPE-ID: cpe:/a:boost:boost
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 885
+Filename: boost-system_1.82.0-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 1701
+SHA256sum: c81287b870bc2d1b76b43be69957b8f928eb03e85563c71deaf24e252f90fdd5
+Description:  This package contains the Boost system library.
+
+Package: boost
+Version: 1.82.0-1
+Depends: libc, libstdcpp6, libpthread, librt
+License: BSL-1.0
+Section: libs
+CPE-ID: cpe:/a:boost:boost
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 95
+Filename: boost_1.82.0-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 1232
+SHA256sum: 8cd2cc61e1abe7412a03343322b0c99b55b07c46cb42bf0ba59cecc0c34c41ea
+Description:  This package provides the Boost v1.82.0 libraries.
+ Boost is a set of free, peer-reviewed, portable C++ source libraries.
+ 
+ This package provides the following run-time libraries:
+ - atomic
+ - chrono
+ - container
+ - context
+ - contract
+ - coroutine and coroutine2 (Coroutine is deprecated - use Coroutine2)
+ - date_time
+ - exception
+ - filesystem
+ - fiber
+ - graph
+ - - graph-parallel
+ - iostreams
+ - json
+ - locale
+ - log
+ - math
+ - nowide
+ - program_options
+ - python3
+ - random
+ - regex
+ - serialization and wserialization
+ - stackstrace
+ - system
+ - thread
+ - timer
+ - type_erasure
+ - url
+ - wave
+ 
+ There are many more header-only libraries supported by Boost.
+ See more at http://www.boost.org/doc/libs/1_82_0/
+
 Package: btrfs-progs
 Version: 6.5.1-1
 Depends: libc, libattr, libuuid1, libmount1, zlib, libblkid1, liblzo2, libpthread, kmod-fs-btrfs
 License: GPL-2.0-only
 Section: utils
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 1137939
+Installed-Size: 1137923
 Filename: btrfs-progs_6.5.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1137767
-SHA256sum: 4ab7d04d369d7fd47acaec5c41489eef8b6141539ef9accd6149a7f232e25cd5
+Size: 1137672
+SHA256sum: d3b226701be15ee79b41d8c9ea05cf08fa84bd81d13a09b8f8e4881a5ef3bf98
 Description:  Btrfs is a new copy on write filesystem for Linux aimed at implementing
  advanced features while focusing on fault tolerance, repair and easy
  administration. Initially developed by Oracle, Btrfs is licensed under the
@@ -107,20 +155,6 @@ Filename: containerd_1.7.22-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 36481319
 SHA256sum: f7939a3c9129a930f7524e6a0e3db169f15bacf49a332e16c85d185f98c305c5
 Description:  An industry-standard container runtime with an emphasis on simplicity, robustness and portability
-
-Package: coreutils-base64
-Version: 9.3-1
-Depends: libc, coreutils
-Alternatives: 300:/bin/base64:/usr/libexec/base64-coreutils
-License: GPL-3.0-or-later
-Section: utils
-CPE-ID: cpe:/a:gnu:coreutils
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 21710
-Filename: coreutils-base64_9.3-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 22505
-SHA256sum: 5a508a1780dbd4bc97f1e41aacf1cf0b505a539b00030378f76d92325d2fcc4e
-Description:  Full version of standard GNU base64 utility.
 
 Package: coreutils-nohup
 Version: 9.3-1
@@ -164,19 +198,6 @@ SHA256sum: c91c1d30e2d3e4d4fc16ab87f911cd7f4559b8fe63873e0c3afd802f4f92d5b9
 Description:  Full versions of standard GNU utilities. If an equivalent Busybox applet is
  available, you should consider compiling that instead as Busybox applets are
  usually smaller, at the expense of reduced functionality.
-
-Package: curl
-Version: 8.7.1-r1
-Depends: libc, libcurl4
-License: MIT
-Section: net
-CPE-ID: cpe:/a:haxx:libcurl
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 63274
-Filename: curl_8.7.1-r1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 64006
-SHA256sum: 11375d7f33095622aa8a468194e27d0a3c33f200acce1fbda794aaaf12db4b42
-Description:  A client-side URL transfer utility
 
 Package: dbus
 Version: 1.13.18-12
@@ -231,20 +252,6 @@ Description:  FUSE (Filesystem in UserSpacE)
  - fusermount
  - ulockmgr_server
 
-Package: haproxy
-Version: 2.8.9-1
-Depends: libc, libpcre2, libltdl7, zlib, libpthread, liblua5.3-5.3, libopenssl3, libncurses6, libreadline8, libatomic1
-License: GPL-2.0-only
-Section: net
-CPE-ID: cpe:/a:haproxy:haproxy
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 1101854
-Filename: haproxy_2.8.9-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1101345
-SHA256sum: 801a0ac5ea2c71657c70faf315f669075872568446cfa5387df17a98fbcc8ab8
-Description:  Open source Reliable, High Performance TCP/HTTP Load Balancer.
- This package is built with SSL and LUA support.
-
 Package: hd-idle
 Version: 1.05-2
 Depends: libc
@@ -272,21 +279,6 @@ Description:  Htop is an ncursed-based process viewer similar to top, but
  it allows to scroll the list vertically and horizontally to
  see all processes and their full command lines.
 
-Package: iperf3
-Version: 3.17.1-4
-Depends: libc, libiperf3
-License: BSD-3-Clause
-Section: net
-CPE-ID: cpe:/a:es:iperf3
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 2015
-Filename: iperf3_3.17.1-4_arm_cortex-a5_neon-vfpv4.ipk
-Size: 2859
-SHA256sum: 6813700ddb60245d20809ac0a4aac8631f320c46102f9550997354247ede3a5f
-Description:  Iperf is a modern alternative for measuring TCP and UDP bandwidth
- performance, allowing the tuning of various parameters and
- characteristics.
-
 Package: iputils-ping
 Version: 20211215-2
 Depends: libc, kmod-crypto-md5
@@ -300,6 +292,19 @@ Filename: iputils-ping_20211215-2_arm_cortex-a5_neon-vfpv4.ipk
 Size: 28603
 SHA256sum: da6997bd460f35a797d8314d48b2c5c3ef913a506c5f2ca8904c8ff409958d16
 Description:  Send ICMP_ECHOREQUEST packets to IP hosts and report on replies
+
+Package: krb5-libs
+Version: 1.21.3-1
+Depends: libc, libncurses6, libss2, libcomerr0
+License: MIT
+Section: net
+CPE-ID: cpe:/a:mit:kerberos_5
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 621858
+Filename: krb5-libs_1.21.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 610873
+SHA256sum: ed9a2371059e080e4a8415da2f27d0784c41945364f9d76cdeeba6589a0e8ea4
+Description:  Kerberos 5 Shared Libraries
 
 Package: less
 Version: 598-1
@@ -393,21 +398,6 @@ Description:  Avahi is an mDNS/DNS-SD (aka RendezVous/Bonjour/ZeroConf)
  libavahi-dbus-support is selected automatically if you select
  libavahi-client or avahi-utils.
 
-Package: libcurl4
-Version: 8.7.1-r1
-Depends: libc, libopenssl3, libnghttp2-14, libnghttp3, libngtcp2, ca-bundle
-Provides: libcurl
-License: MIT
-Section: libs
-ABIVersion: 4
-CPE-ID: cpe:/a:haxx:libcurl
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 208459
-Filename: libcurl4_8.7.1-r1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 208117
-SHA256sum: 63442d4e71b6d053d91dacb308fd6ff505b2184645c200edcd344422a6b5db00
-Description:  A client-side URL transfer library
-
 Package: libdaemon
 Version: 0.14-5
 Depends: libc
@@ -441,19 +431,6 @@ Filename: libdbus_1.13.18-12_arm_cortex-a5_neon-vfpv4.ipk
 Size: 109022
 SHA256sum: 0f90cd9b9d71ccad677faabe3fa3a988aaece7c054bccff36a94f29c783a5882
 Description:  Simple interprocess messaging system (library)
-
-Package: libev
-Version: 4.33-2
-Depends: libc
-License: BSD-2-Clause or GPL-2.0-or-later
-Section: libs
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 20006
-Filename: libev_4.33-2_arm_cortex-a5_neon-vfpv4.ipk
-Size: 20828
-SHA256sum: f6f7cdb119261faeba898c8642b075198ac2c6637fd5253b8e69985b7f33397d
-Description:  A full-featured and high-performance event loop that is loosely modelled after
- libevent, but without its limitations and bugs.
 
 Package: libevdev
 Version: 1.13.0-1
@@ -522,19 +499,6 @@ Description:  GnuTLS is a secure communications library implementing the SSL, TL
  efficient with focus on security and interoperability.
  This package contains the GnuTLS shared library, needed by other programs.
 
-Package: libiperf3
-Version: 3.17.1-4
-Depends: libc, libatomic1
-License: BSD-3-Clause
-Section: libs
-CPE-ID: cpe:/a:es:iperf3
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 65564
-Filename: libiperf3_3.17.1-4_arm_cortex-a5_neon-vfpv4.ipk
-Size: 66181
-SHA256sum: bd0a98aa040cc305ef8afbf759649bfb06a7513d57bcd47b984f71a51e99b68a
-Description:  Libiperf is a library providing an API for iperf3 functionality.
-
 Package: libkmod
 Version: 31-1
 Depends: libc, zlib
@@ -563,6 +527,37 @@ Size: 36956
 SHA256sum: b06855d4f60086c07eecbf70c6f8ff029046517924854e45c94d31e2a931ed04
 Description:  LZO is a data compression library which is suitable for data de-/compression
  in real-time. This means it favours speed over compression ratio.
+
+Package: libminiupnpc
+Version: 2.2.3-1
+Depends: libc
+License: BSD-3-Clause
+Section: libs
+CPE-ID: cpe:/a:miniupnp_project:miniupnpc
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 19608
+Filename: libminiupnpc_2.2.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 20369
+SHA256sum: f50a840404cb3c551693ef8f31220fb79f8e5851fff279361a0b5db664b756d3
+Description:  Lightweight UPnP library
+
+Package: libnatpmp1
+Version: 20150609-3
+Depends: libc
+Provides: libnatpmp
+License: BSD-3-Clause
+Section: libs
+ABIVersion: 1
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 3449
+Filename: libnatpmp1_20150609-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 4336
+SHA256sum: 6e1555e763a78e37b1ef17c8bb8f0eb9ecf99056b9f084649463d39cfe571c1a
+Description:  libnatpmp is an attempt to make a portable and fully compliant implementation
+ of the protocol for the client side. It is based on non blocking sockets and
+ all calls of the API are asynchronous. It is therefore very easy to integrate
+ the NAT-PMP code to any event driven code.
+ This package contains the shared library.
 
 Package: libnghttp2-14
 Version: 1.57.0-1
@@ -716,31 +711,6 @@ Size: 38699
 SHA256sum: 80bf17cb2a69b9461e61663e543ece5b94c2aec6ad63235196bad44b4e836d18
 Description:  Fast YAML 1.1 parser and emitter library
 
-Package: libzstd
-Version: 1.5.2-2
-Depends: libc
-License: GPL-2.0-or-later
-Section: libs
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 310544
-Filename: libzstd_1.5.2-2_arm_cortex-a5_neon-vfpv4.ipk
-Size: 310884
-SHA256sum: e4db2c05c8cc1e10e8fc3965e70d23f200170afed3bc9216ec1ad145f264a5c1
-Description:  Zstandard - Fast real-time compression algorithm.
- This package provides libzstd library.
-
-Package: lsof
-Version: 4.94.0-1
-Depends: libc, libtirpc
-License: lsof
-Section: utils
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 67019
-Filename: lsof_4.94.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 67802
-SHA256sum: e07773598a120efc77135928a060ac759f50c54537b41e7d12b862d3ed7dfc8c
-Description:  LiSt Open Files - a diagnostic tool
-
 Package: nginx-all-module
 Version: 1.26.2-1
 Depends: nginx-ssl-util (>=1.5-1) (<2), libc, libopenssl3, libpthread, libpcre2, nginx-ssl-util, zlib, liblua5.1.5, libxml2, libubus20230605, libblobmsg-json20230523, libjson-c5, libzstd
@@ -750,10 +720,10 @@ License: 2-clause BSD-like license
 Section: net
 CPE-ID: cpe:/a:nginx:nginx
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 982894
+Installed-Size: 982890
 Filename: nginx-all-module_1.26.2-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 965808
-SHA256sum: e29535b8a8a8bca8ecfe89b1bb2549a8b551494cffb0e6dfc470030d4cdf0043
+Size: 966263
+SHA256sum: 01c5df535fffd50aff66b54f747b5dbb54e1bbccae05c39a03ac5894f4eca54f
 Description:  nginx is an HTTP and reverse proxy server, as well as a mail proxy server, written by Igor Sysoev. This variant is compiled with ALL module selected.
 
 Package: nginx-mod-luci
@@ -791,10 +761,10 @@ License: 2-clause BSD-like license
 Section: net
 CPE-ID: cpe:/a:nginx:nginx
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 448521
+Installed-Size: 448520
 Filename: nginx-ssl_1.26.2-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 431322
-SHA256sum: a89ea15aec5f43c54a01e32099612b15b15c0eb92f6f21c87ad4495256b433bb
+Size: 431115
+SHA256sum: 62533dc03aa575d98181fb7c496f92cfd220d122ebbf003e6222fa991b785f4f
 Description:  nginx is an HTTP and reverse proxy server, as well as a mail proxy server, written by Igor Sysoev. This variant is compiled with SSL support enabled. To enable additional module select them in the nginx default configuration menu.
 
 Package: nginx-util
@@ -820,19 +790,6 @@ Filename: nginx_1.26.2-1_all.ipk
 Size: 1051
 SHA256sum: 7e2f10a86d25930bbd37560b83eae2483a200ac715da7bd6b6fc187ef70c86f1
 Description:  nginx is an HTTP and reverse proxy server, as well as a mail proxy server, written by Igor Sysoev.
-
-Package: openssh-sftp-server
-Version: 9.8p1-1
-Depends: libc
-License: BSD ISC
-Section: net
-CPE-ID: cpe:/a:openssh:openssh
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 56958
-Filename: openssh-sftp-server_9.8p1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 57729
-SHA256sum: 99b34057e567b286515fde659b180222fa94f026adee44e17ea82bd7cf768763
-Description:  OpenSSH SFTP server.
 
 Package: p910nd
 Version: 0.97-14
@@ -899,10 +856,10 @@ License: GPL-3.0-or-later
 Section: net
 CPE-ID: cpe:/a:rsync:rsync
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 174230
+Installed-Size: 174232
 Filename: rsync_3.2.7-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 175033
-SHA256sum: cc5f3c582d2b5cc785f445862467d2e0e0c0d0351478e40ccc99ceba63917ae0
+Size: 175015
+SHA256sum: d39bb55ba5a1cc197046dbb453c907d3f1634bbcab2105d8ec3a34df5e7aef61
 Description:  rsync is a program that allows files to be copied to and from remote machines
  in much the same way as rcp. It has many more options than rcp, and uses the
  rsync remote-update protocol to greatly speed up file transfers when the
@@ -1128,37 +1085,6 @@ Size: 3556844
 SHA256sum: 340a2b7d48f57740d766ec19fd20b0846c8c756ab584e13fe4011dd1dc5edf5c
 Description:  runc is a CLI tool for spawning and running containers according to the OCI specification.
 
-Package: samba4-libs
-Version: 4.18.8-1
-Depends: libc, libtirpc, libreadline8, libpopt0, libcap, zlib, libgnutls, libtasn1, libuuid1, libopenssl3, libpthread, attr, libavahi-client
-License: GPL-3.0-only
-Section: net
-CPE-ID: cpe:/a:samba:samba
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 9119069
-Filename: samba4-libs_4.18.8-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 9019781
-SHA256sum: d5664963541a0288199427f43818ee5565f617c843b4e5f322638b74b236449d
-Description:  Samba 4.18.8 libs
-
-Package: samba4-server
-Version: 4.18.8-1
-Depends: libc, samba4-libs
-Conflicts: samba36-server
-License: GPL-3.0-only
-Section: net
-CPE-ID: cpe:/a:samba:samba
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 247040
-Filename: samba4-server_4.18.8-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 247192
-SHA256sum: c53c6efe8d5a6aeeddd6ddf20d7c0b38ffb8070a07b6d14ee7e79ad0ac6df9a0
-Description:  installs: smbd (nmbd) smbpasswd pdbedit testparm (nmblookup) (smbcacls sharesec)
- (samba samba-tool ntlm_auth samba-gpupdate samba_dnsupdate samba_kcc samba_spnupdate samba_upgradedns samba_downgrade_db)
- 
- This provides the basic fileserver service and is the minimum needed to serve file shares.
- HINT: https://fitzcarraldoblog.wordpress.com/2016/10/17/a-correct-method-of-configuring-samba-for-browsing-smb-shares-in-a-home-network/
-
 Package: sed
 Version: 4.9-1
 Depends: libc
@@ -1212,27 +1138,11 @@ Depends: libc, libcap, libopenssl3, libjson-c5, libuv1, zlib, libwebsockets-full
 License: MIT
 Section: utils
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 319865
+Installed-Size: 319866
 Filename: ttyd_1.7.3-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 320576
-SHA256sum: 0d66ce19b630df03b5e3f6ceb385019660f0a23230aa51ff89a845cdb5ca3b7a
+Size: 320573
+SHA256sum: bc7be05fb9ab49204f3e4b97c3a63f33125469ebfb041a288a4a62ae2e84ebfe
 Description:  ttyd is a command-line tool for sharing terminal over the web.
-
-Package: unzip
-Version: 6.0-8
-Depends: libc
-License: BSD-4-Clause
-Section: utils
-CPE-ID: cpe:/a:info-zip:unzip
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 109183
-Filename: unzip_6.0-8_arm_cortex-a5_neon-vfpv4.ipk
-Size: 110193
-SHA256sum: e2dc1223e3b50a82ecac1c95205db2273141c0f452f888658449879b85ab798f
-Description:  InfoZIP's unzip program. With the exception of multi-volume archives
- (ie, .ZIP files that are split across several disks using PKZIP's /& option),
- this can handle any file produced either by PKZIP, or the corresponding
- InfoZIP zip program.
 
 Package: usbutils
 Version: 014-1
@@ -1298,20 +1208,6 @@ Size: 301325
 SHA256sum: 9656af253b31db5bddb42cae2b230f33ba10373720098b0b08683b712ed6f4a2
 Description:  The uWSGI project (to be used together with nginx or nginx-ssl).
 
-Package: vim
-Version: 9.0-1
-Depends: libc, libncurses6
-License: Vim
-Section: utils
-CPE-ID: cpe:/a:vim:vim
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 507531
-Filename: vim_9.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 507534
-SHA256sum: a4a79d2f2394cda3d91a4970614460731db48cfc12c5204af72b05ae22dd5a09
-Description:  Vim is an almost compatible version of the UNIX editor Vi.
- (Tiny build)
-
 Package: wget-ssl
 Version: 1.21.4-1
 Depends: libc, libpcre2, zlib, libopenssl3, librt
@@ -1321,10 +1217,10 @@ License: GPL-3.0-or-later
 Section: net
 CPE-ID: cpe:/a:gnu:wget
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 203481
+Installed-Size: 203479
 Filename: wget-ssl_1.21.4-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 204096
-SHA256sum: f45ce467778d71fb575cf0decd17c208c4e04bd255a241331cb19690e833bc3f
+Size: 204102
+SHA256sum: da29d2312a5b782fad60f88a88e94416aa8e3bd68d7df0d232aeb4540b344cdb
 Description:  Wget is a network utility to retrieve files from the Web using http
  and ftp, the two most widely used Internet protocols. It works
  non-interactively, so it will work in the background, after having

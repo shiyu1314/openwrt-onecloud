@@ -51,37 +51,6 @@ Size: 8080
 SHA256sum: 44e2b82027f3b08c13ee2594dcc6b8c5cd18fa1ed19fe0d773c3318cd20914ff
 Description:  LuCI HTTP utility library
 
-Package: luci-app-firewall
-Version: git-24.346.66847-1bb28ba
-Depends: libc, uci-firewall
-Source: feeds/luci/applications/luci-app-firewall
-SourceName: luci-app-firewall
-License: Apache-2.0
-Section: luci
-SourceDateEpoch: 1733942047
-Maintainer: OpenWrt LuCI community
-Architecture: all
-Installed-Size: 17164
-Filename: luci-app-firewall_git-24.346.66847-1bb28ba_all.ipk
-Size: 18072
-SHA256sum: dff2ebeef3fe5e1a2c45064de175536dfb9b070348fa3acbb9c19798847d9780
-Description:  Firewall and Portforwarding application
-
-Package: luci-app-hd-idle
-Version: git-24.346.66847-1bb28ba
-Depends: libc, hd-idle, lsblk
-Source: feeds/luci/applications/luci-app-hd-idle
-SourceName: luci-app-hd-idle
-Section: luci
-SourceDateEpoch: 1733942047
-Maintainer: OpenWrt LuCI community
-Architecture: all
-Installed-Size: 1544
-Filename: luci-app-hd-idle_git-24.346.66847-1bb28ba_all.ipk
-Size: 2381
-SHA256sum: b95423351dd7a528983fb9d0bbf247261814ce5495a3ed4ce5fc55f9dea1792c
-Description:  Hard Disk Idle Spin-Down module
-
 Package: luci-app-opkg
 Version: git-24.346.66847-1bb28ba
 Depends: libc, opkg
@@ -97,21 +66,6 @@ Filename: luci-app-opkg_git-24.346.66847-1bb28ba_all.ipk
 Size: 10046
 SHA256sum: 7384ab1142708a55caae1dcf040a055b25beb2b6fb48dd82686eb17359487a43
 Description:  OPKG package management application
-
-Package: luci-app-samba4
-Version: git-24.346.66847-1bb28ba
-Depends: libc, samba4-server
-Source: feeds/luci/applications/luci-app-samba4
-SourceName: luci-app-samba4
-Section: luci
-SourceDateEpoch: 1733942047
-Maintainer: OpenWrt LuCI community
-Architecture: all
-Installed-Size: 2362
-Filename: luci-app-samba4_git-24.346.66847-1bb28ba_all.ipk
-Size: 3214
-SHA256sum: 5b0d50a9af9ef09596ab47aa95b0ba3889ceea1d41071ace15439bf17b9c2a18
-Description:  Network Shares - Samba 4 SMB/CIFS fileserver
 
 Package: luci-app-ttyd
 Version: git-24.346.66847-1bb28ba
@@ -174,35 +128,6 @@ Size: 55498
 SHA256sum: 5a50c0fa014ff18fc4b4302228a1f3b596a7395f7ded8d20b7ca9e98f209d737
 Description:  Translation for luci-base - 简体中文 (Chinese Simplified)
 
-Package: luci-i18n-firewall-zh-cn
-Version: git-24.346.66847-1bb28ba
-Depends: libc, luci-app-firewall
-Source: feeds/luci/applications/luci-app-firewall
-SourceName: luci-i18n-firewall-zh-cn
-License: Apache-2.0
-Section: luci
-SourceDateEpoch: 1733942047
-Architecture: all
-Installed-Size: 7688
-Filename: luci-i18n-firewall-zh-cn_git-24.346.66847-1bb28ba_all.ipk
-Size: 8478
-SHA256sum: f93dc2f152ba9641338970a38848d681eb78a7733d58b6f4d209637da4653864
-Description:  Translation for luci-app-firewall - 简体中文 (Chinese Simplified)
-
-Package: luci-i18n-hd-idle-zh-cn
-Version: git-24.346.66847-1bb28ba
-Depends: libc, luci-app-hd-idle
-Source: feeds/luci/applications/luci-app-hd-idle
-SourceName: luci-i18n-hd-idle-zh-cn
-Section: luci
-SourceDateEpoch: 1733942047
-Architecture: all
-Installed-Size: 801
-Filename: luci-i18n-hd-idle-zh-cn_git-24.346.66847-1bb28ba_all.ipk
-Size: 1566
-SHA256sum: d7cff6577d9926c3e726ed91286e858d01285aa76d4ef3db374e7967f434a4d9
-Description:  Translation for luci-app-hd-idle - 简体中文 (Chinese Simplified)
-
 Package: luci-i18n-opkg-zh-cn
 Version: git-24.346.66847-1bb28ba
 Depends: libc, luci-app-opkg
@@ -216,20 +141,6 @@ Filename: luci-i18n-opkg-zh-cn_git-24.346.66847-1bb28ba_all.ipk
 Size: 3067
 SHA256sum: d107b9b0604cc3ff7ee0792b60d073b9e97b0d293cb878ba19059490057fba96
 Description:  Translation for luci-app-opkg - 简体中文 (Chinese Simplified)
-
-Package: luci-i18n-samba4-zh-cn
-Version: git-24.346.66847-1bb28ba
-Depends: libc, luci-app-samba4
-Source: feeds/luci/applications/luci-app-samba4
-SourceName: luci-i18n-samba4-zh-cn
-Section: luci
-SourceDateEpoch: 1733942047
-Architecture: all
-Installed-Size: 1687
-Filename: luci-i18n-samba4-zh-cn_git-24.346.66847-1bb28ba_all.ipk
-Size: 2461
-SHA256sum: ea6e4345cb23a16a045bcb93668b9420386bf10b631d72c4e9d3af87db3d1b14
-Description:  Translation for luci-app-samba4 - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-ttyd-zh-cn
 Version: git-24.346.66847-1bb28ba
