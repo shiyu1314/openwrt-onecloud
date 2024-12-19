@@ -755,16 +755,16 @@ Description:  Utility that builds dynamically LAN listen directives for Nginx.
 
 Package: nginx-ssl
 Version: 1.26.2-1
-Depends: nginx-ssl-util (>=1.5-1) (<2), libc, libopenssl3, libpthread, libpcre2, nginx-ssl-util, zlib, libxml2, libubus20230605, libblobmsg-json20230523, libjson-c5
+Depends: nginx-ssl-util (>=1.5-1) (<2), libc, libopenssl3, libpthread, libpcre2, nginx-ssl-util, zlib, libubus20230605, libblobmsg-json20230523, libjson-c5
 Conflicts: nginx-all-module
 License: 2-clause BSD-like license
 Section: net
 CPE-ID: cpe:/a:nginx:nginx
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 448520
+Installed-Size: 433746
 Filename: nginx-ssl_1.26.2-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 431115
-SHA256sum: 62533dc03aa575d98181fb7c496f92cfd220d122ebbf003e6222fa991b785f4f
+Size: 417201
+SHA256sum: 17ed3d6c606e29067d07537d1d1ee8c107dffe14bf900e0572c8d11eafaada7f
 Description:  nginx is an HTTP and reverse proxy server, as well as a mail proxy server, written by Igor Sysoev. This variant is compiled with SSL support enabled. To enable additional module select them in the nginx default configuration menu.
 
 Package: nginx-util
@@ -1219,8 +1219,8 @@ CPE-ID: cpe:/a:gnu:wget
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 203479
 Filename: wget-ssl_1.21.4-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 204102
-SHA256sum: da29d2312a5b782fad60f88a88e94416aa8e3bd68d7df0d232aeb4540b344cdb
+Size: 204119
+SHA256sum: 31845c991ee33314987170973573e8b7d546d92560c74e215715821b96c90943
 Description:  Wget is a network utility to retrieve files from the Web using http
  and ftp, the two most widely used Internet protocols. It works
  non-interactively, so it will work in the background, after having
