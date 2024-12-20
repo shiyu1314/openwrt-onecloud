@@ -1,0 +1,140 @@
+name: toolchain
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+
+env:
+  DIY_P1_SH: sh/op.sh
+
+jobs:
+  build_firmware:
+    name: 编译固件
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        repo_info:
+          - {repo_url: "https://github.com/openwrt/openwrt", branch: "openwrt-23.05"}
+
+
+    steps: 
+    - name: 检查分支
+      uses: actions/checkout@main
+        
+    - name: 编译环境
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y img2simg build-essential flex bison cmake g++ gawk gcc-multilib g++-multilib gettext git libfuse-dev libncurses5-dev libssl-dev python3 python3-pip python3-ply python3-distutils python3-pyelftools rsync unzip zlib1g-dev file wget subversion patch upx-ucl autoconf automake curl asciidoc binutils bzip2 lib32gcc-s1 libc6-dev-i386 uglifyjs msmtp texinfo libreadline-dev libglib2.0-dev xmlto libelf-dev libtool autopoint antlr3 gperf ccache swig coreutils haveged scons libpython3-dev rename qemu-utils
+        sudo apt-get clean
+        git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
+        sudo timedatectl set-timezone 'Asia/Shanghai'
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
+        df -Th
+
+    - name: 设置环境变量
+      run: |
+        TAG="$(date +'%Y%m%d')-$(openssl rand -hex 3)"
+        echo "tag=$TAG" >> $GITHUB_ENV
+        echo "REPO_URL=${{ matrix.repo_info.repo_url }}" >> $GITHUB_ENV
+        echo "REPO_BRANCH=${{ matrix.repo_info.branch }}" >> $GITHUB_ENV
+
+    - name: 克隆源代码
+      working-directory: /workdir
+      run: |
+        df -hT $PWD
+        git clone $REPO_URL -b $REPO_BRANCH openwrt
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt 
+        
+    - name: 添加6.11内核
+      run: |
+        rm -rf openwrt/package/kernel/linux/modules/[a-z]*.mk
+        [ -e patch ] && cp -rf patch/modules/*.mk openwrt/package/kernel/linux/modules
+        [ -e tags ] && cp -rf tags/kernel-6.11 openwrt/include
+        rm -rf openwrt/target/linux/generic
+        git clone https://shiyu1314:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/shiyu1314/target_linux_generic -b 6.11 openwrt/target/linux/generic
+        cd openwrt
+        ./scripts/feeds update -a
+        cd ..
+        [ -e patch ] && cp -rf patch/luci/*.patch openwrt/feeds/luci
+        [ -e patch ] && cp -rf patch/nginx/nginx-util/*.patch openwrt/feeds/packages  
+        [ -e patch ] && cp -rf patch/firewall4/0004-luci-add-firewall-add-custom-nft-rule-support.patch openwrt/feeds/luci
+        [ -e patch ] && cp -rf patch/firewall4/100-openwrt-firewall4-add-custom-nft-command-support.patch openwrt
+        [ -e patch ] && cp -rf patch/openssl/quic/*.patch openwrt/package/libs/openssl/patches
+        [ -e patch ] && cp -rf patch/generic/0014-kernel-enable-Multi-Path-TCP-for-SMALL_FLASH-targets.patch openwrt
+        [ -e patch ] && cp -rf patch/generic/0010-include-kernel-add-config-for-linux-6.x.patch openwrt
+        mkdir -p openwrt/package/utils/util-linux/patches
+        [ -e patch ] && cp -rf patch/util-linux/201-util-linux_ntfs3.patch openwrt/package/utils/util-linux/patches
+        [ -e patch ] && cp -rf patch/fstools/Makefile openwrt/package/system/fstools
+        sed -i 's|$(PROJECT_GIT)/project|https://github.com/openwrt|g' openwrt/package/system/fstools/Makefile
+        mkdir -p openwrt/package/system/fstools/patches
+        [ -e patch ] && cp -rf patch/fstools/*.patch openwrt/package/system/fstools/patches
+        ls openwrt/target/linux/generic
+        
+    - name: 加载自定义脚本
+      run: |
+        chmod +x $DIY_P1_SH
+        cd openwrt
+        $GITHUB_WORKSPACE/$DIY_P1_SH
+        cd ..
+        [ -e patch ] && cp -rf patch/nginx/luci.locations openwrt/feeds/packages/net/nginx/files-luci-support
+        [ -e patch ] && cp -rf patch/nginx/uci.conf.template openwrt/feeds/packages/net/nginx-util/files
+  
+        
+    - name: 添加玩客云
+      run: |
+        git clone https://shiyu1314:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/shiyu1314/s805 -b 6.11 openwrt/target/linux/amlogic
+
+    - name: 加载自定义配置
+      run: |
+        [ -e files ] && mv files openwrt/files
+        cat <<EOF >>openwrt/.config
+        CONFIG_TARGET_amlogic=y
+        CONFIG_TARGET_amlogic_meson8b=y
+        CONFIG_TARGET_amlogic_meson8b_DEVICE_thunder-onecloud=y
+        EOF
+           
+    
+    - name: 下载编译依赖
+      id: package
+      run: |
+        cd openwrt
+        make defconfig
+        make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+    
+    - name: 编译源码
+      id: compile
+      run: |
+        cd openwrt
+        echo -e "$(nproc) thread compile"
+        make -j$(nproc) || make -j1 || make -j1 V=s
+        echo "status=success" >> $GITHUB_OUTPUT
+        grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
+        [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
+        echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+ 
+      
+    - name: 清理缓存
+      id: organize
+      run: |
+        cd openwrt
+        make clean
+ 
+    
+    - name: 上传staging_dir
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        cd openwrt/staging_dir
+        git init
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "${{ env.tag }}"
+        git branch -M 23.05
+        git remote add origin https://github-action:$GITHUB_TOKEN@github.com/shiyu1314/openwrt-onecloud.git
+        git push -u origin 23.05 --force

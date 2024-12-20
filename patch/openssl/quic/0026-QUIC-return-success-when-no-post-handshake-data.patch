@@ -1,0 +1,22 @@
+From a68e084550b8863d3f6b809ddfb26cb4c3e2307e Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Tue, 5 Jan 2021 13:50:21 -0500
+Subject: [PATCH 26/43] QUIC: return success when no post-handshake data
+
+---
+ ssl/ssl_quic.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/ssl/ssl_quic.c
++++ b/ssl/ssl_quic.c
+@@ -309,6 +309,10 @@ int SSL_process_quic_post_handshake(SSL
+         return 0;
+     }
+ 
++    /* if there is no data, return success as BoringSSL */
++    if (ssl->quic_input_data_head == NULL)
++        return 1;
++    
+     /*
+      * This is always safe (we are sure to be at a record boundary) because
+      * SSL_read()/SSL_write() are never used for QUIC connections -- the

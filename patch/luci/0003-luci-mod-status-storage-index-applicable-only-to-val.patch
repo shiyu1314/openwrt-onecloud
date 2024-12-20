@@ -1,0 +1,43 @@
+From 2543713322fa4f7b404a673429ce36f4319c4749 Mon Sep 17 00:00:00 2001
+From: sbwml <admin@cooluc.com>
+Date: Sun, 24 Mar 2024 00:12:45 +0800
+Subject: [PATCH 3/5] luci-mod-status: storage index applicable only to valid
+ devices
+
+Signed-off-by: sbwml <admin@cooluc.com>
+---
+ .../luci-static/resources/view/status/include/25_storage.js | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/25_storage.js b/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/25_storage.js
+index 60661f6..aac6711 100644
+--- a/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/25_storage.js
++++ b/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/25_storage.js
+@@ -13,12 +13,14 @@ var callMountPoints = rpc.declare({
+ 	expect: { result: [] }
+ });
+ 
+-var MountSkipList = [
++var MountSkipPath = [
+ 	"/rom",
+ 	"/tmp",
+ 	"/dev",
+ 	"/overlay",
+ 	"/",
++	"/boot",
++	"/root",
+ ]
+ 
+ function progressbar(value, max, byte) {
+@@ -62,7 +64,7 @@ return baseclass.extend({
+ 		for (var i = 0; i < mounts.length; i++) {
+ 			var entry = mounts[i];
+ 
+-			if (MountSkipList.includes(entry.mount))
++			if (!entry.device.includes("/dev/") || MountSkipPath.includes(entry.mount))
+ 				continue;
+ 
+ 			var name = entry.device + ' (' + entry.mount +')',
+-- 
+2.42.0
+

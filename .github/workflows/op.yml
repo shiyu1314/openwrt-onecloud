@@ -1,0 +1,329 @@
+name: openwrt
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    
+    inputs:
+      ENABLE_DHCP:
+        description: '是否开启DHCP'     
+        required: false
+        default: 'false'
+        type: boolean 
+
+      ENABLE_Cache:
+        description: '缓存加速'     
+        required: false
+        default: 'true'
+        type: boolean 
+        
+      OP_IP:
+        description: '静态IP地址'     
+        required: false
+        default: '192.168.2.2' 
+        type: string
+
+      OP_rootfs:
+        description: '预设镜像大小'     
+        required: false
+        default: '600' 
+        type: string
+   
+      OP_author:
+        description: '定制作者'     
+        required: false
+        default: 'shiyu1314' 
+        type: string    
+
+      CUSTOM_PLUGINS:
+        description: '自定义插件名称，用空格分隔'
+        required: false
+        default: 'luci-app-dockerman luci-theme-argon luci-app-argon-config luci-app-ttyd luci-app-diskman luci-app-hd-idle luci-app-mihomo luci-app-samba4 luci-app-emby luci-app-aria2 luci-app-alist luci-app-adguardhome'
+        type: string
+
+env:
+  DIY_P1_SH: sh/op.sh
+  DIY_P2_SH: sh/ad.sh
+
+jobs:
+  build_firmware:
+    name: 编译固件
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        repo_info:
+          - {repo_url: "https://github.com/openwrt/openwrt", branch: "openwrt-23.05"}
+
+
+    steps: 
+    - name: 检查分支
+      uses: actions/checkout@main
+
+    - name: 释放磁盘空间
+      run: |
+        sudo rm -rf /etc/apt/sources.list.d
+        sudo swapoff -a
+        sudo rm -f /swapfile /mnt/swapfile
+        sudo docker image prune -a -f
+        sudo systemctl stop docker
+        sudo snap set system refresh.retain=2
+        sudo apt-get -y purge firefox clang* ghc* google* llvm* mono* mongo* mysql* php*
+        sudo apt-get -y autoremove --purge
+        sudo apt-get clean
+        sudo rm -rf /etc/mysql /etc/php /usr/lib/jvm /usr/libexec/docker /usr/local /usr/src/* /var/lib/docker /var/lib/gems /var/lib/mysql /var/lib/snapd /etc/skel /opt/{microsoft,az,hostedtoolcache,cni,mssql-tools,pipx} /usr/share/{az*,dotnet,swift,miniconda,gradle*,java,kotlinc,ri,sbt} /root/{.sbt,.local,.npm}
+        sudo sed -i '/NVM_DIR/d;/skel/d' /root/{.bashrc,.profile}
+        rm -rf ~/{.cargo,.dotnet,.rustup}
+        df -Th
+
+    - name: 编译环境
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y tar img2simg build-essential flex bison cmake g++ gawk gcc-multilib g++-multilib gettext git libfuse-dev libncurses5-dev libssl-dev python3 python3-pip python3-ply python3-distutils python3-pyelftools rsync unzip zlib1g-dev file wget subversion patch upx-ucl autoconf automake curl asciidoc binutils bzip2 lib32gcc-s1 libc6-dev-i386 uglifyjs msmtp texinfo libreadline-dev libglib2.0-dev xmlto libelf-dev libtool autopoint antlr3 gperf ccache swig coreutils haveged scons libpython3-dev rename qemu-utils
+        sudo apt-get clean
+        git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
+        sudo timedatectl set-timezone 'Asia/Shanghai'
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
+        df -Th
+
+    - name: 设置环境变量
+      run: |
+        TAG="$(date +'%Y%m%d')-$(openssl rand -hex 3)"
+        echo "tag=$TAG" >> $GITHUB_ENV
+        echo "REPO_URL=${{ matrix.repo_info.repo_url }}" >> $GITHUB_ENV
+        echo "REPO_BRANCH=${{ matrix.repo_info.branch }}" >> $GITHUB_ENV
+        echo "OP_IP=${{ github.event.inputs.OP_IP }}" >> $GITHUB_ENV
+        echo "OP_author=${{ github.event.inputs.OP_author }}" >> $GITHUB_ENV
+        echo "OP_rootfs=${{ github.event.inputs.OP_rootfs }}" >> $GITHUB_ENV
+        echo "CUSTOM_PLUGINS=${{ github.event.inputs.CUSTOM_PLUGINS }}" >> $GITHUB_ENV
+        echo "ENABLE_DHCP=${{ github.event.inputs.ENABLE_DHCP }}" >> $GITHUB_ENV
+        echo "ENABLE_Cache=${{ github.event.inputs.ENABLE_Cache }}" >> $GITHUB_ENV
+
+    - name: 克隆源代码
+      working-directory: /workdir
+      run: |
+        df -hT $PWD
+        git clone $REPO_URL -b $REPO_BRANCH openwrt
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+        if [[ "${{ github.event.inputs.ENABLE_Cache }}" == "true" ]]; then
+          git clone -b 23.05 --depth 1 --single-branch https://github.com/shiyu1314/openwrt-onecloud openwrt/staging_dir
+        fi
+            
+    - name: 添加6.11内核
+      run: |
+        rm -rf openwrt/package/kernel/linux/modules/[a-z]*.mk
+        [ -e patch ] && cp -rf patch/modules/*.mk openwrt/package/kernel/linux/modules
+        [ -e tags ] && cp -rf tags/kernel-6.11 openwrt/include
+        rm -rf openwrt/target/linux/generic
+        git clone https://shiyu1314:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/shiyu1314/target_linux_generic -b 6.11 openwrt/target/linux/generic
+        cd openwrt
+        ./scripts/feeds update -a
+        cd .. 
+        [ -e patch ] && cp -rf patch/luci/*.patch openwrt/feeds/luci
+        [ -e patch ] && cp -rf patch/nginx/nginx-util/*.patch openwrt/feeds/packages   
+        [ -e patch ] && cp -rf patch/openssl/quic/*.patch openwrt/package/libs/openssl/patches
+        [ -e patch ] && cp -rf patch/generic/0014-kernel-enable-Multi-Path-TCP-for-SMALL_FLASH-targets.patch openwrt
+        [ -e patch ] && cp -rf patch/generic/0010-include-kernel-add-config-for-linux-6.x.patch openwrt
+        mkdir -p openwrt/package/utils/util-linux/patches
+        [ -e patch ] && cp -rf patch/util-linux/201-util-linux_ntfs3.patch openwrt/package/utils/util-linux/patches
+        [ -e patch ] && cp -rf patch/fstools/Makefile openwrt/package/system/fstools
+        sed -i 's|$(PROJECT_GIT)/project|https://github.com/openwrt|g' openwrt/package/system/fstools/Makefile
+        mkdir -p openwrt/package/system/fstools/patches
+        [ -e patch ] && cp -rf patch/fstools/*.patch openwrt/package/system/fstools/patches
+        ls openwrt/target/linux/generic
+        
+    - name: 加载自定义脚本
+      run: |
+        chmod +x $DIY_P1_SH
+        cd openwrt
+        $GITHUB_WORKSPACE/$DIY_P1_SH
+        cd ..
+        [ -e patch ] && cp -rf patch/nginx/luci.locations openwrt/feeds/packages/net/nginx/files-luci-support
+        [ -e patch ] && cp -rf patch/nginx/uci.conf.template openwrt/feeds/packages/net/nginx-util/files 
+        [ -e patch ] && cp -rf patch/kernel-6.11/bbr3/*.patch openwrt/target/linux/generic/backport-6.11
+        [ -e patch ] && cp -rf patch/kernel-6.11/btf/*.patch openwrt/target/linux/generic/hack-6.11
+  
+        
+    - name: 添加玩客云
+      run: |
+        git clone https://shiyu1314:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/shiyu1314/s805 -b 6.11 openwrt/target/linux/amlogic
+        
+    - name: 下载ad核心
+      run: |
+        chmod +x $DIY_P2_SH
+        $GITHUB_WORKSPACE/$DIY_P2_SH  
+
+    - name: 加载自定义配置
+      run: |
+        [ -e files ] && mv files openwrt/files
+        cat <<EOF >>openwrt/.config
+        CONFIG_TARGET_amlogic=y
+        CONFIG_TARGET_amlogic_meson8b=y
+        CONFIG_TARGET_amlogic_meson8b_DEVICE_thunder-onecloud=y
+        CONFIG_TARGET_KERNEL_PARTSIZE=32
+        CONFIG_TARGET_ROOTFS_PARTSIZE=${{ github.event.inputs.OP_rootfs }}
+        CONFIG_KERNEL_EXT4_FS_SECURITY=y
+        # CONFIG_TARGET_ROOTFS_SQUASHFS is not set
+        CONFIG_PACKAGE_dnsmasq-full=y
+        CONFIG_PACKAGE_dnsmasq_full_ipset=y
+        # CONFIG_PACKAGE_dnsmasq_full_broken_rtc is not set
+        # CONFIG_PACKAGE_dnsmasq is not set
+        CONFIG_PACKAGE_luci-app-firewall=y
+        CONFIG_PACKAGE_bash=y
+        CONFIG_PACKAGE_fuse-utils=y
+        CONFIG_PACKAGE_luci-app-opkg=y
+        CONFIG_PACKAGE_kmod-nft-socket=y
+        CONFIG_PACKAGE_luci-base=y
+        CONFIG_PACKAGE_ethtool=y
+        CONFIG_PACKAGE_automount=y
+        CONFIG_PACKAGE_autocore=y
+        CONFIG_PACKAGE_autosamba=y
+        CONFIG_PACKAGE_ariang-nginx=y
+        CONFIG_PACKAGE_libopenssl-conf=y
+        CONFIG_PACKAGE_libopenssl-legacy=y
+        CONFIG_PACKAGE_kmod-usb-net-rndis=y
+        CONFIG_PACKAGE_kmod-usb-net=y
+        CONFIG_PACKAGE_kmod-usb-net-cdc-ether=y
+        CONFIG_PACKAGE_luci-nginx=y
+        CONFIG_PACKAGE_nginx-all-module=y
+        CONFIG_PACKAGE_nginx-ssl=y
+        CONFIG_PACKAGE_nginx-mod-brotli=y
+        CONFIG_PACKAGE_nginx-mod-luci=y
+        CONFIG_PACKAGE_nginx-mod-rtmp=y
+        CONFIG_PACKAGE_nginx-mod-stream=y
+        CONFIG_PACKAGE_nginx-mod-ubus=y
+        CONFIG_PACKAGE_nginx-mod-zstd=y
+        CONFIG_PACKAGE_nginx-ssl-util=y
+        CONFIG_NGINX_DAV=y
+        CONFIG_NGINX_HTTP_AUTH_BASIC=y
+        CONFIG_NGINX_HTTP_QUIC=y
+        CONFIG_NGINX_HTTP_REAL_IP=y
+        CONFIG_NGINX_HTTP_SUB=y
+        CONFIG_NGINX_STREAM_REAL_IP=y
+        CONFIG_OPENSSL_ENGINE=y
+        CONFIG_OPENSSL_OPTIMIZE_SPEED=y
+        CONFIG_OPENSSL_WITH_ASM=y
+        CONFIG_PACKAGE_libopenssl-afalg=y
+        CONFIG_PACKAGE_libopenssl-conf=y
+        CONFIG_PACKAGE_libopenssl-devcrypto=y
+        CONFIG_PACKAGE_libopenssl-legacy=y
+        CONFIG_PACKAGE_openssl-util=y
+        # CONFIG_PACKAGE_libopenssl-padlock is not set
+        # CONFIG_OPENSSL_WITH_ERROR_MESSAGES is not set
+        CONFIG_PACKAGE_curl=y
+        CONFIG_PACKAGE_libcurl=y
+        CONFIG_LIBCURL_NGHTTP3=y
+        CONFIG_LIBCURL_NGTCP2=y
+        CONFIG_LIBCURL_OPENSSL=y
+        # CONFIG_LIBCURL_GNUTLS is not set
+        # CONFIG_LIBCURL_MBEDTLS is not set
+        # CONFIG_LIBCURL_NOSSL is not set
+        # CONFIG_LIBCURL_WOLFSSL is not set
+        CONFIG_PACKAGE_zram-swap=y
+        CONFIG_PACKAGE_kmod-lib-lz4=y
+        CONFIG_PACKAGE_kmod-lib-lzo=y
+        CONFIG_PACKAGE_kmod-lib-zstd=y
+        CONFIG_PACKAGE_kmod-tcp-brutal=y
+        CONFIG_PACKAGE_kmod-tcp-bbr3=y
+        CONFIG_PACKAGE_kmod-usb2=y
+        CONFIG_PACKAGE_my-default-settings=y
+        CONFIG_PACKAGE_fdisk=y
+        CONFIG_PACKAGE_htop=y
+        CONFIG_PACKAGE_iperf3=y
+        CONFIG_PACKAGE_iputils-ping=y
+        CONFIG_PACKAGE_less=y
+        CONFIG_PACKAGE_lsblk=y
+        CONFIG_PACKAGE_lscpu=y
+        CONFIG_PACKAGE_lsof=y
+        CONFIG_PACKAGE_openssh-sftp-server=y
+        CONFIG_PACKAGE_pciutils=y
+        CONFIG_PACKAGE_rename=y
+        CONFIG_PACKAGE_rsync=y
+        CONFIG_PACKAGE_sed=y
+        CONFIG_PACKAGE_unzip=y
+        CONFIG_PACKAGE_usbutils=y
+        CONFIG_PACKAGE_vim=y
+        CONFIG_PACKAGE_wget-ssl=y
+        CONFIG_PACKAGE_wpad-openssl=y
+        EOF
+        
+        if [[ "${{ github.event.inputs.ENABLE_DHCP }}" == "false" ]]; then
+          rm -rf openwrt/files/etc/uci-defaults/dhcp-lan
+          sed -i "s/192.168.1.1/${{ github.event.inputs.OP_IP }}/" openwrt/package/base-files/files/bin/config_generate
+        fi
+
+        IFS=' ' read -r -a plugins <<< "${{ github.event.inputs.CUSTOM_PLUGINS }}"
+        for plugin in "${plugins[@]}"; do
+          echo "CONFIG_PACKAGE_${plugin}=y" >> openwrt/.config
+        done    
+    
+    - name: 下载编译依赖
+      id: package
+      run: |
+        cd openwrt
+        make defconfig
+        make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+    
+    - name: 编译源码
+      id: compile
+      run: |
+        cd openwrt
+        echo -e "$(nproc) thread compile"
+        make -j$(nproc) || make -j1 || make -j1 V=s
+        echo "status=success" >> $GITHUB_OUTPUT
+        grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
+        [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
+        echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+
+    - name: 查看磁盘使用情况
+      if: (!cancelled())
+      run: df -hT
+
+    - name: 整理文件
+      id: organize
+      run: |
+        gunzip openwrt/bin/targets/*/*/*.gz
+        for f in openwrt/bin/targets/*/*/*.img; do
+          xz -9 --threads=0 --compress "$f"
+        done
+        rm -rf openwrt/bin/targets/*/*/*.img
+        rm -rf openwrt/bin/targets/*/*/*.gz
+        cd openwrt/bin/targets/*/*
+        mv *.xz ${{ matrix.repo_info.branch }}-onecloud_burn.img.xz
+        rm -rf packages
+        rm -rf *.buildinfo
+        rm -rf profiles.json
+        rm -rf *.manifest
+        rm -rf *.sha
+        rm -rf sha256sums
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+
+    - name: 上传固件到Releases
+      uses: softprops/action-gh-release@v2.1.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ matrix.repo_info.branch }}-k6.11_${{env.tag}}
+        files: ${{ env.FIRMWARE }}/*
+        body: |
+          ====================固件信息=======================
+           源码：${{ matrix.repo_info.repo_url }}
+           分支：${{ matrix.repo_info.branch }}
+           静态IP：${{ github.event.inputs.OP_IP }}
+           DHCP状态：${{ github.event.inputs.ENABLE_DHCP }}
+           插件：${{ github.event.inputs.CUSTOM_PLUGINS }}
+           定制作者：${{ github.event.inputs.OP_author }}
+           扩容：sh 1.sh
+           默认密码：无
+
+    - name: 清理Releases
+      uses: dev-drprasad/delete-older-releases@v0.3.4
+      with:
+        keep_latest: 2
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
