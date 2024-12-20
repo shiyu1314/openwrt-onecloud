@@ -3,10 +3,10 @@ Version: 42
 Depends: libc
 Section: opt
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 1258
+Installed-Size: 1257
 Filename: autocore_42_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1963
-SHA256sum: c3ee205f16e3f46b8721df2f529566f712c0996de345a204b11aa09ff6a6d796
+Size: 1960
+SHA256sum: b7a293ba7779638ab772872b7968a7f0c40837ca540a0e67458083111cd77414
 Description:  auto core loadbalance script.
 
 Package: automount
@@ -16,8 +16,8 @@ Section: opt
 Architecture: all
 Installed-Size: 831
 Filename: automount_10_all.ipk
-Size: 1587
-SHA256sum: 7137129dc94c45e193a3f1271e6ccb28db7074bc2225a737efb754ad094aefd1
+Size: 1585
+SHA256sum: efcb0ccf33f7d2e28df71660c03eabae6c0e35c86ae41ebf03c3cad9afd5c6b8
 Description:  Mount autoconfig hotplug script.
 
 Package: base-files
@@ -29,7 +29,7 @@ Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 45574
 Filename: base-files_1563-r24147-b551214c9d_arm_cortex-a5_neon-vfpv4.ipk
 Size: 46534
-SHA256sum: 103174879fe2f70c9666982d487c0b71d859864f570b065b832216c079b755ac
+SHA256sum: ad69d934167ad86ebcd8e96849721cd144a182eba776a40b8e80860fbafe3982
 Description:  This package contains a base filesystem and system scripts for OpenWrt.
 
 Package: block-mount
@@ -808,6 +808,18 @@ Description:  Netfilter (IPv4) module for matching ip ranges
  Includes:
  - iprange
 
+Package: kmod-ipt-ipset
+Version: 6.11.11-1
+Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-ipt-core, kmod-nfnetlink
+License: GPL-2.0-only
+Section: kernel
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 204009
+Filename: kmod-ipt-ipset_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 204077
+SHA256sum: ef95362631202dcef59677098966066572530b5fb37dd7e80f088ab05adc9de9
+Description:  IPset netfilter modules
+
 Package: kmod-ipt-nat-extra
 Version: 6.11.11-1
 Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-ipt-core, kmod-ipt-nat
@@ -1040,6 +1052,18 @@ Filename: kmod-mii_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 964
 SHA256sum: e146b8e2acfb6fa6b6deea3e23fb21059e9fef49adf211052e5d26c06dc7eb78
 Description:  MII library
+
+Package: kmod-netlink-diag
+Version: 6.11.11-1
+Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c)
+License: GPL-2.0-only
+Section: kernel
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 2641
+Filename: kmod-netlink-diag_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 3415
+SHA256sum: 1335c1c0c271b027f2652177c1e60e92d02dc8788874ac9381be224b74b209cd
+Description:  Netlink diag is a module made for use with iproute2's ss utility
 
 Package: kmod-nf-conncount
 Version: 6.11.11-1
@@ -1828,10 +1852,10 @@ Depends: libc, kmod-fs-ntfs3
 Conflicts: ntfs-3g
 Section: utils
 Architecture: all
-Installed-Size: 195
+Installed-Size: 194
 Filename: ntfs3-mount_10_all.ipk
-Size: 896
-SHA256sum: 623969963d40a6804994bbae5a2bbcb657dfabef0eb688e7c207038d56cab171
+Size: 895
+SHA256sum: bb54b04d8ba4e8b06bacd3e74f7f2e6925704fd19d48e8491396b9cda5bf4df5
 Description:  NTFS mount script for Paragon NTFS3 driver
 
 Package: xtables-nft

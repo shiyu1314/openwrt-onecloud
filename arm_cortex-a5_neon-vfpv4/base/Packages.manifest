@@ -5,13 +5,13 @@ Source: feeds/base/xd/alist/alist
 SourceName: alist
 License: GPL-3.0
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 26886793
+Installed-Size: 26886877
 Filename: alist_3.41.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 26795565
-SHA256sum: a59c1b17de34a90275bc3c43f3ab98551dbec5d26489eab2e5f5a533ef072260
+Size: 26795827
+SHA256sum: b9ad1083c059f547ff6b7915de414c4f7686bdde292a5376a228db54d6fb1bee
 Description:  A file list program that supports multiple storage, powered by Gin and Solidjs.
 
 Package: aria2
@@ -23,14 +23,14 @@ License: GPLv2
 LicenseFiles: COPYING
 Section: net
 Require-User: aria2=6800:aria2=6800
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 CPE-ID: cpe:/a:tatsuhiro_tsujikawa:aria2
 Maintainer: Imre Kaloz <kaloz@openwrt.org>, Hsing-Wang Liao <kuoruan@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 563558
+Installed-Size: 563567
 Filename: aria2_1.37.0-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 563610
-SHA256sum: 7fb9c09c3d52139285c2f13f261d10869cbb8d99ed1b8e0447817ffad0a42aea
+Size: 563523
+SHA256sum: 4bc7508e79eebdc76220453896cbf740ba5d56a0e6c6d3f480f080674175c21b
 Description:  aria2 is a lightweight multi-protocol & multi-source command-line download
  utility
 
@@ -42,13 +42,13 @@ SourceName: ariang-nginx
 License: MIT
 LicenseFiles: LICENSE
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Ansuel Smith <ansuelsmth@gmail.com>
 Architecture: all
-Installed-Size: 1007530
+Installed-Size: 1007542
 Filename: ariang-nginx_1.3.6-1_all.ipk
-Size: 1008136
-SHA256sum: 888a748579f931d3569d7f802abf56ddaa25786e0ffa175489fdb5b9fecb6501
+Size: 1008128
+SHA256sum: df1f1153fd8fdb29761d31cf9e1769e0d9c6aa78aeb0fc533c81ff0894b47178
 Description:  AriaNg is a web frontend making aria2 easier to use. AriaNg is written in pure html & javascript, thus it does not need any compilers or runtime environment.
 
 Package: autosamba
@@ -57,13 +57,13 @@ Depends: libc, luci-app-samba4, wsdd2
 Source: feeds/base/emortal/autosamba
 SourceName: autosamba
 Section: opt
-SourceDateEpoch: 1734597740
+SourceDateEpoch: 1734652806
 Maintainer: Lean
 Architecture: all
-Installed-Size: 1175
+Installed-Size: 1176
 Filename: autosamba_1-12_all.ipk
-Size: 1902
-SHA256sum: 7dd735be83e1eaf9a55432dd68c776c77f21fab7bbabd04f88a23a00e9ec8651
+Size: 1906
+SHA256sum: 9b9f45fabdc0a2b7d50ff5959bd84a17359d322a557a1e5f068cab3d3bd4c172
 Description:  A hotplug script to config Samba share automatically.
 
 Package: blkid
@@ -140,6 +140,23 @@ Size: 134595
 SHA256sum: c2221919c4fce3856ec2543ba191ebf4d9736844e37e74c132a8ed88dfc16fd9
 Description:  System CA certificates
 
+Package: chinadns-ng
+Version: 2024.11.17-1
+Depends: libc, ipset
+Source: feeds/base/porxy/chinadns-ng
+SourceName: chinadns-ng
+License: AGPL-3.0-only
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1734652020
+Maintainer: sbwml <admin@cooluc.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 261835
+Filename: chinadns-ng_2024.11.17-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 261747
+SHA256sum: 7dc672407ee187fa98688562be0afd09a5a23f55f78be97e1085ea6289e27c5b
+Description:  ChinaDNS next generation, refactoring with epoll and ipset.
+
 Package: curl
 Version: 8.11.1-1
 Depends: libc, libcurl4
@@ -152,15 +169,49 @@ SourceDateEpoch: 1734582135
 CPE-ID: cpe:/a:haxx:libcurl
 Maintainer: Stan Grishin <stangri@melmac.ca>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 65423
+Installed-Size: 65508
 Filename: curl_8.11.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 66264
-SHA256sum: 79247ec138ab97fb79e56bdabb85c0549be5aeed0df17b3b0c3d4d1f5f592313
+Size: 66357
+SHA256sum: 4b445d476c70418024e0333e4dddf1361479df5f82b5e8c8519df2612c1038ec
 Description:  A client-side URL transfer utility
+
+Package: dns2socks
+Version: 2.1-2
+Depends: libc, libpthread
+Source: feeds/base/porxy/dns2socks
+SourceName: dns2socks
+License: BSD-3-Clause
+Section: net
+SourceDateEpoch: 1734652020
+Maintainer: ghostmaker
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 10756
+Filename: dns2socks_2.1-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 11536
+SHA256sum: 2c3af7b5b9059caa851301b5e6ec73f34cc9de3e7ecf3c98d0fac37e58982678
+Description:  This is a command line utility to resolve DNS requests via
+ a SOCKS tunnel like Tor or a HTTP proxy.
+
+Package: dns2tcp
+Version: 1.1.2-1
+Depends: libc
+Source: feeds/base/porxy/dns2tcp
+SourceName: dns2tcp
+License: AGPL-3.0-only
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1734652020
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 9967
+Filename: dns2tcp_1.1.2-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 10752
+SHA256sum: 947798947fd728d13990f87af605be8d022d1d2ae79cb7f8824689c82f22c01c
+Description:  utility to convert dns query from udp to tcp
 
 Package: dnsmasq-full
 Version: 2.90-2
-Depends: libc, libubus20230605, libnettle8, libnetfilter-conntrack3, nftables-json
+Depends: libc, libubus20230605, libnettle8, kmod-ipt-ipset, libnetfilter-conntrack3, nftables-json
 Provides: dnsmasq
 Source: feeds/base/network/services/dnsmasq
 SourceName: dnsmasq-full
@@ -171,10 +222,10 @@ Require-User: dnsmasq=453:dnsmasq=453
 SourceDateEpoch: 1710894130
 CPE-ID: cpe:/a:thekelleys:dnsmasq
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 200442
+Installed-Size: 201070
 Filename: dnsmasq-full_2.90-2_arm_cortex-a5_neon-vfpv4.ipk
-Size: 200877
-SHA256sum: be64a85f29a1c5e711e4114e034f96e11a7a431759cc331cb4d31ae855870f2e
+Size: 201507
+SHA256sum: 1738470062f429cbbb71ec3dd431387aa3022b80e216f680d16401e6f977e601
 Description:  It is intended to provide coupled DNS and DHCP service to a LAN.
  
  This is a fully configurable variant with DHCPv4, DHCPv6, DNSSEC, Authoritative DNS
@@ -241,12 +292,12 @@ Depends: libc
 Source: feeds/base/xd/filebrowser
 SourceName: filebrowser
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 7850969
+Installed-Size: 7850988
 Filename: filebrowser_2.31.2-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 7842934
-SHA256sum: 0d3196c7b3867a79b44a7751576ec7705c9ec2a2339e1eacf4faae6d9f116556
+Size: 7842890
+SHA256sum: 9f73b291bfc408b1b3dea1a4c79879abb589b69d6fc0a0e61ab45f0b5670c620
 Description:  File Browser is a create-your-own-cloud-kind of software where you can install it on a server
 
 Package: firewall4
@@ -275,13 +326,13 @@ SourceName: frpc
 License: Apache-2.0
 LicenseFiles: LICENSE
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Richard Yu <yurichard3839@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 5230800
+Installed-Size: 5230790
 Filename: frpc_0.51.3-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 5218283
-SHA256sum: 1949bd906f3fe55cd411d05ce500811a5ae7e5cf70b4b956d3d85a9003d7a6ff
+Size: 5218398
+SHA256sum: f1df314f84fc660e90b657db8c5323f0f0d2fc6c5d4e44140cd2c48c642f551c
 Description:  frpc is a fast reverse proxy client to help you expose a local server behind
  a NAT or firewall to the internet.
 
@@ -293,13 +344,13 @@ SourceName: frps
 License: Apache-2.0
 LicenseFiles: LICENSE
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Richard Yu <yurichard3839@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 6068639
+Installed-Size: 6068573
 Filename: frps_0.51.3-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 6056914
-SHA256sum: 190a37e07e1c538f451bdbc8495f52d2c5fbc077534ed70b5163d15749b51d66
+Size: 6056992
+SHA256sum: 59a1a848561de1f053267a0b0f68d69dc1bd053887454e11d7fc435f7cdd0c92
 Description:  frps is a fast reverse proxy server to help you expose a local server behind
  a NAT or firewall to the internet.
 
@@ -327,13 +378,13 @@ SourceName: gost
 License: MIT
 LicenseFiles: LICENSE
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 5098254
+Installed-Size: 5098257
 Filename: gost_2.11.5-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 5090204
-SHA256sum: 9cb27364947164502bceb2360d30c60cbaad90932a3d15991a773d718b8bfb8b
+Size: 5090233
+SHA256sum: 2cc444429df33a9a0f0650c48dac180468beff4ef0695e2fa8756f9df82f0730
 Description:  GO Simple Tunnel
 
 Package: gowebdav
@@ -342,13 +393,13 @@ Depends: libc
 Source: feeds/base/xd/gowebdav
 SourceName: gowebdav
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 2310101
+Installed-Size: 2310102
 Filename: gowebdav_0.0.8-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 2306550
-SHA256sum: 531f97a8e3321dfbebcfa87389eb7c25f4f2bbeba9e505a3983d693bf92a6574
+Size: 2306609
+SHA256sum: 781cfb71e868457bf8424505316ee6745850ea305b07fb1b5c0eb06f7321f5d4
 Description:  A simple WebDav server written in Go
 
 Package: hostapd-common
@@ -394,17 +445,49 @@ Source: feeds/base/xd/iperf3
 SourceName: iperf3
 License: BSD-3-Clause
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 CPE-ID: cpe:/a:es:iperf3
 Maintainer: Felix Fietkau <nbd@nbd.name>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 2029
+Installed-Size: 2031
 Filename: iperf3_3.17.1-4_arm_cortex-a5_neon-vfpv4.ipk
 Size: 2871
-SHA256sum: 95ab298b0fabc2a569ecd1a0c0b6e9ef4cdcf5cffa3c0ccd9053102f2a57ae80
+SHA256sum: b71221a3e8220ab91fc13bf8686a8d8d100986f0fd7a11bff0ada884892dcd92
 Description:  Iperf is a modern alternative for measuring TCP and UDP bandwidth
  performance, allowing the tuning of various parameters and
  characteristics.
+
+Package: ipset
+Version: 7.17-1
+Depends: libc, kmod-ipt-ipset, libmnl0, libipset13
+Source: feeds/base/network/utils/ipset
+SourceName: ipset
+License: GPL-2.0
+Section: net
+SourceDateEpoch: 1695847021
+CPE-ID: cpe:/a:netfilter:ipset
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1293
+Filename: ipset_7.17-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 2092
+SHA256sum: 6eac31ebf3d6dd4951e0fa88833a7d84edf5f6247b4d5af136c1058132a5f10b
+Description:  IPset administration utility
+
+Package: ipt2socks
+Version: 1.1.4-3
+Depends: libc, libpthread
+Source: feeds/base/porxy/ipt2socks
+SourceName: ipt2socks
+License: AGPL-3.0
+Section: net
+SourceDateEpoch: 1734652020
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 25686
+Filename: ipt2socks_1.1.4-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 26442
+SHA256sum: a25d3bff7fd65036ad86ca8f441150ee02d8f1c90482f927c254af94e0ea89b4
+Description:  Utility for converting iptables (redirect/tproxy) to socks5.
 
 Package: jansson4
 Version: 2.14-3
@@ -465,12 +548,12 @@ SourceName: ksmbd-server
 License: GPL-2.0-or-later
 LicenseFiles: COPYING
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 120810
+Installed-Size: 120813
 Filename: ksmbd-server_3.5.3-2_arm_cortex-a5_neon-vfpv4.ipk
-Size: 119788
-SHA256sum: d964053c4ce4c9ede510dc06fe7bf36fc1fece73369314e79fc85b495c1eca00
+Size: 119782
+SHA256sum: e30061f362a770a1de41c4cdecb0360aee8074c8d198ee8b42cd4da0e02702b8
 Description:  installs: ksmbd.mountd
  
  This provides the basic fileserver service and is the minimum needed to serve 'guest only' file shares or use a existing user database file ksmbdpwd.db.
@@ -481,12 +564,12 @@ Depends: libc, libatomic1, libstdcpp6, zlib, libpcre2-16
 Source: feeds/base/xd/qt6base
 SourceName: libQt6Core
 Section: libs
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 2473140
 Filename: libQt6Core_6.8.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 2457222
-SHA256sum: 0598b6955c6e865f9b5c6d76d9901ec3ae87c403c0460facd645dbeee1be27f0
+Size: 2457126
+SHA256sum: f33aea22d00a13e0d93b8c0b3daf7299874f7b3087ce61581bb5f8d4d3863b22
 Description:  This package provides the Qt6 Core v6.8.1 library.
 
 Package: libQt6Network
@@ -495,12 +578,12 @@ Depends: libc, libatomic1, libstdcpp6, zlib, libQt6Core, libopenssl3, krb5-libs
 Source: feeds/base/xd/qt6base
 SourceName: libQt6Network
 Section: libs
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 857208
 Filename: libQt6Network_6.8.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 852317
-SHA256sum: d28890c853f5d5597f4ae271412b5e5f71fa6755854f9ded3cc02ab6db0496fc
+Size: 852320
+SHA256sum: b1cd2b0e790dc0aa19f36eb40cf39d920601600a8b008e22b58869c80525147a
 Description:  This package provides the Qt6 Network v6.8.1 library.
 
 Package: libQt6Sql
@@ -509,12 +592,12 @@ Depends: libc, libatomic1, libstdcpp6, zlib, libQt6Core
 Source: feeds/base/xd/qt6base
 SourceName: libQt6Sql
 Section: libs
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 82338
 Filename: libQt6Sql_6.8.1-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 82624
-SHA256sum: da6e6bcdee11f61faa645701d869811f3f91047a08ebc4767681b36134a2a0b5
+SHA256sum: d5229475a171ad7607fa2108931ba0efb0ae2a14a3ea0938ef91fc96851c7586
 Description:  This package provides the Qt6 Sql v6.8.1 library.
 
 Package: libQt6Xml
@@ -523,12 +606,12 @@ Depends: libc, libatomic1, libstdcpp6, zlib, libQt6Core
 Source: feeds/base/xd/qt6base
 SourceName: libQt6Xml
 Section: libs
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 59610
+Installed-Size: 59612
 Filename: libQt6Xml_6.8.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 60134
-SHA256sum: e4b4b5ee6c146d566ddfbd9e2373ecce42bcd502c0f4f46e9d8b5d4fc19a3a4c
+Size: 60135
+SHA256sum: df42aeed828f73103d9acf0f2c7f4351dd390a79fc48063a398d8a601699a127
 Description:  This package provides the Qt6 Xml v6.8.1 library.
 
 Package: libblkid1
@@ -650,7 +733,7 @@ Description:  This package contains libcom_err, the common error description lib
 
 Package: libcurl4
 Version: 8.11.1-1
-Depends: libc, libmbedtls12, libnghttp2-14, ca-bundle
+Depends: libc, libopenssl3, libnghttp2-14, libnghttp3, libngtcp2, ca-bundle
 Provides: libcurl
 Source: feeds/base/base-23.05/curl
 SourceName: libcurl
@@ -662,10 +745,10 @@ ABIVersion: 4
 CPE-ID: cpe:/a:haxx:libcurl
 Maintainer: Stan Grishin <stangri@melmac.ca>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 208855
+Installed-Size: 221628
 Filename: libcurl4_8.11.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 209029
-SHA256sum: 008e87cb98ea941b9465d943bde286f7a3c28995e7c153e65b40333c73af96d9
+Size: 221334
+SHA256sum: 9ee11ab753b95e3424d2ad13151dda8b374f3fda6e8dea993e65a9a9ca38e7ac
 Description:  A client-side URL transfer library
 
 Package: libelf1
@@ -773,15 +856,34 @@ Source: feeds/base/xd/iperf3
 SourceName: libiperf3
 License: BSD-3-Clause
 Section: libs
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 CPE-ID: cpe:/a:es:iperf3
 Maintainer: Felix Fietkau <nbd@nbd.name>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 70592
+Installed-Size: 70598
 Filename: libiperf3_3.17.1-4_arm_cortex-a5_neon-vfpv4.ipk
-Size: 71313
-SHA256sum: b1fd3f5a4874a9ce77c9452de4301492733da8bd9c25469a627e43a64ec4b712
+Size: 71320
+SHA256sum: 31293372bb53fa10f4354f0da4c8a84210f2e25653145f135200b0b7980070c4
 Description:  Libiperf is a library providing an API for iperf3 functionality.
+
+Package: libipset13
+Version: 7.17-1
+Depends: libc, kmod-ipt-ipset, libmnl0
+Provides: libipset
+Source: feeds/base/network/utils/ipset
+SourceName: libipset
+License: GPL-2.0
+Section: net
+SourceDateEpoch: 1695847021
+ABIVersion: 13
+CPE-ID: cpe:/a:netfilter:ipset
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 44239
+Filename: libipset13_7.17-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 44674
+SHA256sum: a338d500ac29575040e3cee43f236b86db56772c9a4e538cb9b4141d313b68b4
+Description:  IPset administration utility
 
 Package: libiwinfo-data
 Version: 2023-07-01-ca79f641-1
@@ -856,6 +958,25 @@ Size: 4983
 SHA256sum: 2ad67db013fed8237c9ef7386c3284d37c0dbaf09ef17bb68d299d6c7d6c5d40
 Description:  Minimalistic JSON based scripting engine
 
+Package: libltdl7
+Version: 2.4.7-1
+Depends: libc
+Provides: libltdl
+Source: feeds/base/libs/libtool
+SourceName: libltdl
+License: GPL-2.0+
+LicenseFiles: COPYING
+Section: libs
+SourceDateEpoch: 1657472867
+ABIVersion: 7
+CPE-ID: cpe:/a:gnu:libtool
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 13213
+Filename: libltdl7_2.4.7-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 13879
+SHA256sum: 90c7790dee769cfd1fb86317dc0e70994b37763c74817282a46b010862d8f42c
+Description:  A generic dynamic object loading library
+
 Package: liblua5.1.5
 Version: 5.1.5-11
 Depends: libc
@@ -877,6 +998,29 @@ SHA256sum: 643473bb80f4f1ad4e5d66122856d9b9397b37fcd9976a6c1688c90fe20260aa
 Description:  Lua is a powerful light-weight programming language designed for extending 
  applications. Lua is also frequently used as a general-purpose, stand-alone 
  language. Lua is free software.
+ This package contains the Lua shared libraries, needed by other programs.
+
+Package: liblua5.3-5.3
+Version: 5.3.5-5
+Depends: libc
+Provides: liblua5.3
+Source: feeds/base/utils/lua5.3
+SourceName: liblua5.3
+License: MIT
+LicenseFiles: COPYRIGHT
+Section: libs
+SourceDateEpoch: 1702205234
+ABIVersion: -5.3
+CPE-ID: cpe:/a:lua:lua
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 77148
+Filename: liblua5.3-5.3_5.3.5-5_arm_cortex-a5_neon-vfpv4.ipk
+Size: 77941
+SHA256sum: 5ed8718b3b8a48b39fb1e20415180d4ee3a37c7cb1c914c3a09c59f8d06f4384
+Description:  Lua is a powerful, efficient, lightweight, embeddable scripting language. It
+ supports procedural programming, object-oriented programming, functional
+ programming, data-driven programming, and data description.
  This package contains the Lua shared libraries, needed by other programs.
 
 Package: libmbedtls12
@@ -1064,6 +1208,40 @@ SHA256sum: ffef92cf0cf9347113e123bb6cc7c7bcf3d25e69298105dcbdf6a05b8296925f
 Description:  libnftnl is a userspace library providing a low-level netlink
  programming interface (API) to the in-kernel nf_tables subsystem.
 
+Package: libnghttp3
+Version: 1.6.0-1
+Depends: libc
+Source: feeds/base/base-23.05/nghttp3
+SourceName: libnghttp3
+License: MIT
+LicenseFiles: COPYING
+Section: libs
+SourceDateEpoch: 1734582135
+Maintainer: sbwml <admin@cooluc.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 175300
+Filename: libnghttp3_1.6.0-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 170777
+SHA256sum: 0a90d4ee3d63e603292d6b5f9e2611d174a3eb4c8f2e7fd43be30de0c3e486af
+Description:  nghttp3 is a thin HTTP/3 layer over an underlying QUIC stack.
+
+Package: libngtcp2
+Version: 1.9.1-1
+Depends: libc, libnghttp3, libopenssl3
+Source: feeds/base/base-23.05/ngtcp2
+SourceName: libngtcp2
+License: MIT
+LicenseFiles: COPYING
+Section: libs
+SourceDateEpoch: 1734582135
+Maintainer: sbwml <admin@cooluc.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 385608
+Filename: libngtcp2_1.9.1-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 386279
+SHA256sum: 15adf30218283d3aebd7bc420a4bce212821b4845d5f0ee6cc02632a54a38b07
+Description:  ngtcp2 project is an effort to implement QUIC protocol which is now being discussed in IETF QUICWG for its standardization.
+
 Package: libnl-core200
 Version: 3.7.0-1
 Depends: libc, libpthread
@@ -1132,10 +1310,10 @@ SourceDateEpoch: 1726326260
 CPE-ID: cpe:/a:openssl:openssl
 Maintainer: Eneas U de Queiroz <cotequeiroz@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 5250
+Installed-Size: 6343
 Filename: libopenssl-afalg_3.0.15-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 6442
-SHA256sum: 6671099567248eabf02d52bc9bb0ea5890d559811502d9e1f66f9e3e01ae8de6
+Size: 7570
+SHA256sum: d6ebcdbf1c8727cb2a29168d26995889723ffe2b1e94b82a2d8c08a065ed663e
 Description:  This package adds an engine that enables hardware acceleration
  through the AF_ALG kernel interface.
  See https://www.openssl.org/docs/man3.0/man5/config.html#Engine-Configuration
@@ -1176,10 +1354,10 @@ SourceDateEpoch: 1726326260
 CPE-ID: cpe:/a:openssl:openssl
 Maintainer: Eneas U de Queiroz <cotequeiroz@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 8259
+Installed-Size: 11273
 Filename: libopenssl-devcrypto_3.0.15-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 9477
-SHA256sum: b015dfa76ea555ca3c62d8f73780a9d0c29aeac5d15ccbe00d3e0fbada28c9fa
+Size: 12438
+SHA256sum: d33413f3912ca4f60a4bb9eb2ca342a5ead6503f197cf2e95c249b4471580f12
 Description:  This package adds an engine that enables hardware acceleration
  through the /dev/crypto kernel interface.
  See https://www.openssl.org/docs/man3.0/man5/config.html#Engine-Configuration
@@ -1198,10 +1376,10 @@ SourceDateEpoch: 1726326260
 CPE-ID: cpe:/a:openssl:openssl
 Maintainer: Eneas U de Queiroz <cotequeiroz@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 24549
+Installed-Size: 28473
 Filename: libopenssl-legacy_3.0.15-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 25445
-SHA256sum: ca0d3893624aa11bc580d5a6010e5ea298b8e84a5f66e45acd49c87876f3c3c1
+Size: 29355
+SHA256sum: d1fb850907c3d7ace1d29cbcc8a6f50c9eb01e28fb2cf7cb0059e69bf4288c93
 Description:  The OpenSSL legacy provider supplies OpenSSL implementations of algorithms that
  have been deemed legacy. Such algorithms have commonly fallen out of use, have
  been deemed insecure by the cryptography community, or something similar.  See
@@ -1221,10 +1399,10 @@ ABIVersion: 3
 CPE-ID: cpe:/a:openssl:openssl
 Maintainer: Eneas U de Queiroz <cotequeiroz@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 1497155
+Installed-Size: 1695577
 Filename: libopenssl3_3.0.15-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1485242
-SHA256sum: 0258f9478b78ed2d74ad2add4455f316d0d21d3509b49bec3e327d6acc6e4990
+Size: 1682316
+SHA256sum: f592d507ced200cd8d6c87bdc0b0086dd1892b50440c98f6e86e79a5b7303336
 Description:  The OpenSSL Project is a collaborative effort to develop a robust,
  commercial-grade, full-featured, and Open Source toolkit implementing the
  Transport Layer Security (TLS) protocol as well as a full-strength
@@ -1400,6 +1578,22 @@ Size: 9849
 SHA256sum: d5ef9f7642c7811ea876980881398622d1203c20a8211c0b44bb195d89310047
 Description:  OpenWrt RPC client library
 
+Package: libuci-lua
+Version: 2023-08-10-5781664d-1
+Depends: libc, libuci20130104, liblua5.1.5
+Source: feeds/base/system/uci
+SourceName: libuci-lua
+License: LGPL-2.1
+Section: libs
+SourceDateEpoch: 1691751214
+Maintainer: Felix Fietkau <nbd@nbd.name>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 5622
+Filename: libuci-lua_2023-08-10-5781664d-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 6349
+SHA256sum: d59ea432bdba13c50cc6a8ca7edd5b6acc66b788a479266624bcdc50fba2b477
+Description:  Lua plugin for UCI
+
 Package: libuci20130104
 Version: 2023-08-10-5781664d-1
 Depends: libc, libubox20230523
@@ -1541,13 +1735,13 @@ SourceName: libzstd
 License: GPL-2.0-or-later
 LicenseFiles: COPYING
 Section: libs
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Aleksey Vasilenko <aleksey.vasilenko@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 334992
+Installed-Size: 334994
 Filename: libzstd_1.5.6-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 335386
-SHA256sum: 408a6b8fdc1f70c08aab85e819815291df52a41d76545603d21c6c85795f777f
+Size: 335369
+SHA256sum: 7972c4cb5c49f2c1e887ebd0b2ce6a913639e346a44c0b1ef739d7d8cf0c4d81
 Description:  Zstandard - Fast real-time compression algorithm.
  This package provides libzstd library.
 
@@ -1628,13 +1822,13 @@ SourceName: lsof
 License: lsof
 LicenseFiles: COPYING
 Section: utils
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Maxim Storchak <m.storchak@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 74351
+Installed-Size: 74352
 Filename: lsof_4.99.3-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 74899
-SHA256sum: 4d18ce74559fff2bae5263b6c02153b466c457c42fc3383b0c4b857c296c3dbd
+Size: 75029
+SHA256sum: 21fa565f57a09386c3e188cc91328d9c84ebdb27a88e0114539e03ad75569b5c
 Description:  LiSt Open Files - a diagnostic tool
 
 Package: lua
@@ -1659,18 +1853,18 @@ Description:  Lua is a powerful light-weight programming language designed for e
  This package contains the Lua language interpreter.
 
 Package: luci-app-adguardhome
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, curl, luci-lua-runtime
 Source: feeds/base/xd/luci-app-adguardhome
 SourceName: luci-app-adguardhome
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 90280
-Filename: luci-app-adguardhome_git-24.354.30489-069e216_all.ipk
-Size: 91449
-SHA256sum: df8af419f3b1187020301e00a991d60fc0c462bf36dede48095068388db2f6e4
+Installed-Size: 90283
+Filename: luci-app-adguardhome_git-24.354.59091-4bd4444_all.ipk
+Size: 91443
+SHA256sum: bde613a3f0297d3fad729511b792e104be9e79e5a055f4cca16a162099baf46a
 Description:  LuCI support for adguardhome
 
 Package: luci-app-alist
@@ -1679,13 +1873,13 @@ Depends: libc, alist
 Source: feeds/base/xd/luci-app-alist
 SourceName: luci-app-alist
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 4192
+Installed-Size: 4191
 Filename: luci-app-alist_1.1.2_all.ipk
-Size: 4986
-SHA256sum: 56e211727e9a06f395cd752ffc8dfc10576c6904ca3b888dac8d345e28ba9f17
+Size: 4983
+SHA256sum: fbf2f6d00c2eb78334e4b674d79216f3f1e8fad7bd53f1415db3f807970efe91
 Description:  LuCI support for alist
 
 Package: luci-app-argon-config
@@ -1694,29 +1888,29 @@ Depends: libc, luci-theme-argon
 Source: feeds/base/xd/luci-app-argon-config
 SourceName: luci-app-argon-config
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 3198
+Installed-Size: 3197
 Filename: luci-app-argon-config_1.0_all.ipk
-Size: 4053
-SHA256sum: 2434bca8cc3530e20d3d4b1112dd16345e61270e750ec981cc3ffb8f1f6c1001
+Size: 4047
+SHA256sum: 3c5032df73e4d36d3f89b23ba0b79c2f2be0f4356737c7d2dcf5a243cbc87575
 Description:  LuCI app for Argon theme configuration
 
 Package: luci-app-aria2
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-compat, aria2, luci-lib-ipkg, luci-lua-runtime
 Source: feeds/base/xd/luci-app-aria2
 SourceName: luci-app-aria2
 License: MIT
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 8997
-Filename: luci-app-aria2_git-24.354.30489-069e216_all.ipk
-Size: 9866
-SHA256sum: c06586126ce9ddbfd6fdcd52557f46c3be4c2484117e0e44ff1f2b41b6fbc08b
+Installed-Size: 9000
+Filename: luci-app-aria2_git-24.354.59091-4bd4444_all.ipk
+Size: 9880
+SHA256sum: 1906cf1db8e4c2e5b96df5e4859cdc37136d0b4dcf8ac842903b6b824c2da7ea
 Description:  LuCI Support for Aria2
 
 Package: luci-app-diskman
@@ -1726,13 +1920,13 @@ Source: feeds/base/xd/luci-app-diskman
 SourceName: luci-app-diskman
 License: AGPL-3.0
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
 Installed-Size: 20672
 Filename: luci-app-diskman_v0.2.13_all.ipk
-Size: 21573
-SHA256sum: a77884ac5dbe03f762a4ac2ced19e042e7fe094de629f37c740d3b4b2b8348af
+Size: 21567
+SHA256sum: 6a8fb78adf68e6f2c4fbf03f90855e37fb55555555aab507bd4b548bfa4b5d5c
 Description:  Disk Manager interface for LuCI
 
 Package: luci-app-dockerman
@@ -1742,28 +1936,28 @@ Source: feeds/base/xd/luci-app-dockerman
 SourceName: luci-app-dockerman
 License: AGPL-3.0
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 53246
+Installed-Size: 53244
 Filename: luci-app-dockerman_v0.5.26_all.ipk
-Size: 54167
-SHA256sum: cca0f81c598a3f7c96616277edb567c6a0ff25fc59cb66bd7e17607f661b9a85
+Size: 54154
+SHA256sum: 84bd5b77c6568fcc692fbd0e4480228b71462cbddbefc83cb687200965efd582
 Description:  LuCI Support for docker
 
 Package: luci-app-emby
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, lsblk, coreutils, docker, dockerd, luci-lib-taskd, luci-lua-runtime
 Source: feeds/base/xd/luci-app-emby
 SourceName: luci-app-emby
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 3530
-Filename: luci-app-emby_git-24.354.30489-069e216_all.ipk
-Size: 4406
-SHA256sum: 498d8d95b5d5d8ab51c702ef4838c17433fa96c59392f5665044ffe080ab9046
+Installed-Size: 3528
+Filename: luci-app-emby_git-24.354.59091-4bd4444_all.ipk
+Size: 4403
+SHA256sum: b0b2c94f16169525b39c9ffdd93f95c3c800d5a73e872a9ebcbf995af4126be8
 Description:  LuCI support for Emby
 
 Package: luci-app-filebrowser-go
@@ -1772,13 +1966,13 @@ Depends: libc, filebrowser, luci-compat, luci-lua-runtime
 Source: feeds/base/xd/luci-app-filebrowser-go
 SourceName: luci-app-filebrowser-go
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 3287
+Installed-Size: 3285
 Filename: luci-app-filebrowser-go_1.1_all.ipk
-Size: 4120
-SHA256sum: d0004c0bc038a7434c803c5c66162f2d751927a0632389e128b8fe003b3b267e
+Size: 4116
+SHA256sum: 8182acad8323f16cd514a5e33594f2b1534e0498b3fad26fa61aa52f41d503b5
 Description:  LuCI support for FileBrowser
 
 Package: luci-app-firewall
@@ -1798,35 +1992,35 @@ SHA256sum: e5cbb0ac73d7cc426580a405a38c7906624b2c038438fc6198047ef0d577c648
 Description:  Firewall and Portforwarding application
 
 Package: luci-app-frpc
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, frpc
 Source: feeds/base/xd/luci-app-frpc
 SourceName: luci-app-frpc
 License: Apache-2.0
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
 Installed-Size: 4362
-Filename: luci-app-frpc_git-24.354.30489-069e216_all.ipk
-Size: 5172
-SHA256sum: 01062591b68e2909821316a5310c2a43dd2b9f13596823ee030209a26bc7343d
+Filename: luci-app-frpc_git-24.354.59091-4bd4444_all.ipk
+Size: 5173
+SHA256sum: 601c42eb45b9cc46f9b261ba9311cacb31ab3a2b0d17f244254700926a8a4332
 Description:  LuCI Support for frp client
 
 Package: luci-app-frps
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, frps
 Source: feeds/base/xd/luci-app-frps
 SourceName: luci-app-frps
 License: Apache-2.0
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 3415
-Filename: luci-app-frps_git-24.354.30489-069e216_all.ipk
-Size: 4261
-SHA256sum: 916d72aa39a6ad588e1e30561f5a947af95423f6a3a4ae757f79d59099ee82a3
+Installed-Size: 3417
+Filename: luci-app-frps_git-24.354.59091-4bd4444_all.ipk
+Size: 4259
+SHA256sum: 00ef0483fd8525afbf3a030200542698645ba98362f0240d71b1532cb3f6596b
 Description:  LuCI Support for frp server
 
 Package: luci-app-gost
@@ -1835,13 +2029,13 @@ Depends: libc, gost, luci-lua-runtime
 Source: feeds/base/xd/luci-app-gost
 SourceName: luci-app-gost
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 1645
+Installed-Size: 1648
 Filename: luci-app-gost_1.0_all.ipk
-Size: 2462
-SHA256sum: b9796b92750d4bd2bbd10f900dc489a9ac954a4bf38ec0bf1905ca173ca4f28e
+Size: 2463
+SHA256sum: e52deb5128baeef94a9c2bf97c332961fb26b47f20a111a6f1b6f25812a0038b
 Description:  LuCI support for Gost
 
 Package: luci-app-gowebdav
@@ -1850,44 +2044,59 @@ Depends: libc, gowebdav, luci-lua-runtime
 Source: feeds/base/xd/luci-app-gowebdav
 SourceName: luci-app-gowebdav
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 2597
+Installed-Size: 2599
 Filename: luci-app-gowebdav_1.0_all.ipk
-Size: 3439
-SHA256sum: fa9b0127deb09fb758238920050357574ac7348e472602b856c6bcab83d24671
+Size: 3430
+SHA256sum: bb412817f1331bf8f723c3e39f09c7be7fbf17f05285786483ac776a8267b23f
 Description:  LuCI support for GoWebDav
 
 Package: luci-app-hd-idle
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, hd-idle, lsblk
 Source: feeds/base/xd/luci-app-hd-idle
 SourceName: luci-app-hd-idle
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 1545
-Filename: luci-app-hd-idle_git-24.354.30489-069e216_all.ipk
-Size: 2374
-SHA256sum: 25c05798e400f769c22c5d8867123e8dfd2b4942b4fdd7bbbd9bea4d8616f65d
+Installed-Size: 1544
+Filename: luci-app-hd-idle_git-24.354.59091-4bd4444_all.ipk
+Size: 2369
+SHA256sum: ef8ce84e44b385cab4b3ab2b89ebc97d2f4ac74a647c01b532f616f1e4072bd9
 Description:  Hard Disk Idle Spin-Down module
 
+Package: luci-app-homeproxy
+Version: git-24.354.85620-62d111b
+Depends: libc, sing-box, chinadns-ng, firewall4, kmod-nft-tproxy
+Source: feeds/base/porxy/luci-app-homeproxy
+SourceName: luci-app-homeproxy
+Section: luci
+SourceDateEpoch: 1734652020
+Maintainer: OpenWrt LuCI community
+Architecture: all
+Installed-Size: 512747
+Filename: luci-app-homeproxy_git-24.354.85620-62d111b_all.ipk
+Size: 513691
+SHA256sum: 9a51941e80f6fad3e7e7d693824a61e3d573d7c646acbb2b221f96c96b9d9126
+Description:  The modern ImmortalWrt proxy platform for ARM64/AMD64
+
 Package: luci-app-ksmbd
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-base, ksmbd-server
 Source: feeds/base/xd/luci-app-ksmbd
 SourceName: luci-app-ksmbd
 License: Apache-2.0
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 2048
-Filename: luci-app-ksmbd_git-24.354.30489-069e216_all.ipk
-Size: 2897
-SHA256sum: 90baecdeadde3dad0f08333ba199973b644c51fccefbbb45798f135b1074ec4e
+Installed-Size: 2049
+Filename: luci-app-ksmbd_git-24.354.59091-4bd4444_all.ipk
+Size: 2902
+SHA256sum: 88559a477afb8fcbc54e0881a6f14a443273cbb5679cbeb56a4405610dc56573
 Description:  Network Shares - Ksmbd the SMB kernel fileserver
 
 Package: luci-app-mihomo
@@ -1896,13 +2105,13 @@ Depends: libc, luci-base, mihomo
 Source: feeds/base/porxy/luci-app-mihomo
 SourceName: luci-app-mihomo
 Section: luci
-SourceDateEpoch: 1734568484
+SourceDateEpoch: 1734652020
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 7202
+Installed-Size: 7206
 Filename: luci-app-mihomo_1.14.0_all.ipk
-Size: 8051
-SHA256sum: 4a523b102dfa3ec92679e572906a745a803e74f0c272942156daf7e30543fe08
+Size: 8059
+SHA256sum: a7b4c4e7f61fb6b498e603867901715a7e6f3f4d52ed6ee308abea4882eccf09
 Description:  LuCI Support for mihomo
 
 Package: luci-app-mosdns
@@ -1911,13 +2120,13 @@ Depends: libc, mosdns, jsonfilter, luci-compat, curl, v2ray-geoip, v2ray-geosite
 Source: feeds/base/xd/luci-app-mosdns
 SourceName: luci-app-mosdns
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 76004
+Installed-Size: 76012
 Filename: luci-app-mosdns_1.5.23_all.ipk
-Size: 76993
-SHA256sum: 1b727854a4fcd71f4f753bafe8dd97714eccc25cd1f51240538eb1763f248798
+Size: 77013
+SHA256sum: 3c38df168499b60a7633b770003810a2a8371b03cbc9e1477956c429689e1e8e
 Description:  LuCI Support for mosdns
 
 Package: luci-app-netdata
@@ -1926,44 +2135,59 @@ Depends: libc, netdata, luci-lua-runtime
 Source: feeds/base/xd/luci-app-netdata
 SourceName: luci-app-netdata
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 628
+Installed-Size: 630
 Filename: luci-app-netdata_1.0_all.ipk
-Size: 1458
-SHA256sum: 726914ebd00bb87fe1b6191510a66c68f17a5eb10e3c7334dd294ba440526e79
+Size: 1453
+SHA256sum: d7dc5b8ceabed5003901c0adb851ba06f19519d6e66db6b465734ffd8679a936
 Description:  LuCI support for Netdata
 
 Package: luci-app-nlbwmon
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, nlbwmon
 Source: feeds/base/xd/luci-app-nlbwmon
 SourceName: luci-app-nlbwmon
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
 Installed-Size: 20972
-Filename: luci-app-nlbwmon_git-24.354.30489-069e216_all.ipk
+Filename: luci-app-nlbwmon_git-24.354.59091-4bd4444_all.ipk
 Size: 21801
-SHA256sum: 10b43475bb904354a3caeda2ab23bc2f0a03c59c988ede8d70dd298343669e1d
+SHA256sum: 674d3688cf7585e58f3a1c2d54f899293aca41135bd0b0f72bb07e0fefc9e93d
 Description:  Netlink based bandwidth accounting
 
 Package: luci-app-openclash
 Version: 0.46.050-beta
 Depends: libc, dnsmasq-full, coreutils, coreutils-nohup, bash, curl, ca-certificates, ip-full, libcap, libcap-bin, ruby, ruby-yaml, kmod-tun, unzip
-Source: feeds/base/luci-app-openclash
+Source: feeds/base/porxy/luci-app-openclash
 SourceName: luci-app-openclash
 Section: opt
-SourceDateEpoch: 1734597740
+SourceDateEpoch: 1734652020
 Maintainer: vernesong
 Architecture: all
-Installed-Size: 7652984
+Installed-Size: 7652948
 Filename: luci-app-openclash_0.46.050-beta_all.ipk
-Size: 7614745
-SHA256sum: 39a52edd952b8c0a150e5e04add448c81e39f4a9813d4c5719903cef92d85cba
+Size: 7614664
+SHA256sum: 6526fdfcb8f21d4aa4cd3a3a45d4d945d8d7add0193b26c85a00ca87c4179fea
 Description:  A LuCI support for clash
+
+Package: luci-app-passwall
+Version: 24.12.17
+Depends: libc, coreutils, coreutils-base64, coreutils-nohup, curl, chinadns-ng, dns2socks, dns2tcp, dnsmasq-full, ip-full, libuci-lua, lua, luci-compat, luci-lib-jsonc, microsocks, resolveip, tcping, luci-lua-runtime
+Source: feeds/base/porxy/luci-app-passwall
+SourceName: luci-app-passwall
+Section: luci
+SourceDateEpoch: 1734652020
+Maintainer: OpenWrt LuCI community
+Architecture: all
+Installed-Size: 831422
+Filename: luci-app-passwall_24.12.17_all.ipk
+Size: 831890
+SHA256sum: 6c40967fb2a2d9a2a815fb1db7e59cd970a3ea6e1eef611c648ba52d7a11da94
+Description:  LuCI support for PassWall
 
 Package: luci-app-qbittorrent
 Version: 1.0.1
@@ -1971,29 +2195,60 @@ Depends: libc, qbittorrent
 Source: feeds/base/xd/luci-app-qbittorrent
 SourceName: luci-app-qbittorrent
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 1815
+Installed-Size: 1813
 Filename: luci-app-qbittorrent_1.0.1_all.ipk
-Size: 2631
-SHA256sum: 54b520cb8a99a8872d4f075ff1105e1ae3ab4f2d893303f09100c6365c4efbe0
+Size: 2623
+SHA256sum: 8dbc3a2f5455cc19925a7a2ab26c47d208c7abcadd180161368929dba8fe3007
 Description:  LuCI support for qBittorrent
 
 Package: luci-app-samba4
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, samba4-server
 Source: feeds/base/xd/luci-app-samba4
 SourceName: luci-app-samba4
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 2358
-Filename: luci-app-samba4_git-24.354.30489-069e216_all.ipk
-Size: 3207
-SHA256sum: 943acfe7856e3ed259012262aa934a84a7b28daa43429dddc2b66d175ad1b198
+Installed-Size: 2360
+Filename: luci-app-samba4_git-24.354.59091-4bd4444_all.ipk
+Size: 3204
+SHA256sum: ec9d01ef88a36b5adc3c337ec5674cf04e9e9d256a1451038d6eb761206fda11
 Description:  Network Shares - Samba 4 SMB/CIFS fileserver
+
+Package: luci-app-tailscale
+Version: 1.2.3
+Depends: libc, tailscale
+Source: feeds/base/xd/luci-app-tailscale
+SourceName: luci-app-tailscale
+Section: luci
+SourceDateEpoch: 1734625491
+Maintainer: OpenWrt LuCI community
+Architecture: all
+Installed-Size: 7744
+Filename: luci-app-tailscale_1.2.3_all.ipk
+Size: 8597
+SHA256sum: f8130c5de5704882474f784cb031fe1682711148a207ee9024ec38de13a27b23
+Description:  LuCI for Tailscale
+
+Package: luci-app-upnp
+Version: git-24.354.59091-4bd4444
+Depends: libc, luci-base, miniupnpd, rpcd-mod-ucode
+Source: feeds/base/xd/luci-app-upnp
+SourceName: luci-app-upnp
+License: Apache-2.0
+Section: luci
+SourceDateEpoch: 1734625491
+Maintainer: OpenWrt LuCI community
+Architecture: all
+Installed-Size: 4200
+Filename: luci-app-upnp_git-24.354.59091-4bd4444_all.ipk
+Size: 5096
+SHA256sum: cc6ff3be47758acd62f84491013fd1530752d1d6876d01c8b3fabfb7855e2e91
+Description:  Universal Plug and Play (UPnP IGD) & PCP/NAT-PMP configuration module
 
 Package: luci-app-usb-printer
 Version: 1.0
@@ -2001,13 +2256,13 @@ Depends: libc, p910nd, kmod-usb-printer, luci-lua-runtime
 Source: feeds/base/xd/luci-app-usb-printer
 SourceName: luci-app-usb-printer
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
 Installed-Size: 3316
 Filename: luci-app-usb-printer_1.0_all.ipk
 Size: 4148
-SHA256sum: 6b067066c0381f876dbcf36053112e3e8c074adc2ed6e13533223e2c6fabedad
+SHA256sum: e61e9581dd339ea5976582e2385533fdda2bafc872cf5c46d5f675d4daa2ef42
 Description:  USB Printer Share via TCP/IP
 
 Package: luci-app-vlmcsd
@@ -2016,14 +2271,29 @@ Depends: libc, vlmcsd, luci-lua-runtime
 Source: feeds/base/xd/luci-app-vlmcsd
 SourceName: luci-app-vlmcsd
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 1944
+Installed-Size: 1945
 Filename: luci-app-vlmcsd_1.0_all.ipk
-Size: 2774
-SHA256sum: bb6cb8be69f9407b808713092ec45d472527a199760dee2d113d372904f96dda
+Size: 2776
+SHA256sum: c9226e244cbb0c569160f1b53a4316c9aa04f0a6c219339ab5a6e5da6f04bfec
 Description:  LuCI support for KMS
+
+Package: luci-app-wolplus
+Version: 1.0
+Depends: libc, etherwake, luci-lua-runtime
+Source: feeds/base/xd/luci-app-wolplus
+SourceName: luci-app-wolplus
+Section: luci
+SourceDateEpoch: 1734625491
+Maintainer: OpenWrt LuCI community
+Architecture: all
+Installed-Size: 2206
+Filename: luci-app-wolplus_1.0_all.ipk
+Size: 3051
+SHA256sum: 124ba4ef27cc0d72716e70ba8de1363ac1b484c7c40f207637400b7b66551b86
+Description:  LuCI support for wolplus From sundaqiang
 
 Package: luci-app-zerotier
 Version: 1.0.0
@@ -2031,133 +2301,133 @@ Depends: libc, zerotier, jsonfilter, ucode
 Source: feeds/base/xd/luci-app-zerotier
 SourceName: luci-app-zerotier
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 4038
+Installed-Size: 4039
 Filename: luci-app-zerotier_1.0.0_all.ipk
-Size: 4900
-SHA256sum: 949a88bbad2e9195d1908f573a15d895cd501fb948918e2a49d125364c397731
+Size: 4908
+SHA256sum: 8067176e57ed1a2d3c3ac1f197f75e764fd13e1bac128a81081af7fff39c9fa5
 Description:  LuCI for Zerotier
 
 Package: luci-i18n-adguardhome-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-adguardhome
 Source: feeds/base/xd/luci-app-adguardhome
 SourceName: luci-i18n-adguardhome-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: <https://github.com/rufengsuixing/luci-app-adguardhome>
 Architecture: all
-Installed-Size: 2334
-Filename: luci-i18n-adguardhome-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 3137
-SHA256sum: 93ffdf3a5e28b037552ff3a5f89db38532b67a0535bc3a56c8b4b729c41d415b
+Installed-Size: 2335
+Filename: luci-i18n-adguardhome-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 3143
+SHA256sum: 19357ea4b8ed75ed0ebb27703dd9de9d9c5cfa819cf3919ff637e303f35bde67
 Description:  Translation for luci-app-adguardhome - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-alist-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-alist
 Source: feeds/base/xd/luci-app-alist
 SourceName: luci-i18n-alist-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: all
-Installed-Size: 1956
-Filename: luci-i18n-alist-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 2721
-SHA256sum: 04de693ede92613fd977189b84b4cb7e07e97a6b9d56f01a3db811181522ba27
+Installed-Size: 1957
+Filename: luci-i18n-alist-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 2716
+SHA256sum: 595a905f3976378b4c57c6493d24ebddc62221137118646641257fe0ec44df7e
 Description:  Translation for luci-app-alist - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-argon-config-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-argon-config
 Source: feeds/base/xd/luci-app-argon-config
 SourceName: luci-i18n-argon-config-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: jerrykuku <jerrykuku@qq.com>
 Architecture: all
 Installed-Size: 1459
-Filename: luci-i18n-argon-config-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 2248
-SHA256sum: 0c2171c2f2db07b25859d7f1f8ca59c9b0b26fe0e502805d22a88e63dc300ad0
+Filename: luci-i18n-argon-config-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 2252
+SHA256sum: 55b0e47cfcc469c5494608d58d8223b0941e1211bd7fac301d7a523cdbc57244
 Description:  Translation for luci-app-argon-config - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-aria2-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-aria2
 Source: feeds/base/xd/luci-app-aria2
 SourceName: luci-i18n-aria2-zh-cn
 License: MIT
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Xingwang Liao <kuoruan@gmail.com>
 Architecture: all
-Installed-Size: 5681
-Filename: luci-i18n-aria2-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 6462
-SHA256sum: 199512f9d6f4162643ea111becbf6dabf9dc4ff392dc2f52f673f666dc0d8077
+Installed-Size: 5684
+Filename: luci-i18n-aria2-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 6477
+SHA256sum: 0a00e84c7e22f853c8a911d46ae148606d7418d65b76955b8608a265609aeee4
 Description:  Translation for luci-app-aria2 - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-diskman-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-diskman
 Source: feeds/base/xd/luci-app-diskman
 SourceName: luci-i18n-diskman-zh-cn
 License: AGPL-3.0
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: lisaac <lisaac.cn@gmail.com>
 Architecture: all
-Installed-Size: 1894
-Filename: luci-i18n-diskman-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 2697
-SHA256sum: f8e09b3f209e250f4cf2b98ce434ffb90c9be7ad07daa0912d3d1373f07dc976
+Installed-Size: 1896
+Filename: luci-i18n-diskman-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 2699
+SHA256sum: 6acaf7c236750cf1a001de50c6ee5d2de87e21927fa25a834da3ba33d5bd9dec
 Description:  Translation for luci-app-diskman - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-dockerman-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-dockerman
 Source: feeds/base/xd/luci-app-dockerman
 SourceName: luci-i18n-dockerman-zh-cn
 License: AGPL-3.0
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: lisaac <lisaac.cn@gmail.com> Florian Eckert <fe@dev.tdt.de>
 Architecture: all
-Installed-Size: 4899
-Filename: luci-i18n-dockerman-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 5696
-SHA256sum: 4c9278827451ac501beed73e5ce159115c2171e5c09680691fef86bd456a918b
+Installed-Size: 4901
+Filename: luci-i18n-dockerman-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 5700
+SHA256sum: 44e453fba6222ca3f20279a7a2715b017136e3b4a5b31cf69ba97fe68676baa1
 Description:  Translation for luci-app-dockerman - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-emby-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-emby
 Source: feeds/base/xd/luci-app-emby
 SourceName: luci-i18n-emby-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: all
-Installed-Size: 991
-Filename: luci-i18n-emby-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 1748
-SHA256sum: 66b3227d53062c9b502cd243b41c031ed832e130131007b6d99515ed45e0c8da
+Installed-Size: 990
+Filename: luci-i18n-emby-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 1752
+SHA256sum: 3355a90912493c59a5ede6538e6aabd3b0e476fadfea26f245a7916344185062
 Description:  Translation for luci-app-emby - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-filebrowser-go-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-filebrowser-go
 Source: feeds/base/xd/luci-app-filebrowser-go
 SourceName: luci-i18n-filebrowser-go-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: all
-Installed-Size: 924
-Filename: luci-i18n-filebrowser-go-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 1688
-SHA256sum: ceb53d9806888aa382702d89b56040d223d7b5916db5a310a21bcc5f65cc89f1
+Installed-Size: 925
+Filename: luci-i18n-filebrowser-go-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 1697
+SHA256sum: 9b88eb30ead94535301dd6f635dd4b17eccd64c66c85615c8bcde887f6341c4b
 Description:  Translation for luci-app-filebrowser-go - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-firewall-zh-cn
@@ -2176,252 +2446,325 @@ SHA256sum: 38140ba48bfa1fdb805513e52487b3f6a8e18c78b5b3c413a723aa37e75f85da
 Description:  Translation for luci-app-firewall - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-frpc-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-frpc
 Source: feeds/base/xd/luci-app-frpc
 SourceName: luci-i18n-frpc-zh-cn
 License: Apache-2.0
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Richard Yu <yurichard3839@gmail.com>
 Architecture: all
-Installed-Size: 3316
-Filename: luci-i18n-frpc-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 4087
-SHA256sum: 0059c46d36a6149f6b5357e6201b8e6b1d4fd35d5bb27f0cb9a92cf50cbc57a3
+Installed-Size: 3315
+Filename: luci-i18n-frpc-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 4094
+SHA256sum: 82eaabf91445abc24f1fa314b0f83f94114072f2239df1e2dce112e7a2bffd64
 Description:  Translation for luci-app-frpc - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-frps-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-frps
 Source: feeds/base/xd/luci-app-frps
 SourceName: luci-i18n-frps-zh-cn
 License: Apache-2.0
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Richard Yu <yurichard3839@gmail.com>
 Architecture: all
-Installed-Size: 2884
-Filename: luci-i18n-frps-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 3658
-SHA256sum: 6b1187bd398a749eea7f96a7c445e67fdfd8a6f52bc1ebe5d99f0230062f08da
+Installed-Size: 2886
+Filename: luci-i18n-frps-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 3668
+SHA256sum: 9f56f23bf555d3463cae39eab4394bdebe88c77d09896820dfac2781a334dfee
 Description:  Translation for luci-app-frps - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-gost-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-gost
 Source: feeds/base/xd/luci-app-gost
 SourceName: luci-i18n-gost-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: ImmortalWrt
 Architecture: all
 Installed-Size: 514
-Filename: luci-i18n-gost-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 1287
-SHA256sum: e77f52f709cb64141917c560cece286e0e95991a82e92e786e1f814704fb0202
+Filename: luci-i18n-gost-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 1285
+SHA256sum: 5cc15867c93df8a07b99153329fa9c5bec584d289c8ea7cfa5e91a5409d21836
 Description:  Translation for luci-app-gost - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-gowebdav-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-gowebdav
 Source: feeds/base/xd/luci-app-gowebdav
 SourceName: luci-i18n-gowebdav-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: CN_SZTL <cnsztl@immortalwrt.org>
 Architecture: all
-Installed-Size: 928
-Filename: luci-i18n-gowebdav-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 1732
-SHA256sum: 1631235ef735d5212fbbab4f2280eee34c5defb80683b74b91f6d654d2f32a81
+Installed-Size: 929
+Filename: luci-i18n-gowebdav-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 1733
+SHA256sum: e9fc42bab8e874ea38631464b15fad629784a2cc57f1d0eeda698664c0f6a28d
 Description:  Translation for luci-app-gowebdav - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-hd-idle-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-hd-idle
 Source: feeds/base/xd/luci-app-hd-idle
 SourceName: luci-i18n-hd-idle-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: all
-Installed-Size: 799
-Filename: luci-i18n-hd-idle-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 1566
-SHA256sum: 17915be2aa95a3272c9f147a7043559ece2c12d686d9d7b777ecf15ca4f1b0f4
+Installed-Size: 801
+Filename: luci-i18n-hd-idle-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 1563
+SHA256sum: 0d88d7d052271acd0b6a4277c8a724c3706eb05d42303d4eceacbb4a56261303
 Description:  Translation for luci-app-hd-idle - 简体中文 (Chinese Simplified)
 
+Package: luci-i18n-homeproxy-zh-cn
+Version: git-24.354.85620-62d111b
+Depends: libc, luci-app-homeproxy
+Source: feeds/base/porxy/luci-app-homeproxy
+SourceName: luci-i18n-homeproxy-zh-cn
+Section: luci
+SourceDateEpoch: 1734652020
+Architecture: all
+Installed-Size: 11374
+Filename: luci-i18n-homeproxy-zh-cn_git-24.354.85620-62d111b_all.ipk
+Size: 12163
+SHA256sum: bf0d4fa4a4a0a8d12b04f14b88a9c69883f1b6213a36039351df9535ebb81c2c
+Description:  Translation for luci-app-homeproxy - 简体中文 (Chinese Simplified)
+
 Package: luci-i18n-ksmbd-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-ksmbd
 Source: feeds/base/xd/luci-app-ksmbd
 SourceName: luci-i18n-ksmbd-zh-cn
 License: Apache-2.0
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Richard Yu <yurichard3839@gmail.com>
 Architecture: all
-Installed-Size: 1237
-Filename: luci-i18n-ksmbd-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 2042
-SHA256sum: 93f41a9e29d2f73f3935778999c27ae340200028cd9de0d6b2a427880df6952e
+Installed-Size: 1238
+Filename: luci-i18n-ksmbd-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 2052
+SHA256sum: 500e0b8b8cdf2264f1a82724f165db610b905ff1c32b4dc14f3ca7c89f52523f
 Description:  Translation for luci-app-ksmbd - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-mihomo-zh-cn
-Version: git-24.354.02084-27a03a8
+Version: git-24.354.85620-62d111b
 Depends: libc, luci-app-mihomo
 Source: feeds/base/porxy/luci-app-mihomo
 SourceName: luci-i18n-mihomo-zh-cn
 Section: luci
-SourceDateEpoch: 1734568484
+SourceDateEpoch: 1734652020
 Architecture: all
-Installed-Size: 3126
-Filename: luci-i18n-mihomo-zh-cn_git-24.354.02084-27a03a8_all.ipk
-Size: 3857
-SHA256sum: 04529ef1c16851af9f389ea4d3f4510312b79086815c5b61054d1e2cb31bc05b
+Installed-Size: 3131
+Filename: luci-i18n-mihomo-zh-cn_git-24.354.85620-62d111b_all.ipk
+Size: 3855
+SHA256sum: 98d802c7a4f372265f434624ce342f762d003e7ba034a48740b797b0f61118e2
 Description:  Translation for luci-app-mihomo - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-mosdns-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-mosdns
 Source: feeds/base/xd/luci-app-mosdns
 SourceName: luci-i18n-mosdns-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: all
-Installed-Size: 4020
-Filename: luci-i18n-mosdns-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 4759
-SHA256sum: 7f47caa1ffe39a86570f29d91d26f75b4deab3575907c1aea7e627ac9292b824
+Installed-Size: 4021
+Filename: luci-i18n-mosdns-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 4758
+SHA256sum: 727bdb8af2e916e6cec010851991892ec28f6ff95099bd56b01b87a7d786910d
 Description:  Translation for luci-app-mosdns - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-netdata-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-netdata
 Source: feeds/base/xd/luci-app-netdata
 SourceName: luci-i18n-netdata-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: all
 Installed-Size: 411
-Filename: luci-i18n-netdata-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 1161
-SHA256sum: d9a4d56355379d09a82512af303fbdbd3e6d4d1898c95eada44c2099ffa9f56f
+Filename: luci-i18n-netdata-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 1164
+SHA256sum: 9cdc95c65310afb2d7d3dbf6f2b9e7b2aac0a0a644595ba06ccfcdf42b81e8de
 Description:  Translation for luci-app-netdata - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-nlbwmon-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-nlbwmon
 Source: feeds/base/xd/luci-app-nlbwmon
 SourceName: luci-i18n-nlbwmon-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: all
-Installed-Size: 3660
-Filename: luci-i18n-nlbwmon-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 4396
-SHA256sum: 93a57b69735f8644eb5c339502dd17ddb478a66bca5e9fe6132104f4f413e6dc
+Installed-Size: 3661
+Filename: luci-i18n-nlbwmon-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 4397
+SHA256sum: 5c22c706b9c461b373970b1e4a353d0cf4233c25f90e1dc11e34e6a5529814af
 Description:  Translation for luci-app-nlbwmon - 简体中文 (Chinese Simplified)
 
+Package: luci-i18n-passwall-zh-cn
+Version: git-24.354.85620-62d111b
+Depends: libc, luci-app-passwall
+Source: feeds/base/porxy/luci-app-passwall
+SourceName: luci-i18n-passwall-zh-cn
+Section: luci
+SourceDateEpoch: 1734652020
+Architecture: all
+Installed-Size: 14071
+Filename: luci-i18n-passwall-zh-cn_git-24.354.85620-62d111b_all.ipk
+Size: 14809
+SHA256sum: 1371ea056fb5e8e056934a17f7260acfd6ea338a928fe30a85be196a9e21c1c4
+Description:  Translation for luci-app-passwall - 简体中文 (Chinese Simplified)
+
 Package: luci-i18n-qbittorrent-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-qbittorrent
 Source: feeds/base/xd/luci-app-qbittorrent
 SourceName: luci-i18n-qbittorrent-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: all
-Installed-Size: 685
-Filename: luci-i18n-qbittorrent-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 1446
-SHA256sum: baee5b59b48bd30f1c9c925c00ab6d179b0ddb3ea2f399c2fc19665ff34d526b
+Installed-Size: 686
+Filename: luci-i18n-qbittorrent-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 1447
+SHA256sum: f9dfe06ad89a4d1bbf0aa8f74da8929c21a3b362d1916640b11f1b8d3d4cc9ff
 Description:  Translation for luci-app-qbittorrent - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-samba4-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-samba4
 Source: feeds/base/xd/luci-app-samba4
 SourceName: luci-i18n-samba4-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: all
-Installed-Size: 1686
-Filename: luci-i18n-samba4-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 2455
-SHA256sum: 64bc340ec6918d54499fb3a1d420b3ba50db13f99c095faef51f9ce6e926f938
+Installed-Size: 1688
+Filename: luci-i18n-samba4-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 2456
+SHA256sum: ac9ff5eaffd1ac6c3afbd4fd4e03821e2d9831337390466f9976a78605c2f1a3
 Description:  Translation for luci-app-samba4 - 简体中文 (Chinese Simplified)
 
+Package: luci-i18n-tailscale-zh-cn
+Version: git-24.354.59091-4bd4444
+Depends: libc, luci-app-tailscale
+Source: feeds/base/xd/luci-app-tailscale
+SourceName: luci-i18n-tailscale-zh-cn
+Section: luci
+SourceDateEpoch: 1734625491
+Architecture: all
+Installed-Size: 2008
+Filename: luci-i18n-tailscale-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 2775
+SHA256sum: 5143f4d940cf19c8e95a54a226131f30bf3cb2662d8af2f4ec2db31deb0c2306
+Description:  Translation for luci-app-tailscale - 简体中文 (Chinese Simplified)
+
+Package: luci-i18n-upnp-zh-cn
+Version: git-24.354.59091-4bd4444
+Depends: libc, luci-app-upnp
+Source: feeds/base/xd/luci-app-upnp
+SourceName: luci-i18n-upnp-zh-cn
+License: Apache-2.0
+Section: luci
+SourceDateEpoch: 1734625491
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: all
+Installed-Size: 1645
+Filename: luci-i18n-upnp-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 2452
+SHA256sum: ca11994cdece8f1242da67fe50282b185bf6e872266a9c4406994c86f0de7826
+Description:  Translation for luci-app-upnp - 简体中文 (Chinese Simplified)
+
 Package: luci-i18n-usb-printer-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-usb-printer
 Source: feeds/base/xd/luci-app-usb-printer
 SourceName: luci-i18n-usb-printer-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: all
-Installed-Size: 941
-Filename: luci-i18n-usb-printer-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 1714
-SHA256sum: b8898d636ab0ccc08ce9e2045eef564b7a5231bc0a9f2ed27fb390acef189710
+Installed-Size: 942
+Filename: luci-i18n-usb-printer-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 1710
+SHA256sum: 44566f2155431d017be88300f5281b680405162f57b830fc027bcc3e9e575851
 Description:  Translation for luci-app-usb-printer - 简体中文 (Chinese Simplified)
 
 Package: luci-i18n-vlmcsd-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-vlmcsd
 Source: feeds/base/xd/luci-app-vlmcsd
 SourceName: luci-i18n-vlmcsd-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: all
-Installed-Size: 711
-Filename: luci-i18n-vlmcsd-zh-cn_git-24.354.30489-069e216_all.ipk
+Installed-Size: 712
+Filename: luci-i18n-vlmcsd-zh-cn_git-24.354.59091-4bd4444_all.ipk
 Size: 1470
-SHA256sum: 1da7ded3437899cded0323e8b61778a9030dbced29dd5848ae2c13d1221d64d4
+SHA256sum: 83e9f78d98186c1a4601a6255b8e8b80800aac50b05332d47dca7d7e8bb0cfa8
 Description:  Translation for luci-app-vlmcsd - 简体中文 (Chinese Simplified)
 
+Package: luci-i18n-wolplus-zh-cn
+Version: git-24.354.59091-4bd4444
+Depends: libc, luci-app-wolplus
+Source: feeds/base/xd/luci-app-wolplus
+SourceName: luci-i18n-wolplus-zh-cn
+Section: luci
+SourceDateEpoch: 1734625491
+Maintainer: sundaqiang
+Architecture: all
+Installed-Size: 622
+Filename: luci-i18n-wolplus-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 1393
+SHA256sum: 89f4b786ae0e3dd239d99a8f73981cd6ebe26a98b2442d52a6beb98d28ec5e8d
+Description:  Translation for luci-app-wolplus - 简体中文 (Chinese Simplified)
+
 Package: luci-i18n-zerotier-zh-cn
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-app-zerotier
 Source: feeds/base/xd/luci-app-zerotier
 SourceName: luci-i18n-zerotier-zh-cn
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: all
-Installed-Size: 876
-Filename: luci-i18n-zerotier-zh-cn_git-24.354.30489-069e216_all.ipk
-Size: 1644
-SHA256sum: 2aeab9d8bd8c5b39246627d9472b55b37a4734cbeb4877d6f4c681eab6fd5b21
+Installed-Size: 878
+Filename: luci-i18n-zerotier-zh-cn_git-24.354.59091-4bd4444_all.ipk
+Size: 1643
+SHA256sum: 5c209d2a64079ef3dbe7837b5b2caba91c6405d9bca0bdc17f4bcae6535ef6a8
 Description:  Translation for luci-app-zerotier - 简体中文 (Chinese Simplified)
 
 Package: luci-lib-taskd
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: taskd (>=1.0.3-1), libc, luci-lib-xterm, taskd, luci-lua-runtime
 Source: feeds/base/xd/luci-lib-taskd
 SourceName: luci-lib-taskd
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 6125
-Filename: luci-lib-taskd_git-24.354.30489-069e216_all.ipk
-Size: 6980
-SHA256sum: 98fe11b759398cc08945465ba76775698d6ff3656c6eb12549a7afc4a35dce28
+Installed-Size: 6123
+Filename: luci-lib-taskd_git-24.354.59091-4bd4444_all.ipk
+Size: 6971
+SHA256sum: 55e568d8a81c87f4a7549d927e265edc80227fad91ed8b87ab491b5000499aa8
 Description:  Task library
 
 Package: luci-lib-xterm
-Version: git-24.354.30489-069e216
+Version: git-24.354.59091-4bd4444
 Depends: libc, luci-lua-runtime
 Source: feeds/base/xd/luci-lib-xterm
 SourceName: luci-lib-xterm
 License: MIT
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 77226
-Filename: luci-lib-xterm_git-24.354.30489-069e216_all.ipk
-Size: 78117
-SHA256sum: a632e506a9dc6af180ebb89a930fcbe485e38a7417d8d18b9313f6819a673774
+Installed-Size: 77225
+Filename: luci-lib-xterm_git-24.354.59091-4bd4444_all.ipk
+Size: 78114
+SHA256sum: c237e1d01737f674e43bf0911e646f32204b1432098f78377950dad74151419f
 Description:  Xterm.js library
 
 Package: luci-theme-argon
@@ -2430,14 +2773,32 @@ Depends: libc, curl, jsonfilter, luci-lua-runtime
 Source: feeds/base/xd/luci-theme-argon
 SourceName: luci-theme-argon
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: OpenWrt LuCI community
 Architecture: all
-Installed-Size: 773066
+Installed-Size: 773074
 Filename: luci-theme-argon_2.3.1_all.ipk
-Size: 773896
-SHA256sum: 797f9955c44ec3a10b475e37b5fd32342220f4fdef395e16fa840b08aa980f6c
+Size: 773899
+SHA256sum: 7cce097b23e8b7bd230cab47df03c4c5a124de7df32a74182017a3f57e32d0fe
 Description:  Argon Theme
+
+Package: microsocks
+Version: 1.0.4-1
+Depends: libc, libpthread
+Source: feeds/base/porxy/microsocks
+SourceName: microsocks
+License: MIT
+LicenseFiles: COPYING
+Section: net
+SourceDateEpoch: 1734652020
+Maintainer: lean
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 5279
+Filename: microsocks_1.0.4-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 6072
+SHA256sum: 58c9a05c7fc23db336c313bae5308488c346e6939003bca1f6245c136be5a57f
+Description:  A SOCKS5 service that you can run on your remote boxes to tunnel connections
+ through them, if for some reason SSH doesn't cut it for you.
 
 Package: mihomo
 Version: 2024-12-13-c7fc93df-1
@@ -2447,14 +2808,33 @@ SourceName: mihomo
 License: MIT
 Section: net
 Require-User: root:mihomo=7890
-SourceDateEpoch: 1734568484
+SourceDateEpoch: 1734652020
 Maintainer: Joseph Mory <morytyann@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 10498019
+Installed-Size: 10498010
 Filename: mihomo_2024-12-13-c7fc93df-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 10481597
-SHA256sum: 03acc23aa119df9390c9ccc1abdcca84a8ead74aafe5c3b8c75006358c4dca6a
+Size: 10481413
+SHA256sum: 3361e89f00b9a5c78025f5cf426cb58bd44c4a904a1d5952ee23241f7ebdcc12
 Description:  A rule based proxy in Go.
+
+Package: miniupnpd-nftables
+Version: 2.3.7-1
+Depends: libc, libcap-ng, libmnl0, libuuid1, libnftnl11
+Conflicts: miniupnpd-iptables
+Provides: miniupnpd
+Source: feeds/base/xd/miniupnpd
+SourceName: miniupnpd-nftables
+License: BSD-3-Clause
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1734625491
+CPE-ID: cpe:/a:miniupnp_project:miniupnpd
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 81570
+Filename: miniupnpd-nftables_2.3.7-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 82122
+SHA256sum: e4b8b8eddc22c938965d7241f490cf5e7c54948ce8e54aab524a197890873a10
+Description:  Lightweight UPnP IGD & PCP/NAT-PMP daemon (nftables)
 
 Package: mkf2fs
 Version: 1.16.0-1
@@ -2482,13 +2862,13 @@ Source: feeds/base/xd/mosdns
 SourceName: mosdns
 License: GPL-3.0
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 6260888
+Installed-Size: 6260877
 Filename: mosdns_5.3.3-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 6251725
-SHA256sum: 4ad1656657892a1f5365f3ab1183682e8b51820c24ec69fe9494c253b6192d4c
+Size: 6251787
+SHA256sum: 267ef898e49b4804f23afa78352722db04e45bd25f6fa827c82fa3e8400c3d6a
 Description:  A plug-in DNS forwarder/splitter
 
 Package: my-default-settings
@@ -2498,12 +2878,12 @@ Source: feeds/base/xd/my-default-settings
 SourceName: my-default-settings
 License: GPL-3.0
 Section: luci
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: all
-Installed-Size: 1903
+Installed-Size: 1909
 Filename: my-default-settings_1_all.ipk
-Size: 2629
-SHA256sum: e7ae6ec461b954a02b5eb1a50b2ac6f5dad2cef3949c054c6e6ddc64a9f654b5
+Size: 2631
+SHA256sum: 3981dd47bf92382f20f736257fe40c088bfda63c50ae8c9f20e44ae0858707a7
 Description:  LuCI support for my default settings
 
 Package: netdata
@@ -2514,14 +2894,14 @@ SourceName: netdata
 License: GPL-3.0-or-later
 LicenseFiles: COPYING
 Section: admin
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 CPE-ID: cpe:/a:my-netdata:netdata
 Maintainer: Josef Schlehofer <pepe.schlehofer@gmail.com>, Daniel Engberg <daniel.engberg.lists@pyret.net>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 7974313
+Installed-Size: 7974285
 Filename: netdata_1.33.1-4_arm_cortex-a5_neon-vfpv4.ipk
-Size: 7944205
-SHA256sum: 7ce82ff1a741e629d6875e9a81f207084b20195429fb9d16da190005a313ad80
+Size: 7944256
+SHA256sum: a6d720362d26381d38999184651e5d01ba75eebd1a49ac4e801377b3f0306050
 Description:  netdata is a highly optimized Linux daemon providing real-time performance
  monitoring for Linux systems, applications and SNMP devices over the web.
  
@@ -2569,13 +2949,13 @@ SourceName: nlbwmon
 License: ISC
 LicenseFiles: COPYING
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Jo-Philipp Wich <jo@mein.io>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 19713
+Installed-Size: 19717
 Filename: nlbwmon_2021-09-01-d82c910c-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 20559
-SHA256sum: ee491ef66b63c3c8d510394512f7fd2414606a30e58b7350c3ee6b34d92af1ad
+Size: 20563
+SHA256sum: 84d858806ec755c1be9f455e7c84decdc1978ab4e50c3e95b8123244b5f72014
 Description:  OpenWrt Traffic Usage Monitor
 
 Package: odhcp6c
@@ -2624,14 +3004,14 @@ SourceName: openssh-sftp-server
 License: BSD ISC
 LicenseFiles: LICENCE
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 CPE-ID: cpe:/a:openssh:openssh
 Maintainer: Peter Wagner <tripolar@gmx.at>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 56942
+Installed-Size: 56944
 Filename: openssh-sftp-server_9.9_p1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 57551
-SHA256sum: 83ad1b5766c81d87ca0679deb957907889948a1f3cc8eb66f5635b3a3f678d09
+Size: 57548
+SHA256sum: b020bf1ad7b164a194fa51486c05171a0a9897348e42208e6e6432fac21bcdc3
 Description:  OpenSSH SFTP server.
 
 Package: openssl-util
@@ -2646,10 +3026,10 @@ SourceDateEpoch: 1726326260
 CPE-ID: cpe:/a:openssl:openssl
 Maintainer: Eneas U de Queiroz <cotequeiroz@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 317914
+Installed-Size: 349990
 Filename: openssl-util_3.0.15-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 315246
-SHA256sum: 7cfd78ad640570eecf3a7dbbb8c4c2da2011773ba733be797669361eb7d2d6c6
+Size: 347252
+SHA256sum: ff0eb160c988cea2da598fa84cf4bb47f60fbb0fa5d4d26267450ba574faee34
 Description:  The OpenSSL Project is a collaborative effort to develop a robust,
  commercial-grade, full-featured, and Open Source toolkit implementing the
  Transport Layer Security (TLS) protocol as well as a full-strength
@@ -2807,13 +3187,13 @@ SourceName: qbittorrent
 License: GPL-2.0+
 LicenseFiles: COPYING
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 CPE-ID: cpe:/a:qbittorrent:qbittorrent
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 7740732
+Installed-Size: 7740731
 Filename: qbittorrent_5.0.3-1_arm_cortex-a5_neon-vfpv4.ipk
 Size: 7737668
-SHA256sum: 77d9fa2711fe57a18a2ed94f06dc3c216c4098d83875bc269c0bba5d29feef04
+SHA256sum: 8d20b03ae38e854c972f18c38d6845aff2bd43d1ec8daf0669d2b3258adf32fb
 Description:  qBittorrent is a bittorrent client programmed in C++ / Qt that uses
  libtorrent (sometimes called libtorrent-rasterbar) by Arvid Norberg.
  It aims to be a good alternative to all other bittorrent clients out
@@ -2826,12 +3206,12 @@ Depends: libc, libatomic1, libstdcpp6, zlib, libQt6Network
 Source: feeds/base/xd/qt6base
 SourceName: qt6-plugin-libqopensslbackend
 Section: libs
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 112188
+Installed-Size: 112189
 Filename: qt6-plugin-libqopensslbackend_6.8.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 112498
-SHA256sum: fba753359c249a804e9f9986585ee097c3d7fdcf56b16922ab66ebe060c0614f
+Size: 112475
+SHA256sum: 7821bba11ee47d157cdcb26da00c561ed56c07cf0486fca7ba7b3bd4b8ea7019
 Description:  Qt6 Plugin libqopensslbackend
 
 Package: qt6-plugin-libqsqlite
@@ -2840,12 +3220,12 @@ Depends: libc, libatomic1, libstdcpp6, zlib, libQt6Sql
 Source: feeds/base/xd/qt6base
 SourceName: qt6-plugin-libqsqlite
 Section: libs
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 966756
+Installed-Size: 966755
 Filename: qt6-plugin-libqsqlite_6.8.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 966236
-SHA256sum: 775af5408c873aeb7db0ace44527b16d3fcdea5fd3402049a886734247d752be
+Size: 966187
+SHA256sum: 58e08f9df438017e856dcc88e8c80f1539b72de1b991fcf798897d327abd2116
 Description:  Qt6 Plugin libqsqlite
 
 Package: rblibtorrent2.0
@@ -2857,13 +3237,13 @@ SourceName: rblibtorrent
 License: BSD
 LicenseFiles: COPYING
 Section: libs
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 ABIVersion: 2.0
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 1247240
+Installed-Size: 1247241
 Filename: rblibtorrent2.0_2.0.10-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1241352
-SHA256sum: af9fc82f6fdbb0d8d670f6f4f401c6102472fbc6f69f218ca73ae21a72108de3
+Size: 1241286
+SHA256sum: 19e44d06f86b9df8dd162efedfe546820a179e8d18aa7001bb265d8c47cd5d9b
 Description:  Rasterbar libtorrent is a C++ library that aims to be a good alternative to
  all the other bittorrent implementations around. It is a library and not a
  full featured client, although it comes with a working example client.
@@ -2902,6 +3282,26 @@ Filename: resize2fs_1.47.0-2_arm_cortex-a5_neon-vfpv4.ipk
 Size: 25792
 SHA256sum: 03c0a403c55d843f0db4c34a530e421d51c7f8a247c2ffde169b0d2710f1a297
 Description:  Ext2 Filesystem resize utility
+
+Package: resolveip
+Version: 2
+Depends: libc
+Source: feeds/base/network/utils/resolveip
+SourceName: resolveip
+License: GPL-2.0
+Section: utils
+SourceDateEpoch: 1476524212
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1584
+Filename: resolveip_2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 2489
+SHA256sum: caf176d166ce99096d8584e90aaea9f1411a9ddca680fa4dbd30152b6f3c01ea
+Description:  This package contains the small resolveip utility which
+ can be used by scripts to turn host names into numeric
+ IP addresses. It supports IPv4 and IPv6 resolving and
+ has a configurable timeout to guarantee a certain maximum
+ runtime in case of slow or defunct DNS servers.
 
 Package: rpcd-mod-file
 Version: 2023-07-01-c07ab2f9-1
@@ -2976,13 +3376,13 @@ SourceName: samba4-libs
 License: GPL-3.0-only
 LicenseFiles: COPYING
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 CPE-ID: cpe:/a:samba:samba
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 9525480
+Installed-Size: 9524482
 Filename: samba4-libs_4.21.2-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 9420501
-SHA256sum: b601bc54e80c848ffb301693914f78e4ee31f56f0635d5ea366312a7ba8c6bbc
+Size: 9416521
+SHA256sum: 7707d5edd468d8c556dfcc846ba7ba63a763476752d9b45e578f20915f58b2a0
 Description:  Samba 4.21.2 libs
 
 Package: samba4-server
@@ -2994,13 +3394,13 @@ SourceName: samba4-server
 License: GPL-3.0-only
 LicenseFiles: COPYING
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 CPE-ID: cpe:/a:samba:samba
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 254635
+Installed-Size: 254640
 Filename: samba4-server_4.21.2-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 254474
-SHA256sum: 3da2cee5c0e8d82fb82c6208f4ba05e9f7bd7d942488d232f2466d85c859f534
+Size: 254445
+SHA256sum: 789e5dd709bdd5eb8e3e6eac80f95cbf5e8ee1800606cbf6b32d1fff576a20de
 Description:  installs: smbd (nmbd) smbpasswd pdbedit testparm (nmblookup) (smbcacls sharesec)
  (samba samba-tool ntlm_auth samba-gpupdate samba_dnsupdate samba_kcc samba_spnupdate samba_upgradedns samba_downgrade_db)
  
@@ -3024,6 +3424,24 @@ Size: 38745
 SHA256sum: 4f9421d4c84e2194b27979d46940e5c535e90cb087144397f0d2cd2aa8c8bfff
 Description:  contains: script, scriptreplay
 
+Package: sing-box
+Version: 1.10.3-1
+Depends: libc, ca-bundle, kmod-inet-diag, kmod-netlink-diag, kmod-tun
+Source: feeds/base/porxy/sing-box
+SourceName: sing-box
+License: GPL-3.0-or-later
+LicenseFiles: LICENSE
+Section: net
+Require-User: sing-box=5566:sing-box=5566
+SourceDateEpoch: 1734652020
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 10309874
+Filename: sing-box_1.10.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 10291607
+SHA256sum: c628809ba8d0c3ac57fa0ac113b88ed30de07f5a6907d5cf8d332e901031b647
+Description:  The universal proxy platform
+
 Package: swap-utils
 Version: 2.39-2
 Depends: libc, librt, libblkid1
@@ -3041,20 +3459,54 @@ Size: 46980
 SHA256sum: 9c9f166ef1121d1d187a4615fa01264505b4d66d556ba0e4bb0e3f73fe896baf
 Description:  contains: mkswap, swaplabel
 
+Package: tailscale
+Version: 1.78.1-1
+Depends: libc, ca-bundle, kmod-tun
+Provides: tailscaled
+Source: feeds/base/xd/tailscale
+SourceName: tailscale
+License: BSD-3-Clause
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1734625491
+Maintainer: Zephyr Lykos <self@mochaa.ws>, Sandro Jäckel <sandro.jaeckel@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 8934658
+Filename: tailscale_1.78.1-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 8923484
+SHA256sum: 0af6d6bb52052d7f61a201ef7022965a9de8e5317d82ea793d85c3449d8fafb0
+Description:  It creates a secure network between your servers, computers,
+ and cloud instances. Even when separated by firewalls or subnets.
+
 Package: taskd
 Version: 1.0.3-2
 Depends: libc, procd, script-utils, coreutils-stty
 Source: feeds/base/xd/taskd
 SourceName: taskd
 Section: utils
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: jjm2473 <jjm2473@gmail.com>
 Architecture: all
 Installed-Size: 1625
 Filename: taskd_1.0.3-2_all.ipk
-Size: 2375
-SHA256sum: f9ca53ec1913d032e1991a064881aca9ee0f14698472a39cdacf16eb9371fde4
+Size: 2379
+SHA256sum: 9ecde7a64eda01385762c3ba56a2c6eba73b6136d6f132b9cd24446b21c4e4f8
 Description:  Simple Task Manager based on procd
+
+Package: tcping
+Version: 0.3-1
+Depends: libc
+Source: feeds/base/porxy/tcping
+SourceName: tcping
+License: GPL-2.0-only
+Section: net
+SourceDateEpoch: 1734652020
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 3249
+Filename: tcping_0.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 3948
+SHA256sum: f08ea2bfa2b3cb4e9b3a83f1f1983ee0cbe526fe1f2fe57f4f19257fd89d5f9e
+Description:  tcping measures the latency of a tcp-connection
 
 Package: terminfo
 Version: 6.4-2
@@ -3294,14 +3746,14 @@ SourceName: unzip
 License: BSD-4-Clause
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 CPE-ID: cpe:/a:info-zip:unzip
 Maintainer: Álvaro Fernández Rojas <noltari@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 112500
+Installed-Size: 112504
 Filename: unzip_6.0-8_arm_cortex-a5_neon-vfpv4.ipk
-Size: 113476
-SHA256sum: 0ff1226450e466fdedbb17cf6b938fbd4e8c756b89fa055a8ab53f95145415cd
+Size: 113496
+SHA256sum: 800a958c2fd46c16583f0c334e860c6240df994e9d20bb96cbf0fcd5ee4db451
 Description:  InfoZIP's unzip program. With the exception of multi-volume archives
  (ie, .ZIP files that are split across several disks using PKZIP's /& option),
  this can handle any file produced either by PKZIP, or the corresponding
@@ -3370,47 +3822,47 @@ Source: feeds/base/xd/v2dat
 SourceName: v2dat
 License: GPL-3.0
 Section: utils
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: sbwml <admin@cooluc.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 2844390
+Installed-Size: 2844384
 Filename: v2dat_2022-12-15-47b8ee51-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 2839605
-SHA256sum: 89c685580831ad5465fd8e20c30798c95ab828fcc78a8806230a0eebcabe5164
+Size: 2839701
+SHA256sum: 396dc9b7cad835769438a3dab4544b0e4dde3e7f49535e39eb8200177ff82ed7
 Description:  V2ray geo/ip data unpack tools
 
 Package: v2ray-geoip
-Version: 2024-12-19-1
+Version: 2024-12-20-1
 Depends: libc
 Source: feeds/base/porxy/v2ray-geodata
 SourceName: v2ray-geoip
 License: CC-BY-SA-4.0
 LicenseFiles: LICENSE
 Section: net
-SourceDateEpoch: 1734568484
+SourceDateEpoch: 1734652020
 Maintainer: openwrt-plus <git@github.com>
 Architecture: all
-Installed-Size: 3357156
-Filename: v2ray-geoip_2024-12-19-1_all.ipk
-Size: 3099907
-SHA256sum: 6e1ea995057d815cf555cc12f2fd628a9d775fb9cb16af81b683897aa178d4d9
+Installed-Size: 3357068
+Filename: v2ray-geoip_2024-12-20-1_all.ipk
+Size: 3099457
+SHA256sum: 8cd93f4a04ef0e99b7cb84c6d727baf7a1fa0ae479368cb9bad17821471a2767
 Description:  GeoIP List for V2Ray
 
 Package: v2ray-geosite
-Version: 2024-12-19-1
+Version: 2024-12-20-1
 Depends: libc
 Source: feeds/base/porxy/v2ray-geodata
 SourceName: v2ray-geosite
 License: GPL-3.0
 LicenseFiles: LICENSE
 Section: net
-SourceDateEpoch: 1734568484
+SourceDateEpoch: 1734652020
 Maintainer: openwrt-plus <git@github.com>
 Architecture: all
-Installed-Size: 2192457
-Filename: v2ray-geosite_2024-12-19-1_all.ipk
-Size: 2192707
-SHA256sum: 2d02e863cb1479dfcf5a5fe6a8c7046b0eeec5770cde855c3b2dbcb5fc0849a0
+Installed-Size: 2184998
+Filename: v2ray-geosite_2024-12-20-1_all.ipk
+Size: 2185757
+SHA256sum: 5ece416a6b821e59bdace835b7d012025be92f9bdcb6d7fb80ba5b08a49c3376
 Description:  Geosite List for V2Ray
 
 Package: vim
@@ -3421,14 +3873,14 @@ SourceName: vim
 License: Vim
 LicenseFiles: LICENSE
 Section: utils
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 CPE-ID: cpe:/a:vim:vim
 Maintainer: Marko Ratkaj <markoratkaj@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 507530
+Installed-Size: 507529
 Filename: vim_9.0-2_arm_cortex-a5_neon-vfpv4.ipk
-Size: 507571
-SHA256sum: 030ab462e9cdda72a03c27baebd6147fa407b07932488c11021b03efdf6fb159
+Size: 507567
+SHA256sum: f9ad766cbaa7b9aef968834cf435b578c532f531b73fee6096b94aa9ca556e6b
 Description:  Vim is an almost compatible version of the UNIX editor Vi.
  (Tiny build)
 
@@ -3440,13 +3892,13 @@ SourceName: vlmcsd
 License: MIT
 LicenseFiles: LICENSE
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: fuyumi <280604399@qq.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 25043
+Installed-Size: 25044
 Filename: vlmcsd_svn1113-4_arm_cortex-a5_neon-vfpv4.ipk
-Size: 25716
-SHA256sum: 697e206e8dd972bf9d348de07988ab59a4e541a163ba3c5f45cf18ea054b6f24
+Size: 25722
+SHA256sum: c7dd2a1c45d14943f800919984d73322727657a0b4db30aec663127ed974460b
 Description:  vlmcsd is a KMS Emulator in C.
 
 Package: wpad-openssl
@@ -3470,6 +3922,24 @@ SHA256sum: 9a209460b144f3566fbfaad4250f05946a2c3a58c4f163dc92caa4e86f89f645
 Description:  This package contains a full featured IEEE 802.1x/WPA/EAP/RADIUS
  Authenticator and Supplicant
 
+Package: xray-core
+Version: 24.12.18-1
+Depends: libc, ca-bundle
+Source: feeds/base/porxy/xray-core
+SourceName: xray-core
+License: MPL-2.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1734652020
+Maintainer: Tianling Shen <cnsztl@immortalwrt.org>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 9806484
+Filename: xray-core_24.12.18-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 9790290
+SHA256sum: fe31b29513ed1c3f687c2de40f6bb79ced76588f4202723d77416e4095a5aaee
+Description:  Xray, Penetrates Everything. It helps you to build your own computer network.
+ It secures your network connections and thus protects your privacy.
+
 Package: zerotier
 Version: 1.14.1-1
 Depends: libc, libpthread, libstdcpp6, kmod-tun, ip, libminiupnpc, libnatpmp1, libatomic1
@@ -3478,13 +3948,13 @@ SourceName: zerotier
 License: BSL 1.1
 LicenseFiles: LICENSE.txt
 Section: net
-SourceDateEpoch: 1734596889
+SourceDateEpoch: 1734625491
 Maintainer: Moritz Warning <moritzwarning@web.de>
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 527843
 Filename: zerotier_1.14.1-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 528006
-SHA256sum: 486ca0fc5730665b50f3788f5887e5f48b431f1867b0a3eb2f5cd38b10a6312c
+Size: 528017
+SHA256sum: 254d7decfbd7350fce52c9e19cadf35b64a2be56eb8d3e6f1c9646bf7417a0d8
 Description:  ZeroTier creates a global provider-independent virtual private cloud network.
 
 Package: zlib

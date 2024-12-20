@@ -195,6 +195,25 @@ Size: 36481319
 SHA256sum: f7939a3c9129a930f7524e6a0e3db169f15bacf49a332e16c85d185f98c305c5
 Description:  An industry-standard container runtime with an emphasis on simplicity, robustness and portability
 
+Package: coreutils-base64
+Version: 9.3-1
+Depends: libc, coreutils
+Alternatives: 300:/bin/base64:/usr/libexec/base64-coreutils
+Source: feeds/packages/utils/coreutils
+SourceName: coreutils-base64
+License: GPL-3.0-or-later
+LicenseFiles: COPYING
+Section: utils
+SourceDateEpoch: 1734535256
+CPE-ID: cpe:/a:gnu:coreutils
+Maintainer: Jo-Philipp Wich <jo@mein.io>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 21710
+Filename: coreutils-base64_9.3-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 22505
+SHA256sum: 5a508a1780dbd4bc97f1e41aacf1cf0b505a539b00030378f76d92325d2fcc4e
+Description:  Full version of standard GNU base64 utility.
+
 Package: coreutils-nohup
 Version: 9.3-1
 Depends: libc, coreutils
@@ -304,6 +323,25 @@ Size: 20780067
 SHA256sum: 9a9ef1b3ba43c6c27873d5bb328f3d2424454c5ef3ba5401c51e07b88651a6fc
 Description:  The Docker CE Engine.
 
+Package: etherwake
+Version: 1.09-5
+Depends: libc
+Source: feeds/packages/net/etherwake
+SourceName: etherwake
+Section: net
+SourceDateEpoch: 1734535256
+Maintainer: Peter Wagner <tripolar@gmx.at>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 5083
+Filename: etherwake_1.09-5_arm_cortex-a5_neon-vfpv4.ipk
+Size: 6014
+SHA256sum: bc3b75f5b24aa7e0cb9b6475a795cb8b427e3c8590fb02bd6f1e7ecf8b24fd7a
+Description:  You can wake up WOL compliant Computers which have been powered down to
+ sleep mode or start WOL compliant Computers with a BIOS feature.
+ WOL is an abbreviation for Wake-on-LAN. It is a standard that allows you
+ to turn on a computer from another location over a network connection.
+ ether-wake also supports WOL passwords.
+
 Package: fuse-utils
 Version: 2.9.9-2
 Depends: libc, libfuse1
@@ -323,6 +361,25 @@ Description:  FUSE (Filesystem in UserSpacE)
  This package contains the FUSE utilities.
  - fusermount
  - ulockmgr_server
+
+Package: haproxy
+Version: 2.8.9-1
+Depends: libc, libpcre2, libltdl7, zlib, libpthread, liblua5.3-5.3, libopenssl3, libncurses6, libreadline8, libatomic1
+Source: feeds/packages/net/haproxy
+SourceName: haproxy
+License: GPL-2.0-only
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1734535256
+CPE-ID: cpe:/a:haproxy:haproxy
+Maintainer: Thomas Heil <heil@terminal-consulting.de>, Christian Lachner <gladiac@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 1101853
+Filename: haproxy_2.8.9-1_arm_cortex-a5_neon-vfpv4.ipk
+Size: 1101359
+SHA256sum: 233bddda92761136fd747d5594ee372d8fc684f29fe0da6a4e170804056308c6
+Description:  Open source Reliable, High Performance TCP/HTTP Load Balancer.
+ This package is built with SSL and LUA support.
 
 Package: hd-idle
 Version: 1.05-2
@@ -508,6 +565,24 @@ Description:  Avahi is an mDNS/DNS-SD (aka RendezVous/Bonjour/ZeroConf)
  It also automatically adds the D-Bus package to the build.
  libavahi-dbus-support is selected automatically if you select
  libavahi-client or avahi-utils.
+
+Package: libcap-ng
+Version: 0.8.3-2
+Depends: libc
+Source: feeds/packages/libs/libcap-ng
+SourceName: libcap-ng
+License: GPL-2.0-or-later LGPL-2.1-or-later
+LicenseFiles: License
+Section: libs
+SourceDateEpoch: 1734535256
+CPE-ID: cpe:/a:libcap-ng_project:libcap-ng
+Maintainer: Lucian CRISTIAN <lucian.cristian@gmail.com>
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 8232
+Filename: libcap-ng_0.8.3-2_arm_cortex-a5_neon-vfpv4.ipk
+Size: 8991
+SHA256sum: 8ef0a42bb2e4c70151180a2a18d2ca420d5e3bf49834cbd6b6084040d97f917d
+Description:  POSIX capabilities library library
 
 Package: libdaemon
 Version: 0.14-5
@@ -974,7 +1049,7 @@ Description:  Utility that builds dynamically LAN listen directives for Nginx.
 
 Package: nginx-ssl
 Version: 1.26.2-1
-Depends: nginx-ssl-util (>=1.5-1) (<2), libc, libopenssl3, libpthread, libpcre2, nginx-ssl-util, zlib, libubus20230605, libblobmsg-json20230523, libjson-c5
+Depends: nginx-ssl-util (>=1.5-1) (<2), libc, libopenssl3, libpthread, libpcre2, nginx-ssl-util, zlib, libxml2, libubus20230605, libblobmsg-json20230523, libjson-c5
 Conflicts: nginx-all-module
 Source: feeds/packages/net/nginx
 SourceName: nginx-ssl
@@ -984,10 +1059,10 @@ SourceDateEpoch: 1724545076
 CPE-ID: cpe:/a:nginx:nginx
 Maintainer: Thomas Heil <heil@terminal-consulting.de> Ansuel Smith <ansuelsmth@gmail.com>
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 433746
+Installed-Size: 448520
 Filename: nginx-ssl_1.26.2-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 417201
-SHA256sum: 17ed3d6c606e29067d07537d1d1ee8c107dffe14bf900e0572c8d11eafaada7f
+Size: 431115
+SHA256sum: 62533dc03aa575d98181fb7c496f92cfd220d122ebbf003e6222fa991b785f4f
 Description:  nginx is an HTTP and reverse proxy server, as well as a mail proxy server, written by Igor Sysoev. This variant is compiled with SSL support enabled. To enable additional module select them in the nginx default configuration menu.
 
 Package: nginx-util
@@ -1579,8 +1654,8 @@ CPE-ID: cpe:/a:gnu:wget
 Architecture: arm_cortex-a5_neon-vfpv4
 Installed-Size: 203479
 Filename: wget-ssl_1.21.4-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 204119
-SHA256sum: 31845c991ee33314987170973573e8b7d546d92560c74e215715821b96c90943
+Size: 204102
+SHA256sum: da29d2312a5b782fad60f88a88e94416aa8e3bd68d7df0d232aeb4540b344cdb
 Description:  Wget is a network utility to retrieve files from the Web using http
  and ftp, the two most widely used Internet protocols. It works
  non-interactively, so it will work in the background, after having
