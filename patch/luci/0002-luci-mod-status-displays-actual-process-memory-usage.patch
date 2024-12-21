@@ -1,0 +1,28 @@
+From fb9d1a301136922a624e1eb2927ad60260ee11f8 Mon Sep 17 00:00:00 2001
+From: sbwml <admin@cooluc.com>
+Date: Fri, 13 Sep 2024 19:43:19 +0800
+Subject: [PATCH 2/5] luci-mod-status: displays actual process memory usage
+
+Signed-off-by: sbwml <admin@cooluc.com>
+---
+ .../luci-static/resources/view/status/include/20_memory.js    | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/20_memory.js b/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/20_memory.js
+index 0a885c0..d3302ff 100644
+--- a/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/20_memory.js
++++ b/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/20_memory.js
+@@ -32,8 +32,8 @@ return baseclass.extend({
+ 		    swap = L.isObject(systeminfo.swap) ? systeminfo.swap : {};
+ 
+ 		var fields = [
+-			_('Total Available'), (mem.available) ? mem.available : (mem.total && mem.free && mem.buffered) ? mem.free + mem.buffered : null, mem.total,
+-			_('Used'),            (mem.total && mem.free) ? (mem.total - mem.free) : null, mem.total,
++			_('Used'),            (mem.total && mem.free && mem.cached) ? (mem.total - mem.free - mem.cached) : null, mem.total,
++			_('Total Available'), (mem.total && mem.free && mem.cached) ? (mem.free + mem.cached) : null, mem.total,
+ 		];
+ 
+ 		if (mem.buffered)
+-- 
+2.42.0
+

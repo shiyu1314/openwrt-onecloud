@@ -1,0 +1,34 @@
+From 2e492e056b68540c5ff222bd53ee4ebe2f4a0181 Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Thu, 29 Aug 2019 11:53:41 -0400
+Subject: [PATCH 08/43] QUIC: Reset init state in
+ SSL_process_quic_post_handshake()
+
+---
+ ssl/ssl_quic.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+--- a/ssl/ssl_quic.c
++++ b/ssl/ssl_quic.c
+@@ -265,16 +265,19 @@ int quic_set_encryption_secrets(SSL *ssl
+ 
+ int SSL_process_quic_post_handshake(SSL *ssl)
+ {
++    int ret;
++
+     if (SSL_in_init(ssl) || !SSL_IS_QUIC(ssl)) {
+         SSLerr(SSL_F_SSL_PROCESS_QUIC_POST_HANDSHAKE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+         return 0;
+     }
+ 
+     ossl_statem_set_in_init(ssl, 1);
++    ret = ssl->handshake_func(ssl);
++    ossl_statem_set_in_init(ssl, 0);
+ 
+-    if (ssl->handshake_func(ssl) <= 0)
++    if (ret <= 0)
+         return 0;
+-
+     return 1;
+ }
+ 

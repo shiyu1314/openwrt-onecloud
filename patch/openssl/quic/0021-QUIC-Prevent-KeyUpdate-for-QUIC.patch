@@ -1,0 +1,70 @@
+From 0749642cb0df330f91388a2fe72dc9b2824b7da7 Mon Sep 17 00:00:00 2001
+From: Benjamin Kaduk <bkaduk@akamai.com>
+Date: Mon, 11 May 2020 13:13:01 -0700
+Subject: [PATCH 21/43] QUIC: Prevent KeyUpdate for QUIC
+
+QUIC does not use the TLS KeyUpdate message/mechanism, and indeed
+it is an error to generate or receive such a message.  Add the
+necessary checks (noting that the check for receipt should be
+redundant since SSL_provide_quic_data() is the only way to provide
+input to the TLS layer for a QUIC connection).
+---
+ ssl/ssl_quic.c          |  6 ++++++
+ ssl/statem/statem_lib.c | 14 ++++++++++++++
+ 2 files changed, 20 insertions(+)
+
+--- a/ssl/ssl_quic.c
++++ b/ssl/ssl_quic.c
+@@ -92,6 +92,7 @@ int SSL_provide_quic_data(SSL *ssl, OSSL
+                           const uint8_t *data, size_t len)
+ {
+     size_t l;
++    uint8_t mt;
+ 
+     if (!SSL_IS_QUIC(ssl)) {
+         SSLerr(SSL_F_SSL_PROVIDE_QUIC_DATA, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+@@ -131,9 +132,14 @@ int SSL_provide_quic_data(SSL *ssl, OSSL
+             return 0;
+         }
+         /* TLS Handshake message header has 1-byte type and 3-byte length */
++        mt = *data;
+         p = data + 1;
+         n2l3(p, l);
+         l += SSL3_HM_HEADER_LENGTH;
++        if (mt == SSL3_MT_KEY_UPDATE) {
++            SSLerr(SSL_F_SSL_PROVIDE_QUIC_DATA, SSL_R_UNEXPECTED_MESSAGE);
++            return 0;
++        }
+ 
+         qd = OPENSSL_zalloc(sizeof(QUIC_DATA) + l);
+         if (qd == NULL) {
+--- a/ssl/statem/statem_lib.c
++++ b/ssl/statem/statem_lib.c
+@@ -666,6 +666,13 @@ int tls_construct_finished(SSL *s, WPACK
+ 
+ int tls_construct_key_update(SSL *s, WPACKET *pkt)
+ {
++#ifndef OPENSSL_NO_QUIC
++    if (SSL_is_quic(s)) {
++        /* TLS KeyUpdate is not used for QUIC, so this is an error. */
++        SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);
++        return 0;
++    }
++#endif
+     if (!WPACKET_put_bytes_u8(pkt, s->key_update)) {
+         SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);
+         return 0;
+@@ -688,6 +695,13 @@ MSG_PROCESS_RETURN tls_process_key_updat
+         return MSG_PROCESS_ERROR;
+     }
+ 
++#ifndef OPENSSL_NO_QUIC
++    if (SSL_is_quic(s)) {
++        SSLfatal(s, SSL_AD_UNEXPECTED_MESSAGE, SSL_R_UNEXPECTED_MESSAGE);
++        return MSG_PROCESS_ERROR;
++    }
++#endif
++
+     if (!PACKET_get_1(pkt, &updatetype)
+             || PACKET_remaining(pkt) != 0) {
+         SSLfatal(s, SSL_AD_DECODE_ERROR, SSL_R_BAD_KEY_UPDATE);

@@ -1,0 +1,20 @@
+From 244d4b0ebd3ab4102f3e1892623bb96adcdef150 Mon Sep 17 00:00:00 2001
+From: Benjamin Kaduk <bkaduk@akamai.com>
+Date: Fri, 15 Jan 2021 15:04:00 -0800
+Subject: [PATCH 27/43] QUIC: __owur makes no sense for void return values
+
+---
+ include/openssl/ssl.h.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/include/openssl/ssl.h.in
++++ b/include/openssl/ssl.h.in
+@@ -2563,7 +2563,7 @@ __owur int SSL_process_quic_post_handsha
+ __owur int SSL_is_quic(SSL *ssl);
+ 
+ /* BoringSSL API */
+-__owur void SSL_set_quic_use_legacy_codepoint(SSL *ssl, int use_legacy);
++void SSL_set_quic_use_legacy_codepoint(SSL *ssl, int use_legacy);
+ 
+ /*
+  * Set an explicit value that you want to use

@@ -1,0 +1,5 @@
+--- a/VERSION.dat
++++ b/VERSION.dat
+@@ -5,1 +5,1 @@
+-BUILD_METADATA=
++BUILD_METADATA=quic

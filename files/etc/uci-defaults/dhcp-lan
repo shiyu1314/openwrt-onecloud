@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+
+uci -q batch <<-EOF >/dev/null
+	delete network.lan.ipaddr
+	delete network.lan.netmask
+	set network.lan.proto='dhcp'
+	commit network
+EOF
+
+rm -f /tmp/luci-indexcache
+exit 0
