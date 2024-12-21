@@ -195,25 +195,6 @@ Size: 36481319
 SHA256sum: f7939a3c9129a930f7524e6a0e3db169f15bacf49a332e16c85d185f98c305c5
 Description:  An industry-standard container runtime with an emphasis on simplicity, robustness and portability
 
-Package: coreutils-base64
-Version: 9.3-1
-Depends: libc, coreutils
-Alternatives: 300:/bin/base64:/usr/libexec/base64-coreutils
-Source: feeds/packages/utils/coreutils
-SourceName: coreutils-base64
-License: GPL-3.0-or-later
-LicenseFiles: COPYING
-Section: utils
-SourceDateEpoch: 1734535256
-CPE-ID: cpe:/a:gnu:coreutils
-Maintainer: Jo-Philipp Wich <jo@mein.io>
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 21710
-Filename: coreutils-base64_9.3-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 22505
-SHA256sum: 5a508a1780dbd4bc97f1e41aacf1cf0b505a539b00030378f76d92325d2fcc4e
-Description:  Full version of standard GNU base64 utility.
-
 Package: coreutils-nohup
 Version: 9.3-1
 Depends: libc, coreutils
@@ -361,25 +342,6 @@ Description:  FUSE (Filesystem in UserSpacE)
  This package contains the FUSE utilities.
  - fusermount
  - ulockmgr_server
-
-Package: haproxy
-Version: 2.8.9-1
-Depends: libc, libpcre2, libltdl7, zlib, libpthread, liblua5.3-5.3, libopenssl3, libncurses6, libreadline8, libatomic1
-Source: feeds/packages/net/haproxy
-SourceName: haproxy
-License: GPL-2.0-only
-LicenseFiles: LICENSE
-Section: net
-SourceDateEpoch: 1734535256
-CPE-ID: cpe:/a:haproxy:haproxy
-Maintainer: Thomas Heil <heil@terminal-consulting.de>, Christian Lachner <gladiac@gmail.com>
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 1101853
-Filename: haproxy_2.8.9-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1101359
-SHA256sum: 233bddda92761136fd747d5594ee372d8fc684f29fe0da6a4e170804056308c6
-Description:  Open source Reliable, High Performance TCP/HTTP Load Balancer.
- This package is built with SSL and LUA support.
 
 Package: hd-idle
 Version: 1.05-2

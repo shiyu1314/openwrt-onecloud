@@ -3,10 +3,10 @@ Version: 42
 Depends: libc
 Section: opt
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 1257
+Installed-Size: 1258
 Filename: autocore_42_arm_cortex-a5_neon-vfpv4.ipk
-Size: 1960
-SHA256sum: b7a293ba7779638ab772872b7968a7f0c40837ca540a0e67458083111cd77414
+Size: 1966
+SHA256sum: d4eb7376bed99493c76690af007faa9c9a788893bb5bd58cb8ac2c0609ce59fc
 Description:  auto core loadbalance script.
 
 Package: automount
@@ -14,10 +14,10 @@ Version: 10
 Depends: libc, block-mount, e2fsprogs, kmod-usb-storage, kmod-usb-storage-extras, kmod-usb-storage-uas, kmod-fs-ext4, kmod-fs-exfat, kmod-fs-vfat, ntfs3-mount
 Section: opt
 Architecture: all
-Installed-Size: 831
+Installed-Size: 830
 Filename: automount_10_all.ipk
-Size: 1585
-SHA256sum: efcb0ccf33f7d2e28df71660c03eabae6c0e35c86ae41ebf03c3cad9afd5c6b8
+Size: 1584
+SHA256sum: 218c095a5c06c909f910c2e10985bc6cc2b20a47b213ce1bd655e82ce9793f14
 Description:  Mount autoconfig hotplug script.
 
 Package: base-files
@@ -26,10 +26,10 @@ Depends: libc, netifd, jsonfilter, usign, openwrt-keyring, fstools, fwtool
 License: GPL-2.0
 Section: base
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 45574
+Installed-Size: 45570
 Filename: base-files_1563-r24147-b551214c9d_arm_cortex-a5_neon-vfpv4.ipk
-Size: 46534
-SHA256sum: ad69d934167ad86ebcd8e96849721cd144a182eba776a40b8e80860fbafe3982
+Size: 46537
+SHA256sum: 3bc780a788177d8a475d1238cf616dce18933051001e9e1072101efaaa7767e5
 Description:  This package contains a base filesystem and system scripts for OpenWrt.
 
 Package: block-mount
@@ -1379,30 +1379,6 @@ Size: 3296
 SHA256sum: f2c1fd6228645540a58ef0ff0373f57169598bb7f9baea2883e46cc0618e5ee9
 Description:  Kernel module for NLS Codepage 437 (United States, Canada)
 
-Package: kmod-nls-cp936
-Version: 6.11.11-1
-Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-nls-base
-License: GPL-2.0-only
-Section: kernel
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 85149
-Filename: kmod-nls-cp936_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 85707
-SHA256sum: 38e3950692d57bf83faaf15283b9a06aac63863f31a07646b9fb4c9ca36100fe
-Description:  Kernel module for NLS Codepage 936 (Simplified Chinese)
-
-Package: kmod-nls-cp950
-Version: 6.11.11-1
-Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-nls-base
-License: GPL-2.0-only
-Section: kernel
-Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 61791
-Filename: kmod-nls-cp950_6.11.11-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 62664
-SHA256sum: 67a0060b8d520f820d5b97d082004fdfaab4de18b06c5ad368a92223a5ba17b6
-Description:  Kernel module for NLS Codepage 950 (Traditional Chinese)
-
 Package: kmod-nls-iso8859-1
 Version: 6.11.11-1
 Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c), kmod-nls-base
@@ -1531,10 +1507,10 @@ Depends: kernel (=6.11.11-1-3d759629703e0bf10dd206a27cced94c)
 License: GPL-3.0
 Section: kernel
 Architecture: arm_cortex-a5_neon-vfpv4
-Installed-Size: 2921
+Installed-Size: 2923
 Filename: kmod-tcp-brutal_6.11.11+1.0.3-1_arm_cortex-a5_neon-vfpv4.ipk
-Size: 3703
-SHA256sum: 3ddb47c510c53c9cc8c2df12b48c1d3efbca47361ce5a9d58b8dbb098458044d
+Size: 3705
+SHA256sum: e17e97ea3f512fb65fcb3a3ef1abe1c3e889e9ca565d58cdf18cac68fb227adb
 Description:  TCP Brutal congestion control
 
 Package: kmod-tun
@@ -1730,6 +1706,36 @@ Size: 20105
 SHA256sum: 6e2427cacb5b6276f0f540e3b83371a5d9c9da2ab4c56d0e3f3fab2f220ec2bf
 Description:  GCC support library
 
+Package: libip4tc2
+Version: 1.8.8-3
+Depends: libc
+Provides: libip4tc
+License: GPL-2.0
+Section: libs
+ABIVersion: 2
+CPE-ID: cpe:/a:netfilter:iptables
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 10262
+Filename: libip4tc2_1.8.8-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 11018
+SHA256sum: 9b3f87b86779f58ca3c2f64900c912fdaf7b96706e9e8589c465721b1e26e6cf
+Description:  IPv4 firewall - shared libiptc library
+
+Package: libip6tc2
+Version: 1.8.8-3
+Depends: libc
+Provides: libip6tc
+License: GPL-2.0
+Section: libs
+ABIVersion: 2
+CPE-ID: cpe:/a:netfilter:iptables
+Architecture: arm_cortex-a5_neon-vfpv4
+Installed-Size: 10470
+Filename: libip6tc2_1.8.8-3_arm_cortex-a5_neon-vfpv4.ipk
+Size: 11223
+SHA256sum: 6103ea732e7dc3708e62cdf237f7c968ea150b1d1970edb1dcf1ba3c698b67a8
+Description:  IPv6 firewall - shared libiptc library
+
 Package: libiptext-nft0
 Version: 1.8.8-3
 Depends: libc, libxtables12
@@ -1852,10 +1858,10 @@ Depends: libc, kmod-fs-ntfs3
 Conflicts: ntfs-3g
 Section: utils
 Architecture: all
-Installed-Size: 194
+Installed-Size: 196
 Filename: ntfs3-mount_10_all.ipk
-Size: 895
-SHA256sum: bb54b04d8ba4e8b06bacd3e74f7f2e6925704fd19d48e8491396b9cda5bf4df5
+Size: 896
+SHA256sum: 7339f5bd4e43ab037f103352d1f02393f2f6709624fbb7a27f88f09bb94d7518
 Description:  NTFS mount script for Paragon NTFS3 driver
 
 Package: xtables-nft
