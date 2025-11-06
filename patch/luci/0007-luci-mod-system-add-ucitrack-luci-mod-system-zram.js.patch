@@ -1,0 +1,24 @@
+From 433eec85db3ec6ca6185eb077ff694ba9b9db2d8 Mon Sep 17 00:00:00 2001
+From: sbwml <admin@cooluc.com>
+Date: Mon, 5 May 2025 22:24:52 +0800
+Subject: [PATCH] luci-mod-system: add ucitrack luci-mod-system-zram.json
+
+Signed-off-by: sbwml <admin@cooluc.com>
+---
+ .../root/usr/share/ucitrack/luci-mod-system-zram.json         | 4 ++++
+ 1 file changed, 4 insertions(+)
+ create mode 100644 modules/luci-mod-system/root/usr/share/ucitrack/luci-mod-system-zram.json
+
+diff --git a/modules/luci-mod-system/root/usr/share/ucitrack/luci-mod-system-zram.json b/modules/luci-mod-system/root/usr/share/ucitrack/luci-mod-system-zram.json
+new file mode 100644
+index 0000000..56da09e
+--- /dev/null
++++ b/modules/luci-mod-system/root/usr/share/ucitrack/luci-mod-system-zram.json
+@@ -0,0 +1,4 @@
++{
++	"config": "system",
++	"init": "zram"
++}
+-- 
+2.36.0
+

@@ -1,0 +1,84 @@
+From db0ea38b914f434c1faa0a140a3ce5f9dfa8d248 Mon Sep 17 00:00:00 2001
+From: Todd Short <tmshort@users.noreply.github.com>
+Date: Thu, 18 Mar 2021 12:42:01 -0400
+Subject: [PATCH 34/43] QUIC: Fix CI
+
+Updates `Configure` script to disable QUIC with `no-bulk` and `no-ec`
+Updates build.info doc docs
+Fixes an issue with extension defintions and `no-quic`
+---
+ Configure                    | 3 ++-
+ doc/build.info               | 6 ++++++
+ ssl/statem/extensions.c      | 1 +
+ ssl/statem/extensions_srvr.c | 2 +-
+ 4 files changed, 10 insertions(+), 2 deletions(-)
+
+--- a/Configure
++++ b/Configure
+@@ -579,6 +579,7 @@ my @disable_cascades = (
+                              "sm3", "sm4", "srp",
+                              "srtp", "ssl3-method", "ssl-trace",
+                              "ts", "ui-console", "whirlpool",
++                             "quic",
+                              "fips-securitychecks" ],
+     sub { $config{processor} eq "386" }
+                         => [ "sse2" ],
+@@ -586,7 +587,7 @@ my @disable_cascades = (
+     "ssl3-method"       => [ "ssl3" ],
+     "zlib"              => [ "zlib-dynamic" ],
+     "des"               => [ "mdc2" ],
+-    "ec"                => [ "ec2m", "ecdsa", "ecdh", "sm2", "gost" ],
++    "ec"                => [ "ec2m", "ecdsa", "ecdh", "sm2", "gost", "quic" ],
+     "dgram"             => [ "dtls", "sctp" ],
+     "sock"              => [ "dgram" ],
+     "dtls"              => [ @dtls ],
+--- a/doc/build.info
++++ b/doc/build.info
+@@ -2271,6 +2271,10 @@ DEPEND[html/man3/SSL_CTX_set_psk_client_
+ GENERATE[html/man3/SSL_CTX_set_psk_client_callback.html]=man3/SSL_CTX_set_psk_client_callback.pod
+ DEPEND[man/man3/SSL_CTX_set_psk_client_callback.3]=man3/SSL_CTX_set_psk_client_callback.pod
+ GENERATE[man/man3/SSL_CTX_set_psk_client_callback.3]=man3/SSL_CTX_set_psk_client_callback.pod
++DEPEND[html/man3/SSL_CTX_set_quic_method.html]=man3/SSL_CTX_set_quic_method.pod
++GENERATE[html/man3/SSL_CTX_set_quic_method.html]=man3/SSL_CTX_set_quic_method.pod
++DEPEND[man/man3/SSL_CTX_set_quic_method.3]=man3/SSL_CTX_set_quic_method.pod
++GENERATE[man/man3/SSL_CTX_set_quic_method.3]=man3/SSL_CTX_set_quic_method.pod
+ DEPEND[html/man3/SSL_CTX_set_quiet_shutdown.html]=man3/SSL_CTX_set_quiet_shutdown.pod
+ GENERATE[html/man3/SSL_CTX_set_quiet_shutdown.html]=man3/SSL_CTX_set_quiet_shutdown.pod
+ DEPEND[man/man3/SSL_CTX_set_quiet_shutdown.3]=man3/SSL_CTX_set_quiet_shutdown.pod
+@@ -3351,6 +3355,7 @@ html/man3/SSL_CTX_set_msg_callback.html
+ html/man3/SSL_CTX_set_num_tickets.html \
+ html/man3/SSL_CTX_set_options.html \
+ html/man3/SSL_CTX_set_psk_client_callback.html \
++html/man3/SSL_CTX_set_quic_method.html \
+ html/man3/SSL_CTX_set_quiet_shutdown.html \
+ html/man3/SSL_CTX_set_read_ahead.html \
+ html/man3/SSL_CTX_set_record_padding_callback.html \
+@@ -3959,6 +3964,7 @@ man/man3/SSL_CTX_set_msg_callback.3 \
+ man/man3/SSL_CTX_set_num_tickets.3 \
+ man/man3/SSL_CTX_set_options.3 \
+ man/man3/SSL_CTX_set_psk_client_callback.3 \
++man/man3/SSL_CTX_set_quic_method.3 \
+ man/man3/SSL_CTX_set_quiet_shutdown.3 \
+ man/man3/SSL_CTX_set_read_ahead.3 \
+ man/man3/SSL_CTX_set_record_padding_callback.3 \
+--- a/ssl/statem/extensions.c
++++ b/ssl/statem/extensions.c
+@@ -396,6 +396,7 @@ static const EXTENSION_DEFINITION ext_de
+     },
+ #else
+     INVALID_EXTENSION,
++    INVALID_EXTENSION,
+ #endif
+     {
+         /* Must be immediately before pre_shared_key */
+--- a/ssl/statem/extensions_srvr.c
++++ b/ssl/statem/extensions_srvr.c
+@@ -1930,7 +1930,7 @@ EXT_RETURN tls_construct_stoc_early_data
+ 
+ #ifndef OPENSSL_NO_QUIC
+         /* QUIC server must always send 0xFFFFFFFF, per draft-ietf-quic-tls-27 S4.5 */
+-        if (s->quic_method != NULL)
++        if (SSL_IS_QUIC(s))
+             max_early_data = 0xFFFFFFFF;
+ #endif
+ 

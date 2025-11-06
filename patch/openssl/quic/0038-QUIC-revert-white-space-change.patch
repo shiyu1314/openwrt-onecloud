@@ -1,0 +1,19 @@
+From d25cdd9dfed870991d6eeca1f76ed805eecbf184 Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Tue, 7 Sep 2021 12:29:37 -0400
+Subject: [PATCH 38/43] QUIC: revert white-space change
+
+---
+ include/openssl/evp.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/include/openssl/evp.h
++++ b/include/openssl/evp.h
+@@ -1741,7 +1741,6 @@ int EVP_PKEY_CTX_set_mac_key(EVP_PKEY_CT
+  * Method handles all operations: don't assume any digest related defaults.
+  */
+ # define EVP_PKEY_FLAG_SIGCTX_CUSTOM     4
+-
+ # ifndef OPENSSL_NO_DEPRECATED_3_0
+ OSSL_DEPRECATEDIN_3_0 const EVP_PKEY_METHOD *EVP_PKEY_meth_find(int type);
+ OSSL_DEPRECATEDIN_3_0 EVP_PKEY_METHOD *EVP_PKEY_meth_new(int id, int flags);

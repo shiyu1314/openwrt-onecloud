@@ -1,0 +1,640 @@
+From aa803e9855f49779e4226f358f085dc0fb1eb93e Mon Sep 17 00:00:00 2001
+From: Benjamin Kaduk <bkaduk@akamai.com>
+Date: Wed, 22 Apr 2020 09:12:36 -0700
+Subject: [PATCH 20/43] QUIC: Some cleanup for the main QUIC changes
+
+Try to reduce unneeded whitespace changes and wrap new code to 80 columns.
+Reword documentation to attempt to improve clarity.
+Add some more sanity checks and clarifying comments to the code.
+Update referenced I-D versions.
+---
+ doc/man3/SSL_CTX_set_quic_method.pod | 43 +++++++-------
+ include/openssl/ssl.h.in             |  4 +-
+ include/openssl/tls1.h               |  2 +-
+ ssl/build.info                       |  7 ++-
+ ssl/ssl_ciph.c                       |  2 +
+ ssl/ssl_lib.c                        |  2 +-
+ ssl/ssl_local.h                      |  1 +
+ ssl/ssl_quic.c                       | 45 +++++++--------
+ ssl/statem/extensions_clnt.c         |  2 +-
+ ssl/statem/extensions_srvr.c         |  2 +-
+ ssl/statem/statem.c                  |  2 +-
+ ssl/statem/statem_lib.c              | 26 +++++----
+ ssl/statem/statem_local.h            |  2 +
+ ssl/statem/statem_quic.c             | 22 ++++----
+ ssl/tls13_enc.c                      | 84 +++++++++++++++++++---------
+ test/sslapitest.c                    | 11 ++--
+ util/libssl.num                      |  2 +-
+ 17 files changed, 155 insertions(+), 104 deletions(-)
+
+--- a/doc/man3/SSL_CTX_set_quic_method.pod
++++ b/doc/man3/SSL_CTX_set_quic_method.pod
+@@ -63,22 +63,25 @@ SSL_quic_max_handshake_flight_len() retu
+ that may be received at the given encryption level. This function should be
+ used to limit buffering in the QUIC implementation.
+ 
+-See https://tools.ietf.org/html/draft-ietf-quic-transport-16#section-4.4.
++See https://tools.ietf.org/html/draft-ietf-quic-transport-27#section-4.
+ 
+ SSL_quic_read_level() returns the current read encryption level.
+ 
+ SSL_quic_write_level() returns the current write encryption level.
+ 
+-SSL_provide_quic_data() provides data from QUIC at a particular encryption
+-level B<level>. It is an error to call this function outside of the handshake
+-or with an encryption level other than the current read level. It returns one
+-on success and zero on error.
++SSL_provide_quic_data() is used to provide data from QUIC CRYPTO frames to the
++state machine, at a particular encryption level B<level>. It is an error to
++call this function outside of the handshake or with an encryption level other
++than the current read level. The application must buffer and consolidate any
++frames with less than four bytes of content.  It returns one on success and
++zero on error.
+ 
+ SSL_process_quic_post_handshake() processes any data that QUIC has provided
+ after the handshake has completed. This includes NewSessionTicket messages
+ sent by the server.
+ 
+-SSL_is_quic() indicates whether a connection uses QUIC.
++SSL_is_quic() indicates whether a connection uses QUIC.  A given B<SSL>
++or B<SSL_CTX> can only be used with QUIC or TLS, but not both.
+ 
+ =head1 NOTES
+ 
+@@ -89,11 +92,11 @@ functions allow a QUIC implementation to
+ described in draft-ietf-quic-tls.
+ 
+ When configured for QUIC, SSL_do_handshake() will drive the handshake as
+-before, but it will not use the configured B<BIO>. It will call functions on
+-B<SSL_QUIC_METHOD> to configure secrets and send data. If data is needed from
+-the peer, it will return B<SSL_ERROR_WANT_READ>. When received, the caller
+-should call SSL_provide_quic_data() and then SSL_do_handshake() to continue
+-the handshake. After the handshake is complete, the caller should call
++before, but it will not use the configured B<BIO>. It will call functions from
++the configured B<SSL_QUIC_METHOD> to configure secrets and send data. If data
++is needed from the peer, it will return B<SSL_ERROR_WANT_READ>. When received,
++the caller should call SSL_provide_quic_data() and then SSL_do_handshake() to
++continue the handshake. After the handshake is complete, the caller should call
+ SSL_provide_quic_data() for any post-handshake data, followed by
+ SSL_process_quic_post_handshake() to process it. It is an error to call
+ SSL_read()/SSL_read_ex() and SSL_write()/SSL_write_ex() in QUIC.
+@@ -105,7 +108,7 @@ pass the active write level to add_hands
+ can use SSL_quic_write_level() to query the active write level when
+ generating their own errors.
+ 
+-See https://tools.ietf.org/html/draft-ietf-quic-tls-15#section-4.1 for more
++See https://tools.ietf.org/html/draft-ietf-quic-tls-27#section-4.1 for more
+ details.
+ 
+ To avoid DoS attacks, the QUIC implementation must limit the amount of data
+@@ -113,11 +116,12 @@ being queued up. The implementation can
+ SSL_quic_max_handshake_flight_len() to get the maximum buffer length at each
+ encryption level.
+ 
+-draft-ietf-quic-tls defines a new TLS extension quic_transport_parameters
++draft-ietf-quic-tls defines a new TLS extension "quic_transport_parameters"
+ used by QUIC for each endpoint to unilaterally declare its supported
+-transport parameters. draft-ietf-quic-transport (section 7.4) defines the
+-contents of that extension (a TransportParameters struct) and describes how
+-to handle it and its semantic meaning.
++transport parameters. The contents of the extension are specified in
++https://tools.ietf.org/html/draft-ietf-quic-transport-27#section-18 (as
++a sequence of tag/length/value parameters) along with the interpretation of the
++various parameters and the rules for their processing.
+ 
+ OpenSSL handles this extension as an opaque byte string. The caller is
+ responsible for serializing and parsing it.
+@@ -205,10 +209,11 @@ SSL_process_quic_post_handshake()
+ return 1 on success, and 0 on error.
+ 
+ SSL_quic_read_level() and SSL_quic_write_level() return the current
+-encryption  level as B<OSSL_ENCRYPTION_LEVEL> (B<enum ssl_encryption_level_t>).
++encryption level as an B<OSSL_ENCRYPTION_LEVEL>
++(B<enum ssl_encryption_level_t>).
+ 
+-SSL_quic_max_handshake_flight_len() returns the maximum length of a flight
+-for a given encryption level.
++SSL_quic_max_handshake_flight_len() returns the maximum length in bytes of a
++flight for a given encryption level.
+ 
+ SSL_is_quic() returns 1 if QUIC is being used, 0 if not.
+ 
+--- a/include/openssl/ssl.h.in
++++ b/include/openssl/ssl.h.in
+@@ -2562,10 +2562,10 @@ __owur int SSL_process_quic_post_handsha
+ 
+ __owur int SSL_is_quic(SSL *ssl);
+ 
+-#  endif
+-
+ int SSL_CIPHER_get_prf_nid(const SSL_CIPHER *c);
+ 
++#  endif
++
+ # ifdef  __cplusplus
+ }
+ # endif
+--- a/include/openssl/tls1.h
++++ b/include/openssl/tls1.h
+@@ -151,7 +151,7 @@ extern "C" {
+ /* Temporary extension type */
+ # define TLSEXT_TYPE_renegotiate                 0xff01
+ 
+-/* ExtensionType value from draft-ietf-quic-tls-13 */
++/* ExtensionType value from draft-ietf-quic-tls-27 */
+ # define TLSEXT_TYPE_quic_transport_parameters   0xffa5
+ 
+ # ifndef OPENSSL_NO_NEXTPROTONEG
+--- a/ssl/build.info
++++ b/ssl/build.info
+@@ -37,10 +37,11 @@ IF[{- !$disabled{'deprecated-3.0'} -}]
+   SHARED_SOURCE[../libssl]=s3_cbc.c
+   SOURCE[../libssl]=ssl_rsa_legacy.c
+ ENDIF
+-
+-SOURCE[../libssl]=ssl_quic.c statem/statem_quic.c
+-
+ DEFINE[../libssl]=$AESDEF
+ 
++IF[{- !$disabled{quic} -}]
++  SOURCE[../libssl]=ssl_quic.c statem/statem_quic.c
++ENDIF
++
+ SOURCE[../providers/libcommon.a]=record/tls_pad.c
+ SOURCE[../providers/libdefault.a ../providers/libfips.a]=s3_cbc.c
+--- a/ssl/ssl_ciph.c
++++ b/ssl/ssl_ciph.c
+@@ -2241,6 +2241,7 @@ const char *OSSL_default_ciphersuites(vo
+            "TLS_AES_128_GCM_SHA256";
+ }
+ 
++#ifndef OPENSSL_NO_QUIC
+ int SSL_CIPHER_get_prf_nid(const SSL_CIPHER *c)
+ {
+     switch (c->algorithm2 & (0xFF << TLS1_PRF_DGST_SHIFT)) {
+@@ -2272,3 +2273,4 @@ int SSL_CIPHER_get_prf_nid(const SSL_CIP
+     }
+     return NID_undef;
+ }
++#endif
+--- a/ssl/ssl_lib.c
++++ b/ssl/ssl_lib.c
+@@ -4281,7 +4281,7 @@ EVP_PKEY *SSL_CTX_get0_privatekey(const
+ 
+ const SSL_CIPHER *SSL_get_current_cipher(const SSL *s)
+ {
+-    if (s->session != NULL)
++    if ((s->session != NULL) && (s->session->cipher != NULL))
+         return s->session->cipher;
+     return NULL;
+ }
+--- a/ssl/ssl_local.h
++++ b/ssl/ssl_local.h
+@@ -1227,6 +1227,7 @@ struct quic_data_st {
+     OSSL_ENCRYPTION_LEVEL level;
+     size_t offset;
+     size_t length;
++    /* char data[]; should be here but C90 VLAs not allowed here */
+ };
+ typedef struct quic_data_st QUIC_DATA;
+ int quic_set_encryption_secrets(SSL *ssl, OSSL_ENCRYPTION_LEVEL level);
+--- a/ssl/ssl_quic.c
++++ b/ssl/ssl_quic.c
+@@ -11,10 +11,6 @@
+ #include "internal/cryptlib.h"
+ #include "internal/refcount.h"
+ 
+-#ifdef OPENSSL_NO_QUIC
+-NON_EMPTY_TRANSLATION_UNIT
+-#else
+-
+ int SSL_set_quic_transport_params(SSL *ssl, const uint8_t *params,
+                                   size_t params_len)
+ {
+@@ -109,10 +105,10 @@ int SSL_provide_quic_data(SSL *ssl, OSSL
+         return 0;
+     }
+ 
+-    /* Split the QUIC messages up, if necessary */
++    /* Split on handshake message boundaries, if necessary */
+     while (len > 0) {
+         QUIC_DATA *qd;
+-        const uint8_t *p = data + 1;
++        const uint8_t *p;
+ 
+         /* Check for an incomplete block */
+         qd = ssl->quic_input_data_tail;
+@@ -130,6 +126,12 @@ int SSL_provide_quic_data(SSL *ssl, OSSL
+             }
+         }
+ 
++        if (len < SSL3_HM_HEADER_LENGTH) {
++            SSLerr(SSL_F_SSL_PROVIDE_QUIC_DATA, SSL_R_BAD_LENGTH);
++            return 0;
++        }
++        /* TLS Handshake message header has 1-byte type and 3-byte length */
++        p = data + 1;
+         n2l3(p, l);
+         l += SSL3_HM_HEADER_LENGTH;
+ 
+@@ -163,15 +165,8 @@ int SSL_provide_quic_data(SSL *ssl, OSSL
+ 
+ int SSL_CTX_set_quic_method(SSL_CTX *ctx, const SSL_QUIC_METHOD *quic_method)
+ {
+-    switch (ctx->method->version) {
+-    case DTLS1_VERSION:
+-    case DTLS1_2_VERSION:
+-    case DTLS_ANY_VERSION:
+-    case DTLS1_BAD_VER:
++    if (ctx->method->version != TLS_ANY_VERSION)
+         return 0;
+-    default:
+-        break;
+-    }
+     ctx->quic_method = quic_method;
+     ctx->options &= ~SSL_OP_ENABLE_MIDDLEBOX_COMPAT;
+     return 1;
+@@ -179,15 +174,8 @@ int SSL_CTX_set_quic_method(SSL_CTX *ctx
+ 
+ int SSL_set_quic_method(SSL *ssl, const SSL_QUIC_METHOD *quic_method)
+ {
+-    switch (ssl->method->version) {
+-    case DTLS1_VERSION:
+-    case DTLS1_2_VERSION:
+-    case DTLS_ANY_VERSION:
+-    case DTLS1_BAD_VER:
++    if (ssl->method->version != TLS_ANY_VERSION)
+         return 0;
+-    default:
+-        break;
+-    }
+     ssl->quic_method = quic_method;
+     ssl->options &= ~SSL_OP_ENABLE_MIDDLEBOX_COMPAT;
+     return 1;
+@@ -225,6 +213,12 @@ int quic_set_encryption_secrets(SSL *ssl
+         /* May not have selected cipher, yet */
+         const SSL_CIPHER *c = NULL;
+ 
++        /*
++         * It probably doesn't make sense to use an (external) PSK session,
++         * but in theory some kinds of external session caches could be
++         * implemented using it, so allow psksession to be used as well as
++         * the regular session.
++         */
+         if (ssl->session != NULL)
+             c = SSL_SESSION_get0_cipher(ssl->session);
+         else if (ssl->psksession != NULL)
+@@ -265,6 +259,11 @@ int SSL_process_quic_post_handshake(SSL
+         return 0;
+     }
+ 
++    /*
++     * This is always safe (we are sure to be at a record boundary) because
++     * SSL_read()/SSL_write() are never used for QUIC connections -- the
++     * application data is handled at the QUIC layer instead.
++     */
+     ossl_statem_set_in_init(ssl, 1);
+     ret = ssl->handshake_func(ssl);
+     ossl_statem_set_in_init(ssl, 0);
+@@ -278,5 +277,3 @@ int SSL_is_quic(SSL* ssl)
+ {
+     return SSL_IS_QUIC(ssl);
+ }
+-
+-#endif
+--- a/ssl/statem/extensions_clnt.c
++++ b/ssl/statem/extensions_clnt.c
+@@ -1947,7 +1947,7 @@ int tls_parse_stoc_early_data(SSL *s, PA
+ #ifndef OPENSSL_NO_QUIC
+         /*
+          * QUIC server must send 0xFFFFFFFF or it's a PROTOCOL_VIOLATION
+-         * per draft-ietf-quic-tls-24 S4.5
++         * per draft-ietf-quic-tls-27 S4.5
+          */
+         if (s->quic_method != NULL && max_early_data != 0xFFFFFFFF) {
+             SSLfatal(s, SSL_AD_ILLEGAL_PARAMETER, SSL_R_INVALID_MAX_EARLY_DATA);
+--- a/ssl/statem/extensions_srvr.c
++++ b/ssl/statem/extensions_srvr.c
+@@ -1914,7 +1914,7 @@ EXT_RETURN tls_construct_stoc_early_data
+             return EXT_RETURN_NOT_SENT;
+ 
+ #ifndef OPENSSL_NO_QUIC
+-        /* QUIC server must always send 0xFFFFFFFF, per draft-ietf-quic-tls-24 S4.5 */
++        /* QUIC server must always send 0xFFFFFFFF, per draft-ietf-quic-tls-27 S4.5 */
+         if (s->quic_method != NULL)
+             max_early_data = 0xFFFFFFFF;
+ #endif
+--- a/ssl/statem/statem.c
++++ b/ssl/statem/statem.c
+@@ -585,6 +585,7 @@ static SUB_STATE_RETURN read_state_machi
+                 ret = dtls_get_message(s, &mt);
+ #ifndef OPENSSL_NO_QUIC
+             } else if (SSL_IS_QUIC(s)) {
++                /* QUIC behaves like DTLS -- all in one go. */
+                 ret = quic_get_message(s, &mt, &len);
+ #endif
+             } else {
+@@ -929,7 +930,6 @@ int statem_flush(SSL *s)
+ #ifndef OPENSSL_NO_QUIC
+     if (SSL_IS_QUIC(s)) {
+         if (!s->quic_method->flush_flight(s)) {
+-            /* NOTE: BIO_flush() does not generate an error */
+             SSLerr(SSL_F_STATEM_FLUSH, ERR_R_INTERNAL_ERROR);
+             return 0;
+         }
+--- a/ssl/statem/statem_lib.c
++++ b/ssl/statem/statem_lib.c
+@@ -44,17 +44,24 @@ int ssl3_do_write(SSL *s, int type)
+ {
+     int ret;
+     size_t written = 0;
++
+ #ifndef OPENSSL_NO_QUIC
+-    if (SSL_IS_QUIC(s) && type == SSL3_RT_HANDSHAKE) {
+-        ret = s->quic_method->add_handshake_data(s, s->quic_write_level,
+-                                                 (const uint8_t*)&s->init_buf->data[s->init_off],
+-                                          s->init_num);
+-        if (!ret) {
+-            ret = -1;
+-            /* QUIC can't sent anything out sice the above failed */
+-            SSLerr(SSL_F_SSL3_DO_WRITE, ERR_R_INTERNAL_ERROR);
++    if (SSL_IS_QUIC(s)) {
++        if (type == SSL3_RT_HANDSHAKE) {
++            ret = s->quic_method->add_handshake_data(s, s->quic_write_level,
++                                                     (const uint8_t*)&s->init_buf->data[s->init_off],
++                                                     s->init_num);
++            if (!ret) {
++                ret = -1;
++                /* QUIC can't sent anything out sice the above failed */
++                SSLerr(SSL_F_SSL3_DO_WRITE, ERR_R_INTERNAL_ERROR);
++            } else {
++                written = s->init_num;
++            }
+         } else {
+-            written = s->init_num;
++            /* QUIC doesn't use ChangeCipherSpec */
++            ret = -1;
++            SSLerr(SSL_F_SSL3_DO_WRITE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+         }
+     } else
+ #endif
+@@ -1187,7 +1194,6 @@ int tls_get_message_header(SSL *s, int *
+ 
+     do {
+         while (s->init_num < SSL3_HM_HEADER_LENGTH) {
+-            /* QUIC: either create a special ssl_read_bytes... or if/else this */
+             i = s->method->ssl_read_bytes(s, SSL3_RT_HANDSHAKE, &recvd_type,
+                                           &p[s->init_num],
+                                           SSL3_HM_HEADER_LENGTH - s->init_num,
+--- a/ssl/statem/statem_local.h
++++ b/ssl/statem/statem_local.h
+@@ -104,7 +104,9 @@ __owur int tls_get_message_header(SSL *s
+ __owur int tls_get_message_body(SSL *s, size_t *len);
+ __owur int dtls_get_message(SSL *s, int *mt);
+ __owur int dtls_get_message_body(SSL *s, size_t *len);
++#ifndef OPENSSL_NO_QUIC
+ __owur int quic_get_message(SSL *s, int *mt, size_t *len);
++#endif
+ 
+ /* Message construction and processing functions */
+ __owur int tls_process_initial_server_flight(SSL *s);
+--- a/ssl/statem/statem_quic.c
++++ b/ssl/statem/statem_quic.c
+@@ -11,10 +11,6 @@
+ #include "statem_local.h"
+ #include "internal/cryptlib.h"
+ 
+-#ifdef OPENSSL_NO_QUIC
+-NON_EMPTY_TRANSLATION_UNIT
+-#else
+-
+ int quic_get_message(SSL *s, int *mt, size_t *len)
+ {
+     size_t l;
+@@ -23,20 +19,26 @@ int quic_get_message(SSL *s, int *mt, si
+ 
+     if (qd == NULL || (qd->length - qd->offset) != 0) {
+         s->rwstate = SSL_READING;
+-        *len = 0;
++        *mt = *len = 0;
++        return 0;
++    }
++
++    if (!ossl_assert(qd->length >= SSL3_HM_HEADER_LENGTH)) {
++        SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_R_BAD_LENGTH);
++        *mt = *len = 0;
+         return 0;
+     }
+ 
+     /* This is where we check for the proper level, not when data is given */
+     if (qd->level != s->quic_read_level) {
+         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_R_WRONG_ENCRYPTION_LEVEL_RECEIVED);
+-        *len = 0;
++        *mt = *len = 0;
+         return 0;
+     }
+ 
+     if (!BUF_MEM_grow_clean(s->init_buf, (int)qd->length)) {
+         SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_BUF_LIB);
+-        *len = 0;
++        *mt = *len = 0;
+         return 0;
+     }
+ 
+@@ -79,8 +81,8 @@ int quic_get_message(SSL *s, int *mt, si
+      */
+ #define SERVER_HELLO_RANDOM_OFFSET  (SSL3_HM_HEADER_LENGTH + 2)
+     /* KeyUpdate and NewSessionTicket do not need to be added */
+-    if (!SSL_IS_TLS13(s) || (s->s3.tmp.message_type != SSL3_MT_NEWSESSION_TICKET
+-                             && s->s3.tmp.message_type != SSL3_MT_KEY_UPDATE)) {
++    if (s->s3.tmp.message_type != SSL3_MT_NEWSESSION_TICKET
++            && s->s3.tmp.message_type != SSL3_MT_KEY_UPDATE) {
+         if (s->s3.tmp.message_type != SSL3_MT_SERVER_HELLO
+             || s->init_num < SERVER_HELLO_RANDOM_OFFSET + SSL3_RANDOM_SIZE
+             || memcmp(hrrrandom,
+@@ -101,5 +103,3 @@ int quic_get_message(SSL *s, int *mt, si
+ 
+     return 1;
+ }
+-
+-#endif
+--- a/ssl/tls13_enc.c
++++ b/ssl/tls13_enc.c
+@@ -419,6 +419,7 @@ static const unsigned char exporter_mast
+ static const unsigned char resumption_master_secret[] = "res master";
+ static const unsigned char early_exporter_master_secret[] = "e exp master";
+ #endif
++
+ #ifndef OPENSSL_NO_QUIC
+ static int quic_change_cipher_state(SSL *s, int which)
+ {
+@@ -427,7 +428,7 @@ static int quic_change_cipher_state(SSL
+     int hashleni;
+     int ret = 0;
+     const EVP_MD *md = NULL;
+-    OSSL_ENCRYPTION_LEVEL level = ssl_encryption_initial;
++    OSSL_ENCRYPTION_LEVEL level;
+     int is_handshake = ((which & SSL3_CC_HANDSHAKE) == SSL3_CC_HANDSHAKE);
+     int is_client_read = ((which & SSL3_CHANGE_CIPHER_CLIENT_READ) == SSL3_CHANGE_CIPHER_CLIENT_READ);
+     int is_server_write = ((which & SSL3_CHANGE_CIPHER_SERVER_WRITE) == SSL3_CHANGE_CIPHER_SERVER_WRITE);
+@@ -450,34 +451,62 @@ static int quic_change_cipher_state(SSL
+ 
+     if (is_client_read || is_server_write) {
+         if (is_handshake) {
++            /*
++             * This looks a bit weird, since the condition is basically "the
++             * server is writing" but we set both the server *and* client
++             * handshake traffic keys here.  That's because there's only a fixed
++             * number of change-cipher-state events in the TLS 1.3 handshake,
++             * and in particular there's not an event in between when the server
++             * writes encrypted handshake messages and when the client writes
++             * encrypted handshake messages, so we generate both here.
++             */
+             level = ssl_encryption_handshake;
+ 
+-            if (!tls13_hkdf_expand(s, md, s->handshake_secret, client_handshake_traffic,
+-                                   sizeof(client_handshake_traffic)-1, hash, hashlen,
+-                                   s->client_hand_traffic_secret, hashlen, 1)
+-                || !ssl_log_secret(s, CLIENT_HANDSHAKE_LABEL, s->client_hand_traffic_secret, hashlen)
+-                || !tls13_derive_finishedkey(s, md, s->client_hand_traffic_secret,
++            if (!tls13_hkdf_expand(s, md, s->handshake_secret,
++                                   client_handshake_traffic,
++                                   sizeof(client_handshake_traffic)-1, hash,
++                                   hashlen, s->client_hand_traffic_secret,
++                                   hashlen, 1)
++                || !ssl_log_secret(s, CLIENT_HANDSHAKE_LABEL,
++                                   s->client_hand_traffic_secret, hashlen)
++                || !tls13_derive_finishedkey(s, md,
++                                             s->client_hand_traffic_secret,
+                                              s->client_finished_secret, hashlen)
+-                || !tls13_hkdf_expand(s, md, s->handshake_secret, server_handshake_traffic,
+-                                      sizeof(server_handshake_traffic)-1, hash, hashlen,
+-                                      s->server_hand_traffic_secret, hashlen, 1)
+-                || !ssl_log_secret(s, SERVER_HANDSHAKE_LABEL, s->server_hand_traffic_secret, hashlen)
+-                || !tls13_derive_finishedkey(s, md, s->server_hand_traffic_secret,
+-                                             s->server_finished_secret, hashlen)) {
++                || !tls13_hkdf_expand(s, md, s->handshake_secret,
++                                      server_handshake_traffic,
++                                      sizeof(server_handshake_traffic)-1, hash,
++                                      hashlen, s->server_hand_traffic_secret,
++                                      hashlen, 1)
++                || !ssl_log_secret(s, SERVER_HANDSHAKE_LABEL,
++                                   s->server_hand_traffic_secret, hashlen)
++                || !tls13_derive_finishedkey(s, md,
++                                             s->server_hand_traffic_secret,
++                                             s->server_finished_secret,
++                                             hashlen)) {
+                 /* SSLfatal() already called */
+                 goto err;
+             }
+         } else {
++            /*
++             * As above, we generate both sets of application traffic keys at
++             * the same time.
++             */
+             level = ssl_encryption_application;
+ 
+-            if (!tls13_hkdf_expand(s, md, s->master_secret, client_application_traffic,
+-                                   sizeof(client_application_traffic)-1, hash, hashlen,
+-                                   s->client_app_traffic_secret, hashlen, 1)
+-                || !ssl_log_secret(s, CLIENT_APPLICATION_LABEL, s->client_app_traffic_secret, hashlen)
+-                || !tls13_hkdf_expand(s, md, s->master_secret, server_application_traffic,
+-                                      sizeof(server_application_traffic)-1, hash, hashlen,
++            if (!tls13_hkdf_expand(s, md, s->master_secret,
++                                   client_application_traffic,
++                                   sizeof(client_application_traffic)-1, hash,
++                                   hashlen, s->client_app_traffic_secret,
++                                   hashlen, 1)
++                || !ssl_log_secret(s, CLIENT_APPLICATION_LABEL,
++                                   s->client_app_traffic_secret, hashlen)
++                || !tls13_hkdf_expand(s, md, s->master_secret,
++                                      server_application_traffic,
++                                      sizeof(server_application_traffic)-1,
++                                      hash, hashlen,
+                                       s->server_app_traffic_secret, hashlen, 1)
+-                || !ssl_log_secret(s, SERVER_APPLICATION_LABEL, s->server_app_traffic_secret, hashlen)) {
++                || !ssl_log_secret(s, SERVER_APPLICATION_LABEL,
++                                   s->server_app_traffic_secret, hashlen)) {
+                 /* SSLfatal() already called */
+                 goto err;
+             }
+@@ -497,9 +526,11 @@ static int quic_change_cipher_state(SSL
+             level = ssl_encryption_early_data;
+ 
+             if (!tls13_hkdf_expand(s, md, s->early_secret, client_early_traffic,
+-                                   sizeof(client_early_traffic)-1, hash, hashlen,
+-                                   s->client_early_traffic_secret, hashlen, 1)
+-                || !ssl_log_secret(s, CLIENT_EARLY_LABEL, s->client_early_traffic_secret, hashlen)
++                                   sizeof(client_early_traffic)-1, hash,
++                                   hashlen, s->client_early_traffic_secret,
++                                   hashlen, 1)
++                || !ssl_log_secret(s, CLIENT_EARLY_LABEL,
++                                   s->client_early_traffic_secret, hashlen)
+                 || !quic_set_encryption_secrets(s, level)) {
+                 /* SSLfatal() already called */
+                 goto err;
+@@ -512,9 +543,11 @@ static int quic_change_cipher_state(SSL
+              * We also create the resumption master secret, but this time use the
+              * hash for the whole handshake including the Client Finished
+              */
+-            if (!tls13_hkdf_expand(s, md, s->master_secret, resumption_master_secret,
+-                                   sizeof(resumption_master_secret)-1, hash, hashlen,
+-                                   s->resumption_master_secret, hashlen, 1)) {
++            if (!tls13_hkdf_expand(s, md, s->master_secret,
++                                   resumption_master_secret,
++                                   sizeof(resumption_master_secret)-1, hash,
++                                   hashlen, s->resumption_master_secret,
++                                   hashlen, 1)) {
+                 /* SSLfatal() already called */
+                 goto err;
+             }
+@@ -531,6 +564,7 @@ static int quic_change_cipher_state(SSL
+     return ret;
+ }
+ #endif /* OPENSSL_NO_QUIC */
++
+ int tls13_change_cipher_state(SSL *s, int which)
+ {
+     unsigned char *iv;
+--- a/test/sslapitest.c
++++ b/test/sslapitest.c
+@@ -10766,9 +10766,11 @@ static int test_multi_resume(int idx)
+ }
+ 
+ #ifndef OPENSSL_NO_QUIC
+-static int test_quic_set_encryption_secrets(SSL *ssl, OSSL_ENCRYPTION_LEVEL level,
++static int test_quic_set_encryption_secrets(SSL *ssl,
++                                            OSSL_ENCRYPTION_LEVEL level,
+                                             const uint8_t *read_secret,
+-                                            const uint8_t *write_secret, size_t secret_len)
++                                            const uint8_t *write_secret,
++                                            size_t secret_len)
+ {
+     test_printf_stderr("quic_set_encryption_secrets() %s, lvl=%d, len=%zd\n",
+                        ssl->server ? "server" : "client", level, secret_len);
+@@ -10780,11 +10782,12 @@ static int test_quic_add_handshake_data(
+ {
+     SSL *peer = (SSL*)SSL_get_app_data(ssl);
+ 
+-    test_printf_stderr("quic_add_handshake_data() %s, lvl=%d, *data=0x%02X, len=%zd\n",
+-                       ssl->server ? "server" : "client", level, (int)*data, len);
++    TEST_info("quic_add_handshake_data() %s, lvl=%d, *data=0x%02X, len=%zd\n",
++              ssl->server ? "server" : "client", level, (int)*data, len);
+     if (!TEST_ptr(peer))
+         return 0;
+ 
++    /* We're called with what is locally written; this gives it to the peer */
+     if (!TEST_true(SSL_provide_quic_data(peer, level, data, len))) {
+         ERR_print_errors_fp(stderr);
+         return 0;
+--- a/util/libssl.num
++++ b/util/libssl.num
+@@ -522,7 +522,7 @@ SSL_CTX_set0_tmp_dh_pkey
+ SSL_group_to_name                       523	3_0_0	EXIST::FUNCTION:
+ SSL_quic_read_level                     20000	3_0_0	EXIST::FUNCTION:QUIC
+ SSL_set_quic_transport_params           20001	3_0_0	EXIST::FUNCTION:QUIC
+-SSL_CIPHER_get_prf_nid                  20002	3_0_0	EXIST::FUNCTION:
++SSL_CIPHER_get_prf_nid                  20002	3_0_0	EXIST::FUNCTION:QUIC
+ SSL_is_quic                             20003	3_0_0	EXIST::FUNCTION:QUIC
+ SSL_get_peer_quic_transport_params      20004	3_0_0	EXIST::FUNCTION:QUIC
+ SSL_quic_write_level                    20005	3_0_0	EXIST::FUNCTION:QUIC

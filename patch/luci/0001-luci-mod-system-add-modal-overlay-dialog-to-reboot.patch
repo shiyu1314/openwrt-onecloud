@@ -1,0 +1,45 @@
+From 0c1f0e62e72e4c89b0db25aa6f6baa19c7e91e75 Mon Sep 17 00:00:00 2001
+From: sbwml <admin@cooluc.com>
+Date: Fri, 13 Sep 2024 19:36:44 +0800
+Subject: [PATCH 1/5] luci-mod-system: add modal overlay dialog to reboot
+
+Signed-off-by: sbwml <admin@cooluc.com>
+---
+ .../resources/view/system/reboot.js           | 21 ++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/modules/luci-mod-system/htdocs/luci-static/resources/view/system/reboot.js b/modules/luci-mod-system/htdocs/luci-static/resources/view/system/reboot.js
+index 92e1dd4..c106f78 100644
+--- a/modules/luci-mod-system/htdocs/luci-static/resources/view/system/reboot.js
++++ b/modules/luci-mod-system/htdocs/luci-static/resources/view/system/reboot.js
+@@ -30,7 +30,26 @@ return view.extend({
+ 		body.appendChild(E('hr'));
+ 		body.appendChild(E('button', {
+ 			'class': 'cbi-button cbi-button-action important',
+-			'click': ui.createHandlerFn(this, 'handleReboot')
++			'click': function () {
++				ui.showModal(_('Confirm Reboot'), [
++					E('p', {}, _('Are you sure you want to reboot the system?')),
++					E('button', {
++						'class': 'cbi-button cbi-button-action important',
++						'style': 'margin-left: 0px; background: red!important; border-color: red!important',
++						'click': function () {
++							ui.hideModal();
++							this.handleReboot();
++						}.bind(this)
++					}, _('Confirm')),
++					E('button', {
++						'class': 'btn cbi-button cbi-button-apply',
++						'style': 'margin-left: 20px',
++						'click': function () {
++							ui.hideModal();
++						}
++					}, _('Cancel'))
++				]);
++			}.bind(this)
+ 		}, _('Perform reboot')));
+ 
+ 		return body;
+-- 
+2.42.0
+

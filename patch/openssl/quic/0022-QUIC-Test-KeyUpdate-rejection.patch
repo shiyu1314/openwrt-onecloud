@@ -1,0 +1,32 @@
+From 0d6350e28e3b684ce10693dc6921f46441a0da21 Mon Sep 17 00:00:00 2001
+From: Benjamin Kaduk <bkaduk@akamai.com>
+Date: Mon, 11 May 2020 13:26:07 -0700
+Subject: [PATCH 22/43] QUIC: Test KeyUpdate rejection
+
+For now, just test that we don't generate any, since we don't really
+expose the mechanics for encrypting one and the QUIC API is not
+integrated into the TLSProxy setup.
+---
+ test/sslapitest.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+--- a/test/sslapitest.c
++++ b/test/sslapitest.c
+@@ -10890,6 +10890,17 @@ static int test_quic_api(void)
+             || !TEST_true(SSL_process_quic_post_handshake(clientssl)))
+         goto end;
+ 
++    /* Dummy handshake call should succeed */
++    if (!TEST_true(SSL_do_handshake(clientssl)))
++        goto end;
++    /* Test that we (correctly) fail to send KeyUpdate */
++    if (!TEST_true(SSL_key_update(clientssl, SSL_KEY_UPDATE_NOT_REQUESTED))
++            || !TEST_int_le(SSL_do_handshake(clientssl), 0))
++        goto end;
++    if (!TEST_true(SSL_key_update(serverssl, SSL_KEY_UPDATE_NOT_REQUESTED))
++            || !TEST_int_le(SSL_do_handshake(serverssl), 0))
++        goto end;
++
+     testresult = 1;
+ 
+  end:

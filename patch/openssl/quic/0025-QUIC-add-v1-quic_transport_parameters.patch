@@ -1,0 +1,634 @@
+From 7fdd78ad2b87cfa7d8cbbff7a4b673824c5bc6cd Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Sat, 12 Dec 2020 17:27:46 +0900
+Subject: [PATCH 25/43] QUIC: add v1 quic_transport_parameters
+
+---
+ crypto/err/openssl.txt               |   2 +
+ doc/man3/SSL_CTX_set_quic_method.pod |  25 +++++-
+ include/openssl/ssl.h.in             |  13 ++++
+ include/openssl/sslerr.h             |   1 +
+ include/openssl/tls1.h               |   3 +-
+ ssl/ssl_err.c                        |   2 +
+ ssl/ssl_lib.c                        |   1 +
+ ssl/ssl_local.h                      |  11 +++
+ ssl/ssl_quic.c                       |  41 +++++++++-
+ ssl/statem/extensions.c              |  39 ++++++++++
+ ssl/statem/extensions_clnt.c         |  44 ++++++++++-
+ ssl/statem/extensions_srvr.c         |  46 ++++++++++-
+ ssl/statem/statem_local.h            |  17 +++++
+ test/sslapitest.c                    | 110 +++++++++++++++++++++------
+ util/libssl.num                      |   4 +
+ 15 files changed, 322 insertions(+), 37 deletions(-)
+
+--- a/crypto/err/openssl.txt
++++ b/crypto/err/openssl.txt
+@@ -1391,6 +1391,8 @@ SSL_R_MISSING_ECDSA_SIGNING_CERT:381:mis
+ SSL_R_MISSING_FATAL:256:missing fatal
+ SSL_R_MISSING_PARAMETERS:290:missing parameters
+ SSL_R_MISSING_PSK_KEX_MODES_EXTENSION:310:missing psk kex modes extension
++SSL_R_MISSING_QUIC_TRANSPORT_PARAMETERS_EXTENSION:801:\
++	missing quic transport parameters extension
+ SSL_R_MISSING_RSA_CERTIFICATE:168:missing rsa certificate
+ SSL_R_MISSING_RSA_ENCRYPTING_CERT:169:missing rsa encrypting cert
+ SSL_R_MISSING_RSA_SIGNING_CERT:170:missing rsa signing cert
+--- a/doc/man3/SSL_CTX_set_quic_method.pod
++++ b/doc/man3/SSL_CTX_set_quic_method.pod
+@@ -13,7 +13,11 @@ SSL_quic_read_level,
+ SSL_quic_write_level,
+ SSL_provide_quic_data,
+ SSL_process_quic_post_handshake,
+-SSL_is_quic
++SSL_is_quic,
++SSL_get_peer_quic_transport_version,
++SSL_get_quic_transport_version,
++SSL_set_quic_transport_version,
++SSL_set_quic_use_legacy_codepoint
+ - QUIC support
+ 
+ =head1 SYNOPSIS
+@@ -39,6 +43,11 @@ SSL_is_quic
+  int SSL_process_quic_post_handshake(SSL *ssl);
+  int SSL_is_quic(SSL *ssl);
+ 
++ void SSL_set_quic_use_legacy_codepoint(SSL *ssl, int use_legacy);
++ void SSL_set_quic_transport_version(SSL *ssl, int version);
++ int SSL_get_quic_transport_version(const SSL *ssl);
++ int SSL_get_peer_quic_transport_version(const SSL *ssl);
++
+ =head1 DESCRIPTION
+ 
+ SSL_CTX_set_quic_method() and SSL_set_quic_method() configures the QUIC methods.
+@@ -83,6 +92,20 @@ sent by the server.
+ SSL_is_quic() indicates whether a connection uses QUIC.  A given B<SSL>
+ or B<SSL_CTX> can only be used with QUIC or TLS, but not both.
+ 
++SSL_set_quic_use_legacy_codepoint() specifies the legacy extension codepoint
++in manner compatible with some versions of BoringSSL.
++
++SSL_set_quic_transport_version() specifies the quic transport version that
++allows for backwards and forwards compatibility. If set to 0 (default) the
++server will use the highest version the client sent. If set to 0 (default)
++the client will send both extensions.
++
++SSL_get_quic_transport_version() returns the value set by
++SSL_set_quic_transport_version().
++
++SSL_get_peer_quic_transport_version() returns the version the that was 
++negotiated.
++
+ =head1 NOTES
+ 
+ These APIs are implementations of BoringSSL's QUIC APIs.
+--- a/include/openssl/ssl.h.in
++++ b/include/openssl/ssl.h.in
+@@ -2562,6 +2562,19 @@ __owur int SSL_process_quic_post_handsha
+ 
+ __owur int SSL_is_quic(SSL *ssl);
+ 
++/* BoringSSL API */
++__owur void SSL_set_quic_use_legacy_codepoint(SSL *ssl, int use_legacy);
++
++/*
++ * Set an explicit value that you want to use
++ * If 0 (default) the server will use the highest extenstion the client sent
++ * If 0 (default) the client will send both extensions
++ */
++void SSL_set_quic_transport_version(SSL *ssl, int version);
++__owur int SSL_get_quic_transport_version(const SSL *ssl);
++/* Returns the negotiated version, or -1 on error */
++__owur int SSL_get_peer_quic_transport_version(const SSL *ssl);
++
+ int SSL_CIPHER_get_prf_nid(const SSL_CIPHER *c);
+ 
+ #  endif
+--- a/include/openssl/sslerr.h
++++ b/include/openssl/sslerr.h
+@@ -162,6 +162,7 @@
+ # define SSL_R_MISSING_FATAL                              256
+ # define SSL_R_MISSING_PARAMETERS                         290
+ # define SSL_R_MISSING_PSK_KEX_MODES_EXTENSION            310
++# define SSL_R_MISSING_QUIC_TRANSPORT_PARAMETERS_EXTENSION 801
+ # define SSL_R_MISSING_RSA_CERTIFICATE                    168
+ # define SSL_R_MISSING_RSA_ENCRYPTING_CERT                169
+ # define SSL_R_MISSING_RSA_SIGNING_CERT                   170
+--- a/include/openssl/tls1.h
++++ b/include/openssl/tls1.h
+@@ -152,7 +152,8 @@ extern "C" {
+ # define TLSEXT_TYPE_renegotiate                 0xff01
+ 
+ /* ExtensionType value from draft-ietf-quic-tls-27 */
+-# define TLSEXT_TYPE_quic_transport_parameters   0xffa5
++# define TLSEXT_TYPE_quic_transport_parameters_draft   0xffa5
++# define TLSEXT_TYPE_quic_transport_parameters         0x0039
+ 
+ # ifndef OPENSSL_NO_NEXTPROTONEG
+ /* This is not an IANA defined extension number */
+--- a/ssl/ssl_err.c
++++ b/ssl/ssl_err.c
+@@ -242,6 +242,8 @@ static const ERR_STRING_DATA SSL_str_rea
+     {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_MISSING_PARAMETERS), "missing parameters"},
+     {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_MISSING_PSK_KEX_MODES_EXTENSION),
+     "missing psk kex modes extension"},
++    {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_MISSING_QUIC_TRANSPORT_PARAMETERS_EXTENSION),
++    "missing quic transport parameters extension"},
+     {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_MISSING_RSA_CERTIFICATE),
+     "missing rsa certificate"},
+     {ERR_PACK(ERR_LIB_SSL, 0, SSL_R_MISSING_RSA_ENCRYPTING_CERT),
+--- a/ssl/ssl_lib.c
++++ b/ssl/ssl_lib.c
+@@ -1259,6 +1259,7 @@ void SSL_free(SSL *s)
+ 
+ #ifndef OPENSSL_NO_QUIC
+     OPENSSL_free(s->ext.quic_transport_params);
++    OPENSSL_free(s->ext.peer_quic_transport_params_draft);
+     OPENSSL_free(s->ext.peer_quic_transport_params);
+     BUF_MEM_free(s->quic_buf);
+     while (s->quic_input_data_head != NULL) {
+--- a/ssl/ssl_local.h
++++ b/ssl/ssl_local.h
+@@ -773,6 +773,7 @@ typedef enum tlsext_index_en {
+     TLSEXT_IDX_cryptopro_bug,
+     TLSEXT_IDX_early_data,
+     TLSEXT_IDX_certificate_authorities,
++    TLSEXT_IDX_quic_transport_params_draft,
+     TLSEXT_IDX_quic_transport_params,
+     TLSEXT_IDX_padding,
+     TLSEXT_IDX_psk,
+@@ -1712,6 +1713,8 @@ struct ssl_st {
+ #ifndef OPENSSL_NO_QUIC
+         uint8_t *quic_transport_params;
+         size_t quic_transport_params_len;
++        uint8_t *peer_quic_transport_params_draft;
++        size_t peer_quic_transport_params_draft_len;
+         uint8_t *peer_quic_transport_params;
+         size_t peer_quic_transport_params_len;
+ #endif
+@@ -1722,6 +1725,14 @@ struct ssl_st {
+     OSSL_ENCRYPTION_LEVEL quic_write_level;
+     OSSL_ENCRYPTION_LEVEL quic_latest_level_received;
+     BUF_MEM *quic_buf;          /* buffer incoming handshake messages */
++    /*
++     * defaults to 0, but can be set to:
++     * - TLSEXT_TYPE_quic_transport_parameters_draft
++     * - TLSEXT_TYPE_quic_transport_parameters
++     * Client: if 0, send both
++     * Server: if 0, use same version as client sent
++     */
++    int quic_transport_version;
+     QUIC_DATA *quic_input_data_head;
+     QUIC_DATA *quic_input_data_tail;
+     size_t quic_next_record_start;
+--- a/ssl/ssl_quic.c
++++ b/ssl/ssl_quic.c
+@@ -35,8 +35,45 @@ void SSL_get_peer_quic_transport_params(
+                                         const uint8_t **out_params,
+                                         size_t *out_params_len)
+ {
+-    *out_params = ssl->ext.peer_quic_transport_params;
+-    *out_params_len = ssl->ext.peer_quic_transport_params_len;
++    if (ssl->ext.peer_quic_transport_params_len) {
++        *out_params = ssl->ext.peer_quic_transport_params;
++        *out_params_len = ssl->ext.peer_quic_transport_params_len;
++    } else {
++        *out_params = ssl->ext.peer_quic_transport_params_draft;
++        *out_params_len = ssl->ext.peer_quic_transport_params_draft_len;
++    }
++}
++
++/* Returns the negotiated version, or -1 on error */
++int SSL_get_peer_quic_transport_version(const SSL *ssl)
++{
++    if (ssl->ext.peer_quic_transport_params_len != 0
++            && ssl->ext.peer_quic_transport_params_draft_len != 0)
++        return -1;
++    if (ssl->ext.peer_quic_transport_params_len != 0)
++        return TLSEXT_TYPE_quic_transport_parameters;
++    if (ssl->ext.peer_quic_transport_params_draft_len != 0)
++        return TLSEXT_TYPE_quic_transport_parameters_draft;
++
++    return -1;
++}
++
++void SSL_set_quic_use_legacy_codepoint(SSL *ssl, int use_legacy)
++{
++    if (use_legacy)
++        ssl->quic_transport_version = TLSEXT_TYPE_quic_transport_parameters_draft;
++    else
++        ssl->quic_transport_version = TLSEXT_TYPE_quic_transport_parameters;
++}
++
++void SSL_set_quic_transport_version(SSL *ssl, int version)
++{
++    ssl->quic_transport_version = version;
++}
++
++int SSL_get_quic_transport_version(const SSL *ssl)
++{
++    return ssl->quic_transport_version;
+ }
+ 
+ size_t SSL_quic_max_handshake_flight_len(const SSL *ssl, OSSL_ENCRYPTION_LEVEL level)
+--- a/ssl/statem/extensions.c
++++ b/ssl/statem/extensions.c
+@@ -61,6 +61,7 @@ static int init_post_handshake_auth(SSL
+ static int final_psk(SSL *s, unsigned int context, int sent);
+ #ifndef OPENSSL_NO_QUIC
+ static int init_quic_transport_params(SSL *s, unsigned int context);
++static int final_quic_transport_params_draft(SSL *s, unsigned int context, int sent);
+ static int final_quic_transport_params(SSL *s, unsigned int context, int sent);
+ #endif
+ 
+@@ -376,6 +377,15 @@ static const EXTENSION_DEFINITION ext_de
+     },
+ #ifndef OPENSSL_NO_QUIC
+     {
++        TLSEXT_TYPE_quic_transport_parameters_draft,
++        SSL_EXT_CLIENT_HELLO | SSL_EXT_TLS1_3_ENCRYPTED_EXTENSIONS
++        | SSL_EXT_TLS_IMPLEMENTATION_ONLY | SSL_EXT_TLS1_3_ONLY,
++        init_quic_transport_params,
++        tls_parse_ctos_quic_transport_params_draft, tls_parse_stoc_quic_transport_params_draft,
++        tls_construct_stoc_quic_transport_params_draft, tls_construct_ctos_quic_transport_params_draft,
++        final_quic_transport_params_draft,
++    },
++    {
+         TLSEXT_TYPE_quic_transport_parameters,
+         SSL_EXT_CLIENT_HELLO | SSL_EXT_TLS1_3_ENCRYPTED_EXTENSIONS
+         | SSL_EXT_TLS_IMPLEMENTATION_ONLY | SSL_EXT_TLS1_3_ONLY,
+@@ -1746,8 +1756,37 @@ static int init_quic_transport_params(SS
+     return 1;
+ }
+ 
++static int final_quic_transport_params_draft(SSL *s, unsigned int context,
++                                             int sent)
++{
++    return 1;
++}
++
+ static int final_quic_transport_params(SSL *s, unsigned int context, int sent)
+ {
++    /* called after final_quic_transport_params_draft */
++    if (SSL_IS_QUIC(s)) {
++        if (s->ext.peer_quic_transport_params_len == 0
++                && s->ext.peer_quic_transport_params_draft_len == 0) {
++            SSLfatal(s, SSL_AD_MISSING_EXTENSION,
++                     SSL_R_MISSING_QUIC_TRANSPORT_PARAMETERS_EXTENSION);
++            return 0;
++        }
++        /* if we got both, discard the one we can't use */
++        if (s->ext.peer_quic_transport_params_len != 0
++                && s->ext.peer_quic_transport_params_draft_len != 0) {
++            if (s->quic_transport_version == TLSEXT_TYPE_quic_transport_parameters_draft) {
++                OPENSSL_free(s->ext.peer_quic_transport_params);
++                s->ext.peer_quic_transport_params = NULL;
++                s->ext.peer_quic_transport_params_len = 0;
++            } else {
++                OPENSSL_free(s->ext.peer_quic_transport_params_draft);
++                s->ext.peer_quic_transport_params_draft = NULL;
++                s->ext.peer_quic_transport_params_draft_len = 0;
++            }
++        }
++    }
++
+     return 1;
+ }
+ #endif
+--- a/ssl/statem/extensions_clnt.c
++++ b/ssl/statem/extensions_clnt.c
+@@ -1197,13 +1197,33 @@ EXT_RETURN tls_construct_ctos_post_hands
+ }
+ 
+ #ifndef OPENSSL_NO_QUIC
+-/* SAME AS tls_construct_stoc_quic_transport_params() */
++EXT_RETURN tls_construct_ctos_quic_transport_params_draft(SSL *s, WPACKET *pkt,
++                                                          unsigned int context, X509 *x,
++                                                          size_t chainidx)
++{
++    if (s->quic_transport_version == TLSEXT_TYPE_quic_transport_parameters
++            || s->ext.quic_transport_params == NULL
++            || s->ext.quic_transport_params_len == 0) {
++        return EXT_RETURN_NOT_SENT;
++    }
++
++    if (!WPACKET_put_bytes_u16(pkt, TLSEXT_TYPE_quic_transport_parameters_draft)
++        || !WPACKET_sub_memcpy_u16(pkt, s->ext.quic_transport_params,
++                                   s->ext.quic_transport_params_len)) {
++        SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);
++        return EXT_RETURN_FAIL;
++    }
++
++    return EXT_RETURN_SENT;
++}
++
+ EXT_RETURN tls_construct_ctos_quic_transport_params(SSL *s, WPACKET *pkt,
+                                                     unsigned int context, X509 *x,
+                                                     size_t chainidx)
+ {
+-    if (s->ext.quic_transport_params == NULL
+-        || s->ext.quic_transport_params_len == 0) {
++    if (s->quic_transport_version == TLSEXT_TYPE_quic_transport_parameters_draft
++            || s->ext.quic_transport_params == NULL
++            || s->ext.quic_transport_params_len == 0) {
+         return EXT_RETURN_NOT_SENT;
+     }
+ 
+@@ -2038,7 +2058,23 @@ int tls_parse_stoc_psk(SSL *s, PACKET *p
+     return 1;
+ }
+ #ifndef OPENSSL_NO_QUIC
+-/* SAME AS tls_parse_ctos_quic_transport_params() */
++int tls_parse_stoc_quic_transport_params_draft(SSL *s, PACKET *pkt,
++                                               unsigned int context, X509 *x,
++                                               size_t chainidx)
++{
++    OPENSSL_free(s->ext.peer_quic_transport_params_draft);
++    s->ext.peer_quic_transport_params_draft = NULL;
++    s->ext.peer_quic_transport_params_draft_len = 0;
++
++    if (!PACKET_memdup(pkt,
++                       &s->ext.peer_quic_transport_params_draft,
++                       &s->ext.peer_quic_transport_params_draft_len)) {
++        SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);
++        return 0;
++    }
++    return 1;
++}
++
+ int tls_parse_stoc_quic_transport_params(SSL *s, PACKET *pkt, unsigned int context,
+                                          X509 *x, size_t chainidx)
+ {
+--- a/ssl/statem/extensions_srvr.c
++++ b/ssl/statem/extensions_srvr.c
+@@ -1250,7 +1250,22 @@ int tls_parse_ctos_post_handshake_auth(S
+ }
+ 
+ #ifndef OPENSSL_NO_QUIC
+-/* SAME AS tls_parse_stoc_quic_transport_params() */
++int tls_parse_ctos_quic_transport_params_draft(SSL *s, PACKET *pkt, unsigned int context,
++                                               X509 *x, size_t chainidx)
++{
++    OPENSSL_free(s->ext.peer_quic_transport_params_draft);
++    s->ext.peer_quic_transport_params_draft = NULL;
++    s->ext.peer_quic_transport_params_draft_len = 0;
++
++    if (!PACKET_memdup(pkt,
++                       &s->ext.peer_quic_transport_params_draft,
++                       &s->ext.peer_quic_transport_params_draft_len)) {
++        SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);
++        return 0;
++    }
++    return 1;
++}
++
+ int tls_parse_ctos_quic_transport_params(SSL *s, PACKET *pkt, unsigned int context,
+                                          X509 *x, size_t chainidx)
+ {
+@@ -1961,13 +1976,36 @@ EXT_RETURN tls_construct_stoc_psk(SSL *s
+ }
+ 
+ #ifndef OPENSSL_NO_QUIC
+-/* SAME AS tls_construct_ctos_quic_transport_params() */
++EXT_RETURN tls_construct_stoc_quic_transport_params_draft(SSL *s, WPACKET *pkt,
++                                                          unsigned int context,
++                                                          X509 *x,
++                                                          size_t chainidx)
++{
++    if (s->quic_transport_version == TLSEXT_TYPE_quic_transport_parameters
++            || s->ext.peer_quic_transport_params_draft_len == 0
++            || s->ext.quic_transport_params == NULL
++            || s->ext.quic_transport_params_len == 0) {
++        return EXT_RETURN_NOT_SENT;
++    }
++
++    if (!WPACKET_put_bytes_u16(pkt, TLSEXT_TYPE_quic_transport_parameters_draft)
++        || !WPACKET_sub_memcpy_u16(pkt, s->ext.quic_transport_params,
++                                   s->ext.quic_transport_params_len)) {
++        SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);
++        return EXT_RETURN_FAIL;
++    }
++
++    return EXT_RETURN_SENT;
++}
++
+ EXT_RETURN tls_construct_stoc_quic_transport_params(SSL *s, WPACKET *pkt,
+                                                     unsigned int context, X509 *x,
+                                                     size_t chainidx)
+ {
+-    if (s->ext.quic_transport_params == NULL
+-        || s->ext.quic_transport_params_len == 0) {
++    if (s->quic_transport_version == TLSEXT_TYPE_quic_transport_parameters_draft
++            || s->ext.peer_quic_transport_params_len == 0
++            || s->ext.quic_transport_params == NULL
++            || s->ext.quic_transport_params_len == 0) {
+         return EXT_RETURN_NOT_SENT;
+     }
+ 
+--- a/ssl/statem/statem_local.h
++++ b/ssl/statem/statem_local.h
+@@ -255,6 +255,10 @@ int tls_parse_ctos_psk(SSL *s, PACKET *p
+ int tls_parse_ctos_post_handshake_auth(SSL *, PACKET *pkt, unsigned int context,
+                                        X509 *x, size_t chainidx);
+ #ifndef OPENSSL_NO_QUIC
++int tls_parse_ctos_quic_transport_params_draft(SSL *s, PACKET *pkt,
++                                               unsigned int context, X509 *x,
++                                               size_t chainidx);
++
+ int tls_parse_ctos_quic_transport_params(SSL *s, PACKET *pkt, unsigned int context,
+                                          X509 *x, size_t chainidx);
+ #endif
+@@ -319,6 +323,11 @@ EXT_RETURN tls_construct_stoc_cryptopro_
+ EXT_RETURN tls_construct_stoc_psk(SSL *s, WPACKET *pkt, unsigned int context,
+                                   X509 *x, size_t chainidx);
+ #ifndef OPENSSL_NO_QUIC
++EXT_RETURN tls_construct_stoc_quic_transport_params_draft(SSL *s, WPACKET *pkt,
++                                                          unsigned int context,
++                                                          X509 *x,
++                                                          size_t chainidx);
++
+ EXT_RETURN tls_construct_stoc_quic_transport_params(SSL *s, WPACKET *pkt,
+                                                     unsigned int context, X509 *x,
+                                                     size_t chainidx);
+@@ -393,6 +402,10 @@ EXT_RETURN tls_construct_ctos_psk(SSL *s
+ EXT_RETURN tls_construct_ctos_post_handshake_auth(SSL *s, WPACKET *pkt, unsigned int context,
+                                                   X509 *x, size_t chainidx);
+ #ifndef OPENSSL_NO_QUIC
++EXT_RETURN tls_construct_ctos_quic_transport_params_draft(SSL *s, WPACKET *pkt,
++                                                          unsigned int context, X509 *x,
++                                                          size_t chainidx);
++
+ EXT_RETURN tls_construct_ctos_quic_transport_params(SSL *s, WPACKET *pkt,
+                                                     unsigned int context, X509 *x,
+                                                     size_t chainidx);
+@@ -441,6 +454,10 @@ int tls_parse_stoc_cookie(SSL *s, PACKET
+ int tls_parse_stoc_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
+                        size_t chainidx);
+ #ifndef OPENSSL_NO_QUIC
++int tls_parse_stoc_quic_transport_params_draft(SSL *s, PACKET *pkt,
++                                               unsigned int context, X509 *x,
++                                               size_t chainidx);
++
+ int tls_parse_stoc_quic_transport_params(SSL *s, PACKET *pkt, unsigned int context,
+                                          X509 *x, size_t chainidx);
+ #endif
+--- a/test/sslapitest.c
++++ b/test/sslapitest.c
+@@ -10816,7 +10816,13 @@ static SSL_QUIC_METHOD quic_method = {
+     test_quic_send_alert,
+ };
+ 
+-static int test_quic_api(void)
++static int test_quic_api_set_versions(SSL *ssl, int ver)
++{
++    SSL_set_quic_transport_version(ssl, ver);
++    return 1;
++}
++
++static int test_quic_api_version(int clnt, int srvr)
+ {
+     SSL_CTX *cctx = NULL, *sctx = NULL;
+     SSL *clientssl = NULL, *serverssl = NULL;
+@@ -10827,29 +10833,7 @@ static int test_quic_api(void)
+     const uint8_t *peer_str;
+     size_t peer_str_len;
+ 
+-    /* Clean up logging space */
+-    memset(client_log_buffer, 0, sizeof(client_log_buffer));
+-    memset(server_log_buffer, 0, sizeof(server_log_buffer));
+-    client_log_buffer_index = 0;
+-    server_log_buffer_index = 0;
+-    error_writing_log = 0;
+-
+-
+-    if (!TEST_ptr(sctx = SSL_CTX_new_ex(libctx, NULL, TLS_server_method()))
+-            || !TEST_true(SSL_CTX_set_quic_method(sctx, &quic_method))
+-            || !TEST_ptr(sctx->quic_method)
+-            || !TEST_ptr(serverssl = SSL_new(sctx))
+-            || !TEST_true(SSL_IS_QUIC(serverssl))
+-            || !TEST_true(SSL_set_quic_method(serverssl, NULL))
+-            || !TEST_false(SSL_IS_QUIC(serverssl))
+-            || !TEST_true(SSL_set_quic_method(serverssl, &quic_method))
+-            || !TEST_true(SSL_IS_QUIC(serverssl)))
+-        goto end;
+-
+-    SSL_CTX_free(sctx);
+-    sctx = NULL;
+-    SSL_free(serverssl);
+-    serverssl = NULL;
++    TEST_info("original clnt=0x%X, srvr=0x%X\n", clnt, srvr);
+ 
+     if (!TEST_true(create_ssl_ctx_pair(libctx,
+                                        TLS_server_method(),
+@@ -10868,6 +10852,8 @@ static int test_quic_api(void)
+                                                         sizeof(client_str)))
+             || !TEST_true(SSL_set_app_data(serverssl, clientssl))
+             || !TEST_true(SSL_set_app_data(clientssl, serverssl))
++            || !TEST_true(test_quic_api_set_versions(clientssl, clnt))
++            || !TEST_true(test_quic_api_set_versions(serverssl, srvr))
+             || !TEST_true(create_ssl_connection(serverssl, clientssl,
+                                                 SSL_ERROR_NONE))
+             || !TEST_true(SSL_version(serverssl) == TLS1_3_VERSION)
+@@ -10901,11 +10887,85 @@ static int test_quic_api(void)
+             || !TEST_int_le(SSL_do_handshake(serverssl), 0))
+         goto end;
+ 
++    TEST_info("original clnt=0x%X, srvr=0x%X\n", clnt, srvr);
++    if (srvr == 0 && clnt == 0)
++        srvr = clnt = TLSEXT_TYPE_quic_transport_parameters;
++    else if (srvr == 0)
++        srvr = clnt;
++    else if (clnt == 0)
++        clnt = srvr;
++    TEST_info("expected clnt=0x%X, srvr=0x%X\n", clnt, srvr);
++    if (!TEST_int_eq(SSL_get_peer_quic_transport_version(serverssl), clnt))
++        goto end;
++    if (!TEST_int_eq(SSL_get_peer_quic_transport_version(clientssl), srvr))
++        goto end;
++
+     testresult = 1;
+ 
+  end:
+     return testresult;
+ }
++
++static int test_quic_api(int tst)
++{
++    SSL_CTX *sctx = NULL;
++    SSL *serverssl = NULL;
++    int testresult = 0;
++    static int clnt_params[] = { 0,
++                                 TLSEXT_TYPE_quic_transport_parameters_draft,
++                                 TLSEXT_TYPE_quic_transport_parameters,
++                                 0,
++                                 TLSEXT_TYPE_quic_transport_parameters_draft,
++                                 TLSEXT_TYPE_quic_transport_parameters,
++                                 0,
++                                 TLSEXT_TYPE_quic_transport_parameters_draft,
++                                 TLSEXT_TYPE_quic_transport_parameters };
++    static int srvr_params[] = { 0,
++                                 0,
++                                 0,
++                                 TLSEXT_TYPE_quic_transport_parameters_draft,
++                                 TLSEXT_TYPE_quic_transport_parameters_draft,
++                                 TLSEXT_TYPE_quic_transport_parameters_draft,
++                                 TLSEXT_TYPE_quic_transport_parameters,
++                                 TLSEXT_TYPE_quic_transport_parameters,
++                                 TLSEXT_TYPE_quic_transport_parameters };
++    static int results[] = { 1, 1, 1, 1, 1, 0, 1, 0, 1 };
++
++    /* Failure cases:
++     * test 6/[5] clnt = parameters, srvr = draft
++     * test 8/[7] clnt = draft, srvr = parameters
++     */
++
++    /* Clean up logging space */
++    memset(client_log_buffer, 0, sizeof(client_log_buffer));
++    memset(server_log_buffer, 0, sizeof(server_log_buffer));
++    client_log_buffer_index = 0;
++    server_log_buffer_index = 0;
++    error_writing_log = 0;
++
++    if (!TEST_ptr(sctx = SSL_CTX_new_ex(libctx, NULL, TLS_server_method()))
++            || !TEST_true(SSL_CTX_set_quic_method(sctx, &quic_method))
++            || !TEST_ptr(sctx->quic_method)
++            || !TEST_ptr(serverssl = SSL_new(sctx))
++            || !TEST_true(SSL_IS_QUIC(serverssl))
++            || !TEST_true(SSL_set_quic_method(serverssl, NULL))
++            || !TEST_false(SSL_IS_QUIC(serverssl))
++            || !TEST_true(SSL_set_quic_method(serverssl, &quic_method))
++            || !TEST_true(SSL_IS_QUIC(serverssl)))
++        goto end;
++
++    if (!TEST_int_eq(test_quic_api_version(clnt_params[tst], srvr_params[tst]), results[tst]))
++        goto end;
++
++    testresult = 1;
++
++end:
++    SSL_CTX_free(sctx);
++    sctx = NULL;
++    SSL_free(serverssl);
++    serverssl = NULL;
++    return testresult;
++}
+ #endif /* OPENSSL_NO_QUIC */
+ 
+ static struct next_proto_st {
+@@ -11626,7 +11686,7 @@ int setup_tests(void)
+     ADD_ALL_TESTS(test_alpn, 4);
+     ADD_ALL_TESTS(test_no_renegotiation, 2);
+ #ifndef OPENSSL_NO_QUIC
+-    ADD_TEST(test_quic_api);
++    ADD_ALL_TESTS(test_quic_api, 9);
+ #endif
+     return 1;
+ 
+--- a/util/libssl.num
++++ b/util/libssl.num
+@@ -531,3 +531,7 @@ SSL_set_quic_method
+ SSL_quic_max_handshake_flight_len       20008	3_0_0	EXIST::FUNCTION:QUIC
+ SSL_process_quic_post_handshake         20009	3_0_0	EXIST::FUNCTION:QUIC
+ SSL_provide_quic_data                   20010	3_0_0	EXIST::FUNCTION:QUIC
++SSL_set_quic_use_legacy_codepoint       20011	3_0_0	EXIST::FUNCTION:QUIC
++SSL_set_quic_transport_version          20012	3_0_0	EXIST::FUNCTION:QUIC
++SSL_get_peer_quic_transport_version     20013	3_0_0	EXIST::FUNCTION:QUIC
++SSL_get_quic_transport_version          20014	3_0_0	EXIST::FUNCTION:QUIC

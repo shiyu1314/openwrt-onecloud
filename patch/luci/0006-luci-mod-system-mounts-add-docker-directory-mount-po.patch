@@ -1,0 +1,25 @@
+From b5423aca7403dc8b5662bc3e13bf22115fb6b2eb Mon Sep 17 00:00:00 2001
+From: sbwml <admin@cooluc.com>
+Date: Sat, 2 Nov 2024 19:13:53 +0800
+Subject: [PATCH] luci-mod-system: mounts: add docker directory mount point
+
+Signed-off-by: sbwml <admin@cooluc.com>
+---
+ .../htdocs/luci-static/resources/view/system/mounts.js           | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/modules/luci-mod-system/htdocs/luci-static/resources/view/system/mounts.js b/modules/luci-mod-system/htdocs/luci-static/resources/view/system/mounts.js
+index 269b4a9..72f20c2 100644
+--- a/modules/luci-mod-system/htdocs/luci-static/resources/view/system/mounts.js
++++ b/modules/luci-mod-system/htdocs/luci-static/resources/view/system/mounts.js
+@@ -293,6 +293,7 @@ return view.extend({
+ 		o = s.taboption('general', form.Value, 'target', _('Mount point'), _('Specifies the directory the device is attached to'));
+ 		o.value('/', _('Use as root filesystem (/)'));
+ 		o.value('/overlay', _('Use as external overlay (/overlay)'));
++		o.value('/opt', _('Use as docker root directory (/opt)'));
+ 		o.rmempty = false;
+ 
+ 		o = s.taboption('general', form.DummyValue, '__notice', _('Root preparation'));
+-- 
+2.43.5
+

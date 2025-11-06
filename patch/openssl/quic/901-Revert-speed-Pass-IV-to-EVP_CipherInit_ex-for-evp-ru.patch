@@ -1,0 +1,22 @@
+From 6cef85935b825ee477553594d36c9627df95a8c6 Mon Sep 17 00:00:00 2001
+From: sbwml <admin@cooluc.com>
+Date: Wed, 28 May 2025 14:49:44 +0800
+Subject: [PATCH 1/2] Revert "speed: Pass IV to EVP_CipherInit_ex for -evp runs
+ with non-AEAD ciphers"
+
+This reverts commit 4836c042d500da503b7f50db2aa65e0bfea1c451.
+---
+ apps/speed.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/apps/speed.c
++++ b/apps/speed.c
+@@ -2378,7 +2378,7 @@ skip_hmac:
+ 
+                     if (!ae_mode) {
+                         if (!EVP_CipherInit_ex(loopargs[k].ctx, NULL, NULL,
+-                                               loopargs[k].key, iv, -1)) {
++                                               loopargs[k].key, NULL, -1)) {
+                             BIO_printf(bio_err, "\nFailed to set the key\n");
+                             ERR_print_errors(bio_err);
+                             exit(1);

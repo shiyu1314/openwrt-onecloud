@@ -1,0 +1,87 @@
+From 70a17b75867850760ebf90b899e53f31b3b7c256 Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Wed, 13 Nov 2019 12:11:00 -0500
+Subject: [PATCH 18/43] QUIC: Handle EndOfEarlyData and MaxEarlyData
+
+---
+ ssl/statem/extensions_clnt.c | 11 +++++++++++
+ ssl/statem/extensions_srvr.c | 12 ++++++++++--
+ ssl/statem/statem_clnt.c     |  8 ++++++++
+ ssl/statem/statem_srvr.c     |  4 ++++
+ 4 files changed, 33 insertions(+), 2 deletions(-)
+
+--- a/ssl/statem/extensions_clnt.c
++++ b/ssl/statem/extensions_clnt.c
+@@ -1944,6 +1944,17 @@ int tls_parse_stoc_early_data(SSL *s, PA
+             return 0;
+         }
+ 
++#ifndef OPENSSL_NO_QUIC
++        /*
++         * QUIC server must send 0xFFFFFFFF or it's a PROTOCOL_VIOLATION
++         * per draft-ietf-quic-tls-24 S4.5
++         */
++        if (s->quic_method != NULL && max_early_data != 0xFFFFFFFF) {
++            SSLfatal(s, SSL_AD_ILLEGAL_PARAMETER, SSL_R_INVALID_MAX_EARLY_DATA);
++            return 0;
++        }
++#endif
++
+         s->session->ext.max_early_data = max_early_data;
+ 
+         return 1;
+--- a/ssl/statem/extensions_srvr.c
++++ b/ssl/statem/extensions_srvr.c
+@@ -1908,12 +1908,20 @@ EXT_RETURN tls_construct_stoc_early_data
+                                          size_t chainidx)
+ {
+     if (context == SSL_EXT_TLS1_3_NEW_SESSION_TICKET) {
+-        if (s->max_early_data == 0)
++        uint32_t max_early_data = s->max_early_data;
++
++        if (max_early_data == 0)
+             return EXT_RETURN_NOT_SENT;
+ 
++#ifndef OPENSSL_NO_QUIC
++        /* QUIC server must always send 0xFFFFFFFF, per draft-ietf-quic-tls-24 S4.5 */
++        if (s->quic_method != NULL)
++            max_early_data = 0xFFFFFFFF;
++#endif
++
+         if (!WPACKET_put_bytes_u16(pkt, TLSEXT_TYPE_early_data)
+                 || !WPACKET_start_sub_packet_u16(pkt)
+-                || !WPACKET_put_bytes_u32(pkt, s->max_early_data)
++                || !WPACKET_put_bytes_u32(pkt, max_early_data)
+                 || !WPACKET_close(pkt)) {
+             SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);
+             return EXT_RETURN_FAIL;
+--- a/ssl/statem/statem_clnt.c
++++ b/ssl/statem/statem_clnt.c
+@@ -904,6 +904,14 @@ int ossl_statem_client_construct_message
+         break;
+ 
+     case TLS_ST_CW_END_OF_EARLY_DATA:
++#ifndef OPENSSL_NO_QUIC
++        /* QUIC does not send EndOfEarlyData, draft-ietf-quic-tls-24 S8.3 */
++        if (s->quic_method != NULL) {
++            *confunc = NULL;
++            *mt = SSL3_MT_DUMMY;
++            break;
++        }
++#endif
+         *confunc = tls_construct_end_of_early_data;
+         *mt = SSL3_MT_END_OF_EARLY_DATA;
+         break;
+--- a/ssl/statem/statem_srvr.c
++++ b/ssl/statem/statem_srvr.c
+@@ -76,6 +76,10 @@ static int ossl_statem_server13_read_tra
+             break;
+         } else if (s->ext.early_data == SSL_EARLY_DATA_ACCEPTED) {
+             if (mt == SSL3_MT_END_OF_EARLY_DATA) {
++#ifndef OPENSSL_NO_QUIC
++                if (s->quic_method != NULL)
++                    return 0;
++#endif
+                 st->hand_state = TLS_ST_SR_END_OF_EARLY_DATA;
+                 return 1;
+             }

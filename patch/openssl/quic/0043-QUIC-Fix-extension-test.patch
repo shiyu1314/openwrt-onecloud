@@ -1,0 +1,39 @@
+From 83da964dc2da67fe779feddfc3a8d3baa9e446c5 Mon Sep 17 00:00:00 2001
+From: Todd Short <tshort@akamai.com>
+Date: Tue, 1 Nov 2022 12:55:46 -0400
+Subject: [PATCH 43/43] QUIC: Fix extension test
+
+---
+ ssl/ssl_local.h          | 4 ++--
+ test/ext_internal_test.c | 7 +++++++
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+--- a/ssl/ssl_local.h
++++ b/ssl/ssl_local.h
+@@ -773,8 +773,8 @@ typedef enum tlsext_index_en {
+     TLSEXT_IDX_cryptopro_bug,
+     TLSEXT_IDX_early_data,
+     TLSEXT_IDX_certificate_authorities,
+-    TLSEXT_IDX_quic_transport_params_draft,
+-    TLSEXT_IDX_quic_transport_params,
++    TLSEXT_IDX_quic_transport_parameters_draft,
++    TLSEXT_IDX_quic_transport_parameters,
+     TLSEXT_IDX_padding,
+     TLSEXT_IDX_psk,
+     /* Dummy index - must always be the last entry */
+--- a/test/ext_internal_test.c
++++ b/test/ext_internal_test.c
+@@ -69,6 +69,13 @@ static EXT_LIST ext_list[] = {
+     EXT_ENTRY(cryptopro_bug),
+     EXT_ENTRY(early_data),
+     EXT_ENTRY(certificate_authorities),
++#ifndef OPENSSL_NO_QUIC
++    EXT_ENTRY(quic_transport_parameters_draft),
++    EXT_ENTRY(quic_transport_parameters),
++#else
++    EXT_EXCEPTION(quic_transport_parameters_draft),
++    EXT_EXCEPTION(quic_transport_parameters),
++#endif
+     EXT_ENTRY(padding),
+     EXT_ENTRY(psk),
+     EXT_END(num_builtins)

@@ -1,0 +1,44 @@
+From b240c965d1c7c1d2095c2af798c4853d3379480a Mon Sep 17 00:00:00 2001
+From: Benjamin Kaduk <bkaduk@akamai.com>
+Date: Tue, 7 Sep 2021 14:21:22 -0700
+Subject: [PATCH 39/43] QUIC: use SSL_IS_QUIC() in more places
+
+---
+ doc/man3/SSL_CTX_set_quic_method.pod | 2 +-
+ ssl/statem/extensions_clnt.c         | 2 +-
+ ssl/statem/statem_clnt.c             | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+--- a/doc/man3/SSL_CTX_set_quic_method.pod
++++ b/doc/man3/SSL_CTX_set_quic_method.pod
+@@ -105,7 +105,7 @@ the client will send both extensions.
+ SSL_get_quic_transport_version() returns the value set by
+ SSL_set_quic_transport_version().
+ 
+-SSL_get_peer_quic_transport_version() returns the version the that was 
++SSL_get_peer_quic_transport_version() returns the version the that was
+ negotiated.
+ 
+ SSL_set_quic_early_data_enabled() enables QUIC early data if a nonzero
+--- a/ssl/statem/extensions_clnt.c
++++ b/ssl/statem/extensions_clnt.c
+@@ -1969,7 +1969,7 @@ int tls_parse_stoc_early_data(SSL *s, PA
+          * QUIC server must send 0xFFFFFFFF or it's a PROTOCOL_VIOLATION
+          * per RFC9001 S4.6.1
+          */
+-        if (s->quic_method != NULL && max_early_data != 0xFFFFFFFF) {
++        if (SSL_IS_QUIC(s) && max_early_data != 0xFFFFFFFF) {
+             SSLfatal(s, SSL_AD_ILLEGAL_PARAMETER, SSL_R_INVALID_MAX_EARLY_DATA);
+             return 0;
+         }
+--- a/ssl/statem/statem_clnt.c
++++ b/ssl/statem/statem_clnt.c
+@@ -906,7 +906,7 @@ int ossl_statem_client_construct_message
+     case TLS_ST_CW_END_OF_EARLY_DATA:
+ #ifndef OPENSSL_NO_QUIC
+         /* QUIC does not send EndOfEarlyData, RFC9001 S8.3 */
+-        if (s->quic_method != NULL) {
++        if (SSL_IS_QUIC(s)) {
+             *confunc = NULL;
+             *mt = SSL3_MT_DUMMY;
+             break;

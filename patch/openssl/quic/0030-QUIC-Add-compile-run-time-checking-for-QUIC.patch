@@ -1,0 +1,90 @@
+From ee45542f244a1cb2eb6dd19b09b44662a04059d9 Mon Sep 17 00:00:00 2001
+From: Todd Short <todd.short@me.com>
+Date: Fri, 5 Mar 2021 15:22:18 -0500
+Subject: [PATCH 30/43] QUIC: Add compile/run-time checking for QUIC
+
+---
+ apps/info.c                  | 12 ++++++++++++
+ crypto/info.c                |  4 ++++
+ doc/man3/OpenSSL_version.pod |  8 ++++++++
+ include/openssl/crypto.h.in  |  4 ++++
+ 4 files changed, 28 insertions(+)
+
+--- a/apps/info.c
++++ b/apps/info.c
+@@ -15,6 +15,9 @@ typedef enum OPTION_choice {
+     OPT_COMMON,
+     OPT_CONFIGDIR, OPT_ENGINESDIR, OPT_MODULESDIR, OPT_DSOEXT, OPT_DIRNAMESEP,
+     OPT_LISTSEP, OPT_SEEDS, OPT_CPUSETTINGS
++#ifndef OPENSSL_NO_QUIC
++    , OPT_QUIC
++#endif
+ } OPTION_CHOICE;
+ 
+ const OPTIONS info_options[] = {
+@@ -32,6 +35,9 @@ const OPTIONS info_options[] = {
+     {"listsep", OPT_LISTSEP, '-', "List separator character"},
+     {"seeds", OPT_SEEDS, '-', "Seed sources"},
+     {"cpusettings", OPT_CPUSETTINGS, '-', "CPU settings info"},
++#ifndef OPENSSL_NO_QUIC
++    {"quic", OPT_QUIC, '-', "QUIC info"},
++#endif
+     {NULL}
+ };
+ 
+@@ -84,6 +90,12 @@ opthelp:
+             type = OPENSSL_INFO_CPU_SETTINGS;
+             dirty++;
+             break;
++#ifndef OPENSSL_NO_QUIC
++        case OPT_QUIC:
++            type = OPENSSL_INFO_QUIC;
++            dirty++;
++            break;
++#endif
+         }
+     }
+     if (opt_num_rest() != 0)
+--- a/crypto/info.c
++++ b/crypto/info.c
+@@ -199,6 +199,10 @@ const char *OPENSSL_info(int t)
+         if (ossl_cpu_info_str[0] != '\0')
+             return ossl_cpu_info_str + strlen(CPUINFO_PREFIX);
+         break;
++#ifndef OPENSSL_NO_QUIC
++    case OPENSSL_INFO_QUIC:
++        return "QUIC";
++#endif
+     default:
+         break;
+     }
+--- a/doc/man3/OpenSSL_version.pod
++++ b/doc/man3/OpenSSL_version.pod
+@@ -211,6 +211,14 @@ automatically configured but may be set
+ The value has the same syntax as the environment variable.
+ For x86 the string looks like C<OPENSSL_ia32cap=0x123:0x456>.
+ 
++=item OPENSSL_INFO_QUIC
++
++This is only defined when compiling with a QUIC-enabled version of
++OpenSSL. At run time, this will return "QUIC" if QUIC is supported.
++
++This can be used as a build time flag to determine if OpenSSL has
++QUIC enabled.
++
+ =back
+ 
+ For an unknown I<t>, NULL is returned.
+--- a/include/openssl/crypto.h.in
++++ b/include/openssl/crypto.h.in
+@@ -176,6 +176,10 @@ const char *OPENSSL_info(int type);
+ # define OPENSSL_INFO_SEED_SOURCE               1007
+ # define OPENSSL_INFO_CPU_SETTINGS              1008
+ 
++# ifndef OPENSSL_NO_QUIC
++#  define OPENSSL_INFO_QUIC                     2000
++# endif
++
+ int OPENSSL_issetugid(void);
+ 
+ struct crypto_ex_data_st {
