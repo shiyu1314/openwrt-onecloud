@@ -32,7 +32,7 @@ on:
       CUSTOM_PLUGINS:
         description: '自定义插件名称，用空格分隔'
         required: false
-        default: 'luci-app-dockerman luci-theme-material3 luci-app-ttyd luci-app-diskman luci-app-hd-idle luci-app-momo luci-app-samba4 luci-app-emby luci-app-openlist2 luci-app-turboacc'
+        default: 'luci-app-dockerman luci-theme-aurora luci-app-ttyd luci-app-diskman luci-app-hd-idle luci-app-momo luci-app-samba4 luci-app-emby luci-app-openlist2 luci-app-turboacc'
         type: string
 
 env:

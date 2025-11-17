@@ -305,6 +305,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-quickstart=m
         CONFIG_PACKAGE_luci-app-argon-config=m
         CONFIG_PACKAGE_luci-theme-argon=m
+        CONFIG_PACKAGE_luci-theme-aurora=m
         CONFIG_PACKAGE_luci-app-istorex=m
         CONFIG_PACKAGE_luci-lib-taskd=y
         CONFIG_PACKAGE_luci-lib-xterm=y
