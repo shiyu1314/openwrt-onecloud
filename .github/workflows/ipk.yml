@@ -304,6 +304,8 @@ jobs:
         CONFIG_PACKAGE_luci-theme-material3=y
         CONFIG_PACKAGE_luci-app-quickstart=m
         CONFIG_PACKAGE_luci-app-argon-config=m
+        CONFIG_PACKAGE_luci-app-bandix=m
+        CONFIG_PACKAGE_luci-app-turboacc=m
         CONFIG_PACKAGE_luci-theme-argon=m
         CONFIG_PACKAGE_luci-theme-aurora=m
         CONFIG_PACKAGE_luci-app-istorex=m

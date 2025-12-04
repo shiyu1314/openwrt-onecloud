@@ -438,6 +438,7 @@ config KERNEL_DEBUG_INFO
 
 config KERNEL_DEBUG_INFO_BTF
 	bool "Enable additional BTF type information"
+	default y if (TARGET_armsr || TARGET_bcm27xx_bcm2709 || TARGET_bcm27xx_bcm2710 || TARGET_bcm27xx_bcm2711 || TARGET_bcm27xx_bcm2712 || TARGET_ipq806x_chromium || TARGET_mediatek_filogic || TARGET_mvebu_cortexa53 || TARGET_mvebu_cortexa72 || TARGET_qualcommax_ipq60xx || TARGET_rockchip || TARGET_sunxi_cortexa53 || TARGET_x86_64) && BUILDBOT
 	depends on !HOST_OS_MACOS
 	depends on KERNEL_DEBUG_INFO && !KERNEL_DEBUG_INFO_REDUCED
 	select DWARVES
@@ -455,6 +456,7 @@ config KERNEL_DEBUG_INFO_BTF_MODULES
 config KERNEL_MODULE_ALLOW_BTF_MISMATCH
 	bool "Allow loading modules with non-matching BTF type info"
 	depends on KERNEL_DEBUG_INFO_BTF_MODULES
+	default y
 	help
 	  For modules whose split BTF does not match vmlinux, load without
 	  BTF rather than refusing to load. The default behavior with
@@ -464,7 +466,7 @@ config KERNEL_MODULE_ALLOW_BTF_MISMATCH
 
 config KERNEL_DEBUG_INFO_REDUCED
 	bool "Reduce debugging information"
-	default y
+	default y if !(TARGET_armsr || TARGET_bcm27xx_bcm2709 || TARGET_bcm27xx_bcm2710 || TARGET_bcm27xx_bcm2711 || TARGET_bcm27xx_bcm2712 || TARGET_ipq806x_chromium || TARGET_mediatek_filogic || TARGET_mvebu_cortexa53 || TARGET_mvebu_cortexa72 || TARGET_qualcommax_ipq60xx || TARGET_rockchip || TARGET_sunxi_cortexa53 || TARGET_x86_64) || !BUILDBOT
 	depends on KERNEL_DEBUG_INFO
 	help
 	  If you say Y here gcc is instructed to generate less debugging
@@ -546,6 +548,7 @@ config KERNEL_KPROBE_EVENTS
 config KERNEL_BPF_EVENTS
 	bool "Compile the kernel with BPF event support"
 	select KERNEL_KPROBES
+	default y if KERNEL_DEBUG_INFO_BTF
 	help
 	  Allows to attach BPF programs to kprobe, uprobe and tracepoint events.
 	  This is required to use BPF maps of type BPF_MAP_TYPE_PERF_EVENT_ARRAY
@@ -560,6 +563,20 @@ config KERNEL_BPF_KPROBE_OVERRIDE
 	bool
 	depends on KERNEL_KPROBES
 	default n
+
+config KERNEL_BPF_STREAM_PARSER
+	bool "Allow a TCP stream parser to be used with BPF_MAP_TYPE_SOCKMAP"
+	depends on KERNEL_CGROUP_BPF
+	default y if KERNEL_DEBUG_INFO_BTF
+
+config KERNEL_NETKIT
+	bool "Compile the kernel with BPF-programmable network device support"
+	default y if KERNEL_DEBUG_INFO_BTF
+	help
+	  The netkit device is a virtual networking device where BPF programs
+	  can be attached to the device(s) transmission routine in order to
+	  implement the driver's internal logic. The device can be configured
+	  to operate in L3 or L2 mode.
 
 config KERNEL_AIO
 	bool "Compile the kernel with asynchronous IO support"
@@ -597,14 +614,12 @@ choice
 
 	config KERNEL_TRANSPARENT_HUGEPAGE_NEVER
 		bool "never"
-		depends on !LINUX_6_6
 endchoice
 
 config KERNEL_ARM64_CONTPTE
 	bool "Compile the kernel with Contiguous PTE mappings for user memory"
-	depends on KERNEL_ARM64
+	depends on aarch64
 	depends on KERNEL_TRANSPARENT_HUGEPAGE
-	depends on !LINUX_6_6
 	default y
 
 config KERNEL_HUGETLBFS
@@ -862,7 +877,6 @@ if KERNEL_CGROUPS
 	config KERNEL_CPUSETS_V1
 		bool "Legacy cgroup v1 cpusets controller"
 		depends on KERNEL_CPUSETS
-		depends on !LINUX_6_6
 		default n
 		help
 		  Legacy cgroup v1 cpusets controller which has been deprecated by
@@ -921,7 +935,6 @@ if KERNEL_CGROUPS
 		bool "Legacy cgroup v1 memory controller"
 		default n
 		depends on KERNEL_MEMCG
-		depends on !LINUX_6_6
 		help
 		  Legacy cgroup v1 memory controller which has been deprecated by
 		  cgroup v2 implementation. The v1 is there for legacy applications
@@ -1206,6 +1219,7 @@ config KERNEL_DCB
 
 config KERNEL_XDP_SOCKETS
 	bool "XDP sockets support"
+	default y if KERNEL_DEBUG_INFO_BTF
 	help
 	  XDP sockets allows a channel between XDP programs and
 	  userspace applications.
