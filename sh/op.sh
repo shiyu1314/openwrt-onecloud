@@ -1,13 +1,5 @@
 #!/bin/bash
 
-
-# kenrel Vermagic
-sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
-grep HASH include/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
-
-curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
-
-
 function git_sparse_clone() {
   branch="$1" repourl="$2" && shift 2
   git clone --depth=1 -b $branch --single-branch --filter=blob:none --sparse $repourl
@@ -17,6 +9,12 @@ function git_sparse_clone() {
   cd .. && rm -rf $repodir
 }
 
+git_sparse_clone master https://github.com/immortalwrt/immortalwrt target/linux/generic
+
+rm -rf target/linux/generic
+mv -v generic target/linux
+mv -v target/linux/generic/kernel-6.12 include
+
 
 git_sparse_clone master https://github.com/immortalwrt/immortalwrt package/emortal/automount
 
@@ -25,6 +23,11 @@ git_sparse_clone master https://github.com/immortalwrt/immortalwrt package/emort
 cp -rf {automount,autosamba} package
 
 
+# kenrel Vermagic
+sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
+grep HASH include/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
+
+curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
 
 
 

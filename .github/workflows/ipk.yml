@@ -100,9 +100,6 @@ jobs:
       run: |
         rm -rf openwrt/package/kernel/linux/modules/[a-z]*.mk
         [ -e patch ] && cp -rf patch/kernel-6.12/modules/*.mk openwrt/package/kernel/linux/modules
-        [ -e tags ] && cp -rf tags/kernel-6.12 openwrt/include
-        rm -rf openwrt/target/linux/generic
-        git clone https://shiyu1314:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/shiyu1314/target_linux_generic -b 6.12 openwrt/target/linux/generic
         [ -e patch ] && cp -rf patch/Config-kernel.in openwrt/config
         sed -i 's#https://git\.openwrt\.org/feed#https://github.com/openwrt#g; s#https://git\.openwrt\.org/project#https://github.com/openwrt#g' openwrt/feeds.conf.default
         cd openwrt
