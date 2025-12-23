@@ -9,11 +9,27 @@ function git_sparse_clone() {
   cd .. && rm -rf $repodir
 }
 
+git_sparse_clone master https://github.com/immortalwrt/immortalwrt package/network/config/firewall
+git_sparse_clone master https://github.com/immortalwrt/immortalwrt package/network/config/firewall4
+git_sparse_clone master https://github.com/immortalwrt/immortalwrt package/network/utils/fullconenat-nft
+git_sparse_clone master https://github.com/immortalwrt/immortalwrt package/network/utils/fullconenat
+git_sparse_clone master https://github.com/immortalwrt/immortalwrt package/network/utils/nftables
+git_sparse_clone master https://github.com/immortalwrt/immortalwrt package/kernel/linux/modules
+git_sparse_clone master https://github.com/immortalwrt/immortalwrt package/libs/libnftnl
 git_sparse_clone master https://github.com/immortalwrt/immortalwrt target/linux/generic
+git_sparse_clone master https://github.com/immortalwrt/luci applications/luci-app-firewall
 
+rm -rf package/network/{config/firewall,config/firewall4,utils/nftables}
 rm -rf target/linux/generic
 mv -v generic target/linux
 mv -v target/linux/generic/kernel-6.12 include
+
+mv -v {firewall,firewall4} package/network/config
+mv -v {nftables,fullconenat,fullconenat-nft} package/network/utils
+rm -rf package/libs/libnftnl
+mv -v libnftnl package/libs
+rm -rf package/kernel/linux/modules
+mv -v modules package/kernel/linux
 
 
 git_sparse_clone master https://github.com/immortalwrt/immortalwrt package/emortal/automount
@@ -27,8 +43,6 @@ cp -rf {automount,autosamba} package
 sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
 grep HASH include/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
 
-curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
-
 
 
 git clone https://github.com/sbwml/autocore-arm package/autocore-arm -b openwrt-24.10 --depth 1
@@ -39,12 +53,12 @@ git clone -b packages --depth 1 --single-branch https://github.com/shiyu1314/ope
 git clone -b porxy --depth 1 --single-branch https://github.com/shiyu1314/openwrt-feeds package/porxy
 
 
-rm -rf feeds/luci/applications/{luci-app-dockerman,luci-app-samba4,luci-app-aria2}
+rm -rf feeds/luci/applications/{luci-app-firewall,luci-app-dockerman,luci-app-samba4,luci-app-aria2}
 rm -rf feeds/packages/{net/samba4,v2ray-geodata,mosdns,sing-box,aria2,ariang,adguardhome}
 rm -f feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/29_ports.js
 
-sed -i "s/kmod-tcp-bbr/kmod-tcp-bbr3/" package/turboacc/luci-app-turboacc/Makefile
-sed -i "s/BBR 拥塞控制算法/BBR3 拥塞控制算法/" package/turboacc/luci-app-turboacc/po/zh-cn/turboacc.po
+mv -v luci-app-firewall feeds/luci/applications
+
 sed -i 's/libustream-mbedtls/libustream-openssl/' include/target.mk
 
 # luci - fix compat translation
@@ -62,45 +76,6 @@ pushd feeds/luci
     patch -p1 < 0008-luci-mod-network-add-option-for-ipv6-max-plt-vlt.patch
     patch -p1 < 0004-luci-add-firewall-add-custom-nft-rule-support.patch
 popd
-
-
-
-
-sed -i 's/+uhttpd /+luci-nginx /g' feeds/luci/collections/luci/Makefile
-sed -i 's/+uhttpd-mod-ubus //' feeds/luci/collections/luci/Makefile
-sed -i 's/+uhttpd /+luci-nginx /g' feeds/luci/collections/luci-light/Makefile
-sed -i "s/+luci /+luci-nginx /g" feeds/luci/collections/luci-ssl-openssl/Makefile
-sed -i "s/+luci /+luci-nginx /g" feeds/luci/collections/luci-ssl/Makefile
-sed -i 's/+uhttpd +uhttpd-mod-ubus /+luci-nginx /g' feeds/packages/net/wg-installer/Makefile
-sed -i '/uhttpd-mod-ubus/d' feeds/luci/collections/luci-light/Makefile
-sed -i 's/+luci-nginx \\$/+luci-nginx/' feeds/luci/collections/luci-light/Makefile
-
-
-
-# nginx - latest version
-rm -rf feeds/packages/net/nginx
-git clone https://github.com/sbwml/feeds_packages_net_nginx feeds/packages/net/nginx -b openwrt-24.10
-sed -i 's/procd_set_param stdout 1/procd_set_param stdout 0/g;s/procd_set_param stderr 1/procd_set_param stderr 0/g' feeds/packages/net/nginx/files/nginx.init
-
-# nginx - ubus
-sed -i 's/ubus_parallel_req 2/ubus_parallel_req 6/g' feeds/packages/net/nginx/files-luci-support/60_nginx-luci-support
-sed -i '/ubus_parallel_req/a\        ubus_script_timeout 300;' feeds/packages/net/nginx/files-luci-support/60_nginx-luci-support
-
-
-# uwsgi - fix timeout
-sed -i '$a cgi-timeout = 600' feeds/packages/net/uwsgi/files-luci-support/luci-*.ini
-sed -i '/limit-as/c\limit-as = 5000' feeds/packages/net/uwsgi/files-luci-support/luci-webui.ini
-# disable error log
-sed -i "s/procd_set_param stderr 1/procd_set_param stderr 0/g" feeds/packages/net/uwsgi/files/uwsgi.init
-
-# uwsgi - performance
-sed -i 's/threads = 1/threads = 2/g' feeds/packages/net/uwsgi/files-luci-support/luci-webui.ini
-sed -i 's/processes = 3/processes = 4/g' feeds/packages/net/uwsgi/files-luci-support/luci-webui.ini
-sed -i 's/cheaper = 1/cheaper = 2/g' feeds/packages/net/uwsgi/files-luci-support/luci-webui.ini
-
-# rpcd - fix timeout
-sed -i 's/option timeout 30/option timeout 60/g' package/system/rpcd/files/rpcd.config
-sed -i 's#20) \* 1000#60) \* 1000#g' feeds/luci/modules/luci-base/htdocs/luci-static/resources/rpc.js
 
 
 

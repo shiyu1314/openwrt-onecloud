@@ -1,8 +1,7 @@
 # openwrt-onecloud-玩客云
 
-- 优化系统内核
-  - [✔] TCP BBRv3
-  - [✔] TCP Brutal
+## 📋 支持的设备
+- ✅ **玩客云S1608**
 
 - 刷机工具
   - [下载](https://xd1314.lanzoul.com/iXHbz17bqjhc)

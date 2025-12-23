@@ -11,24 +11,43 @@ env:
 
 jobs:
   build_firmware:
-    name: 编译固件
+    name: 编译固件 - ${{ matrix.device }} - ${{ matrix.source }}
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        repo_info:
-          - {branch: "openwrt-24.10"}
+        device: ["玩客云-ws1608"]
+        source: ["openwrt"]
+        include:
+          - device: "玩客云-ws1608"
+            config: "CONFIG_TARGET_amlogic_meson8b_DEVICE_thunder-onecloud=y"
 
 
     steps: 
     - name: 检查分支
       uses: actions/checkout@v4
-        
+
+    - name: 释放磁盘空间
+      run: |
+        sudo rm -rf /etc/apt/sources.list.d
+        sudo swapoff -a
+        sudo rm -f /swapfile /mnt/swapfile
+        sudo docker image prune -a -f
+        sudo systemctl stop docker
+        sudo snap set system refresh.retain=2
+        sudo apt-get -y purge firefox clang* ghc* google* llvm* mono* mongo* mysql* php*
+        sudo apt-get -y autoremove --purge
+        sudo apt-get clean
+        sudo rm -rf /etc/mysql /etc/php /usr/lib/jvm /usr/libexec/docker /usr/local /usr/src/* /var/lib/docker /var/lib/gems /var/lib/mysql /var/lib/snapd /etc/skel /opt/{microsoft,az,hostedtoolcache,cni,mssql-tools,pipx} /usr/share/{az*,dotnet,swift,miniconda,gradle*,java,kotlinc,ri,sbt} /root/{.sbt,.local,.npm}
+        sudo sed -i '/NVM_DIR/d;/skel/d' /root/{.bashrc,.profile}
+        rm -rf ~/{.cargo,.dotnet,.rustup}
+        df -Th
+
     - name: 编译环境
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
         sudo apt-get update
-        sudo apt-get install -y img2simg build-essential flex bison cmake g++ gawk gcc-multilib g++-multilib gettext git libfuse-dev libncurses5-dev libssl-dev python3 python3-pip python3-ply python3-distutils python3-pyelftools rsync unzip zlib1g-dev file wget subversion patch upx-ucl autoconf automake curl asciidoc binutils bzip2 lib32gcc-s1 libc6-dev-i386 uglifyjs msmtp texinfo libreadline-dev libglib2.0-dev xmlto libelf-dev libtool autopoint antlr3 gperf ccache swig coreutils haveged scons libpython3-dev rename qemu-utils
+        sudo apt-get install -y tar img2simg build-essential flex bison cmake g++ gawk gcc-multilib g++-multilib gettext git libfuse-dev libncurses5-dev libssl-dev python3 python3-pip python3-ply python3-distutils python3-pyelftools rsync unzip zlib1g-dev file wget subversion patch upx-ucl autoconf automake curl asciidoc binutils bzip2 lib32gcc-s1 libc6-dev-i386 uglifyjs msmtp texinfo libreadline-dev libglib2.0-dev xmlto libelf-dev libtool autopoint antlr3 gperf ccache swig coreutils haveged scons libpython3-dev rename qemu-utils
         sudo apt-get clean
         git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
         sudo timedatectl set-timezone 'Asia/Shanghai'
@@ -41,7 +60,7 @@ jobs:
         TAG="$(date +'%Y%m%d')-$(openssl rand -hex 3)"
         echo "tag=$TAG" >> $GITHUB_ENV
         echo "REPO_URL=https://github.com/openwrt/openwrt" >> $GITHUB_ENV
-        echo "REPO_BRANCH=${{ matrix.repo_info.branch }}" >> $GITHUB_ENV
+        echo "REPO_BRANCH=openwrt-24.10" >> $GITHUB_ENV
 
     - name: 克隆源代码
       working-directory: /workdir
@@ -70,44 +89,43 @@ jobs:
             ;;
         esac
         echo "release_tag=$_release_tag" >> $GITHUB_ENV
-        
-    - name: 添加6.12内核
+            
+    - name: patch修补
       run: |
-        rm -rf openwrt/package/kernel/linux/modules/[a-z]*.mk
-        [ -e patch ] && cp -rf patch/kernel-6.12/modules/*.mk openwrt/package/kernel/linux/modules
-        [ -e patch ] && cp -rf patch/Config-kernel.in openwrt/config
+        curl -s https://raw.githubusercontent.com/immortalwrt/immortalwrt/master/config/Config-kernel.in > openwrt/config/Config-kernel.in
         sed -i 's#https://git\.openwrt\.org/feed#https://github.com/openwrt#g; s#https://git\.openwrt\.org/project#https://github.com/openwrt#g' openwrt/feeds.conf.default
         cd openwrt
         ./scripts/feeds update -a
         cd .. 
-        [ -e patch ] && cp -rf patch/firewall4/100-openwrt-firewall4-add-custom-nft-command-support.patch openwrt
-        [ -e patch ] && cp -rf patch/firewall4/luci-24.10/*.patch openwrt/feeds/luci 
+        [ -e patch ] && cp -rf patch/firewall4/*.patch openwrt 
         [ -e patch ] && cp -rf patch/luci/*.patch openwrt/feeds/luci 
         [ -e patch ] && cp -rf patch/openssl/quic/*.patch openwrt/package/libs/openssl/patches
-        [ -e patch ] && cp -rf patch/iproute2/*.patch openwrt/package/network/utils/iproute2/patches
         
     - name: 加载自定义脚本
       run: |
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
-        cd ..
-        [ -e patch ] && cp -rf patch/kernel-6.12/bbr3/*.patch openwrt/target/linux/generic/backport-6.12
-        [ -e patch ] && cp -rf patch/kernel-6.12/btf/*.patch openwrt/target/linux/generic/hack-6.12
-  
+
         
     - name: 添加玩客云
       run: |
         git clone https://shiyu1314:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/shiyu1314/s805 -b 6.12 openwrt/target/linux/amlogic
-
+         
     - name: 加载自定义配置
       run: |
         [ -e files ] && mv files openwrt/files
         cat <<EOF >>openwrt/.config
         CONFIG_TARGET_amlogic=y
         CONFIG_TARGET_amlogic_meson8b=y
-        CONFIG_TARGET_amlogic_meson8b_DEVICE_thunder-onecloud=y
+        ${{ matrix.config }}
+        CONFIG_TARGET_KERNEL_PARTSIZE=32
+        CONFIG_TARGET_ROOTFS_PARTSIZE=600
+        CONFIG_KERNEL_EXT4_FS_SECURITY=y
+        # CONFIG_TARGET_ROOTFS_SQUASHFS is not set
         EOF
+        
+        [ -e config ] && cat config/config-common >> openwrt/.config
            
     
     - name: 下载编译依赖
