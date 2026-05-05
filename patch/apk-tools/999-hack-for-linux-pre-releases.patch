@@ -1,0 +1,31 @@
+--- a/src/apk_adb.c
++++ b/src/apk_adb.c
+@@ -194,7 +194,7 @@ static struct adb_scalar_schema scalar_name = {
+ 
+ static adb_val_t version_fromstring(struct adb *db, apk_blob_t val)
+ {
+-	if (!apk_version_validate(val)) return ADB_ERROR(APKE_PKGVERSION_FORMAT);
++	apk_version_validate(val);
+ 	return adb_w_blob(db, val);
+ }
+ 
+@@ -355,12 +354,14 @@ static int dependency_fromstring(struct adb_obj *obj, apk_blob_t bdep)
+ 	apk_blob_t bname, bver;
+ 	int op;
+ 
+-	if (apk_dep_parse(bdep, &bname, &op, &bver) != 0) goto fail;
+-	if ((op & APK_DEPMASK_CHECKSUM) != APK_DEPMASK_CHECKSUM &&
+-	    !apk_version_validate(bver)) goto fail;
+-
+-	if (apk_blob_spn(bname, APK_CTYPE_DEPENDENCY_NAME, NULL, NULL)) goto fail;
+-
++	if (apk_dep_parse(bdep, &bname, &op, &bver) != 0) {
++		bname = bdep;
++		op = APK_DEPMASK_ANY;
++		bver = APK_BLOB_NULL;
++	}
++	apk_version_validate(bver);
++	apk_blob_spn(bname, APK_CTYPE_DEPENDENCY_NAME, NULL, NULL);
++
+ 	adb_wo_blob(obj, ADBI_DEP_NAME, bname);
+ 	if (op != APK_DEPMASK_ANY) {

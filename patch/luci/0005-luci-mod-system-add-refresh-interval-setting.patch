@@ -1,0 +1,32 @@
+From 3d6420303179fbb13ed565aa816908a632303309 Mon Sep 17 00:00:00 2001
+From: sbwml <admin@cooluc.com>
+Date: Fri, 13 Sep 2024 19:47:13 +0800
+Subject: [PATCH 5/7] luci-mod-system: add refresh interval setting
+
+Signed-off-by: sbwml <admin@cooluc.com>
+---
+ .../htdocs/luci-static/resources/view/system/system.js    | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/modules/luci-mod-system/htdocs/luci-static/resources/view/system/system.js b/modules/luci-mod-system/htdocs/luci-static/resources/view/system/system.js
+index e0835d1..59155f4 100644
+--- a/modules/luci-mod-system/htdocs/luci-static/resources/view/system/system.js
++++ b/modules/luci-mod-system/htdocs/luci-static/resources/view/system/system.js
+@@ -252,6 +252,14 @@ return view.extend({
+ 			if (k[i].charAt(0) != '.')
+ 				o.value(uci.get('luci', 'themes', k[i]), k[i]);
+ 
++		o = s.taboption('language', form.Value, 'pollinterval', _('Refresh interval'), _('Refresh interval in seconds'));
++		o.uciconfig = 'luci';
++		o.ucisection = 'main';
++		o.ucioption = 'pollinterval';
++		o.optional    = true
++		o.placeholder = 5
++		o.datatype    = 'and(uinteger,min(1),max(30))'
++
+ 		/*
+ 		 * NTP
+ 		 */
+-- 
+2.43.5
+
