@@ -1,0 +1,10 @@
+--- a/feeds/packages/lang/rust/Makefile
++++ b/feeds/packages/lang/rust/Makefile
+@@ -92,6 +92,7 @@
+ 	$(if $(RUSTC_TARGET_RUSTFLAGS),$(RUSTC_TARGET_CARGO_RUSTFLAGS)="$(RUSTC_TARGET_RUSTFLAGS)") \
+ 	$(PYTHON) $(HOST_BUILD_DIR)/x.py \
+ 		--build-dir $(HOST_BUILD_DIR)/build \
++		--ci false \
+ 		dist build-manifest rustc rust-std cargo llvm-tools rust-src
+ endef
+ 

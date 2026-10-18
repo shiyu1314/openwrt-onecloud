@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+TOP=$(pwd)
+
+export PATH="$TOP/staging_dir/host/bin:$PATH"
+
+[ ! -f ".config" ] && exit 0
+
+ARCH_PACKAGES=$(awk -F'"' '/^CONFIG_TARGET_ARCH_PACKAGES=/ {print $2}' .config)
+
+[ -z "$ARCH_PACKAGES" ] && exit 0
+
+SIG() (
+    rm -f index.json packages.adb
+    apk mkndx \
+        --root $TOP \
+        --keys-dir $TOP \
+        --allow-untrusted \
+        --sign $TOP/private-key.pem \
+        --output packages.adb \
+        *.apk >/dev/null 2>&1
+    [ -f "$TOP/scripts/make-index-json.py" ] && apk adbdump --format json packages.adb | \
+        $TOP/scripts/make-index-json.py -f apk -a "$ARCH_PACKAGES" - > index.json
+)
+
+[ -z $1 ] && exit 1
+
+cd $1
+
+SIG

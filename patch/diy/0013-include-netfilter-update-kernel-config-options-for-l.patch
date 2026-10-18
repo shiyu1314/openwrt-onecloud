@@ -1,0 +1,34 @@
+From 431c5f546692b996a40500aea48eea9c1412af36 Mon Sep 17 00:00:00 2001
+From: sbwml <admin@cooluc.com>
+Date: Fri, 31 Oct 2025 12:32:08 +0800
+Subject: [PATCH 13/13] include: netfilter: update kernel config options for
+ legacy iptables and ebtables
+
+Signed-off-by: sbwml <admin@cooluc.com>
+---
+ include/netfilter.mk | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/netfilter.mk b/include/netfilter.mk
+index 255e478..afe9d4d 100644
+--- a/include/netfilter.mk
++++ b/include/netfilter.mk
+@@ -30,6 +30,7 @@ endef
+ $(eval $(if $(NF_KMOD),$(call nf_add,NF_REJECT,CONFIG_NF_REJECT_IPV4, $(P_V4)nf_reject_ipv4),))
+ 
+ $(eval $(if $(NF_KMOD),$(call nf_add,NF_IPT,CONFIG_IP_NF_IPTABLES, $(P_V4)ip_tables),))
++$(eval $(if $(NF_KMOD),$(call nf_add,NF_IPT,CONFIG_IP_NF_IPTABLES_LEGACY, $(P_V4)ip_tables),))
+ $(eval $(if $(NF_KMOD),$(call nf_add,NF_IPT,CONFIG_NETFILTER_XTABLES, $(P_XT)x_tables),))
+ 
+ $(eval $(if $(NF_KMOD),$(call nf_add,IPT_CORE,CONFIG_NETFILTER_XTABLES, $(P_XT)xt_tcpudp),))
+@@ -283,6 +284,7 @@ $(eval $(if $(NF_KMOD),$(call nf_add,NF_CONNCOUNT,CONFIG_NETFILTER_CONNCOUNT, $(
+ #
+ 
+ $(eval $(if $(NF_KMOD),$(call nf_add,EBTABLES,CONFIG_BRIDGE_NF_EBTABLES, $(P_EBT)ebtables),))
++$(eval $(if $(NF_KMOD),$(call nf_add,EBTABLES,CONFIG_BRIDGE_NF_EBTABLES_LEGACY, $(P_EBT)ebtables),))
+ 
+ # ebtables: tables
+ $(eval $(call nf_add,EBTABLES,CONFIG_BRIDGE_EBT_BROUTE, $(P_EBT)ebtable_broute))
+-- 
+2.43.5
+

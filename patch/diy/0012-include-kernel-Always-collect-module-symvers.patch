@@ -1,0 +1,34 @@
+From 13032f8109b35d761d61d0631b73b305299078f4 Mon Sep 17 00:00:00 2001
+From: sbwml <admin@cooluc.com>
+Date: Sun, 26 Oct 2025 16:12:19 +0800
+Subject: [PATCH 12/13] include: kernel: Always collect module symvers
+
+Signed-off-by: sbwml <admin@cooluc.com>
+---
+ include/kernel.mk | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
+
+diff --git a/include/kernel.mk b/include/kernel.mk
+index 1648a6f..f63f367 100644
+--- a/include/kernel.mk
++++ b/include/kernel.mk
+@@ -160,13 +160,9 @@ PKG_EXTMOD_SUBDIRS ?= .
+ PKG_SYMVERS_DIR = $(KERNEL_BUILD_DIR)/symvers
+ 
+ define collect_module_symvers
+-	for subdir in $(PKG_EXTMOD_SUBDIRS); do \
+-		realdir=$$$$(readlink -f $(PKG_BUILD_DIR)); \
+-		grep -F $(PKG_BUILD_DIR) $(PKG_BUILD_DIR)/$$$$subdir/Module.symvers >> $(PKG_BUILD_DIR)/Module.symvers.tmp; \
+-		[ "$(PKG_BUILD_DIR)" = "$$$$realdir" ] || \
+-			grep -F $$$$realdir $(PKG_BUILD_DIR)/$$$$subdir/Module.symvers >> $(PKG_BUILD_DIR)/Module.symvers.tmp; \
+-	done; \
+-	sort -u $(PKG_BUILD_DIR)/Module.symvers.tmp > $(PKG_BUILD_DIR)/Module.symvers; \
++	sort -u $(PKG_BUILD_DIR)/Module.symvers > $(PKG_BUILD_DIR)/Module.symvers.tmp; \
++	rm -f $(PKG_BUILD_DIR)/Module.symvers; \
++	mv $(PKG_BUILD_DIR)/Module.symvers.tmp $(PKG_BUILD_DIR)/Module.symvers; \
+ 	mkdir -p $(PKG_SYMVERS_DIR); \
+ 	mv $(PKG_BUILD_DIR)/Module.symvers $(PKG_SYMVERS_DIR)/$(PKG_NAME).symvers
+ endef
+-- 
+2.43.5
+
